@@ -1,19 +1,19 @@
-const express = require('express')
-const { PrismaClient } = require('@prisma/client')
+const express = require('express');
+const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient()
-const app = express()
+const prisma = new PrismaClient();
+const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
 app.post(`/signup`, async (req, res) => {
-  const { name, email, posts } = req.body
+  const { name, email, posts } = req.body;
 
   const postData = posts
     ? posts.map((post) => {
-        return { title: post.title, content: post.content || undefined }
+        return { title: post.title, content: post.content || undefined };
       })
-    : []
+    : [];
 
   const result = await prisma.user.create({
     data: {
@@ -23,24 +23,24 @@ app.post(`/signup`, async (req, res) => {
         create: postData,
       },
     },
-  })
-  res.json(result)
-})
+  });
+  res.json(result);
+});
 
 app.post(`/post`, async (req, res) => {
-  const { title, content, authorEmail } = req.body
+  const { title, content, authorEmail } = req.body;
   const result = await prisma.post.create({
     data: {
       title,
       content,
       author: { connect: { email: authorEmail } },
     },
-  })
-  res.json(result)
-})
+  });
+  res.json(result);
+});
 
 app.put('/post/:id/views', async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
 
   try {
     const post = await prisma.post.update({
@@ -50,16 +50,16 @@ app.put('/post/:id/views', async (req, res) => {
           increment: 1,
         },
       },
-    })
+    });
 
-    res.json(post)
+    res.json(post);
   } catch (error) {
-    res.json({ error: `Post with ID ${id} does not exist in the database` })
+    res.json({ error: `Post with ID ${id} does not exist in the database` });
   }
-})
+});
 
 app.put('/publish/:id', async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
 
   try {
     const postData = await prisma.post.findUnique({
@@ -67,35 +67,35 @@ app.put('/publish/:id', async (req, res) => {
       select: {
         published: true,
       },
-    })
+    });
 
     const updatedPost = await prisma.post.update({
       where: { id: Number(id) || undefined },
       data: { published: !postData.published || undefined },
-    })
-    res.json(updatedPost)
+    });
+    res.json(updatedPost);
   } catch (error) {
-    res.json({ error: `Post with ID ${id} does not exist in the database` })
+    res.json({ error: `Post with ID ${id} does not exist in the database` });
   }
-})
+});
 
 app.delete(`/post/:id`, async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   const post = await prisma.post.delete({
     where: {
       id: Number(id),
     },
-  })
-  res.json(post)
-})
+  });
+  res.json(post);
+});
 
 app.get('/users', async (req, res) => {
-  const users = await prisma.user.findMany()
-  res.json(users)
-})
+  const users = await prisma.user.findMany();
+  res.json(users);
+});
 
 app.get('/user/:id/drafts', async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
 
   const drafts = await prisma.user
     .findUnique({
@@ -105,22 +105,22 @@ app.get('/user/:id/drafts', async (req, res) => {
     })
     .posts({
       where: { published: false },
-    })
+    });
 
-  res.json(drafts)
-})
+  res.json(drafts);
+});
 
-app.get(`/post/:id`, async (req, res) => {
-  const { id } = req.params
+app.get(`/post/:id`, middleware, async (req, res) => {
+  const { id } = req.params;
 
   const post = await prisma.post.findUnique({
     where: { id: Number(id) },
-  })
-  res.json(post)
-})
+  });
+  res.json(post);
+});
 
 app.get('/feed', async (req, res) => {
-  const { searchString, skip, take, orderBy } = req.query
+  const { searchString, skip, take, orderBy } = req.query;
 
   const or = searchString
     ? {
@@ -129,7 +129,7 @@ app.get('/feed', async (req, res) => {
           { content: { contains: searchString } },
         ],
       }
-    : {}
+    : {};
 
   const posts = await prisma.post.findMany({
     where: {
@@ -142,13 +142,13 @@ app.get('/feed', async (req, res) => {
     orderBy: {
       updatedAt: orderBy || undefined,
     },
-  })
+  });
 
-  res.json(posts)
-})
+  res.json(posts);
+});
 
 const server = app.listen(3000, () =>
   console.log(`
 🚀 Server ready at: http://localhost:3000
-⭐️ See sample requests: http://pris.ly/e/ts/rest-express#3-using-the-rest-api`),
-)
+⭐️ See sample requests: http://pris.ly/e/ts/rest-express#3-using-the-rest-api`)
+);
