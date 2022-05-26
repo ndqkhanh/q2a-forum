@@ -1,5 +1,8 @@
 const httpStatus = require('http-status');
 const { User } = require('../models');
+const { PrismaClient, Prisma } = require('@prisma/client');
+const prisma = new PrismaClient();
+
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -34,7 +37,12 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  return User.findById(id);
+  // return User.findById(id);
+  return prisma.users.findUnique({
+    where: {
+      id,
+    },
+  });
 };
 
 /**
