@@ -37,12 +37,12 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  // return User.findById(id);
-  return prisma.users.findUnique({
-    where: {
-      id,
-    },
-  });
+  return User.findById(id);
+  // return prisma.users.findUnique({
+  //   where: {
+  //     id,
+  //   },
+  // });
 };
 
 /**
