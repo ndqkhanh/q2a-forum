@@ -1,6 +1,8 @@
 -- DROP SCHEMA public;
 
 CREATE SCHEMA public AUTHORIZATION postgres;
+
+COMMENT ON SCHEMA public IS 'standard public schema';
 -- public."configuration" definition
 
 -- Drop table
@@ -25,13 +27,18 @@ CREATE TABLE public.users (
 	username varchar NOT NULL,
 	"password" text NOT NULL,
 	profilepictureurl text NULL,
-	"role" int2 NULL,
+	"role" int2 NULL, -- 0: admin, 1: mod, 2: users
 	"name" text NULL,
 	disabled bool NULL,
 	CONSTRAINT user_check CHECK (((role >= 0) AND (role <= 2))),
-	CONSTRAINT user_pk PRIMARY KEY (id)
+	CONSTRAINT user_pk PRIMARY KEY (id),
+	CONSTRAINT users_un UNIQUE (username)
 );
 CREATE INDEX user_username_idx ON public.users USING btree (username);
+
+-- Column comments
+
+COMMENT ON COLUMN public.users."role" IS '0: admin, 1: mod, 2: users';
 
 
 -- public.questions definition
@@ -47,7 +54,7 @@ CREATE TABLE public.questions (
 	status int2 NULL,
 	created_at date NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at date NULL DEFAULT CURRENT_TIMESTAMP,
-	title text NULL,
+	title text NOT NULL,
 	CONSTRAINT question_check CHECK (((status >= 0) AND (status <= 2))),
 	CONSTRAINT question_pk PRIMARY KEY (id),
 	CONSTRAINT question_fk FOREIGN KEY (uid) REFERENCES public.users(id) ON DELETE CASCADE
