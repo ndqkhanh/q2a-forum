@@ -6,83 +6,122 @@
  * @flow strict-local
  */
 
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
 import {
-  Colors,
-  Spacings,
-  ThemeManager,
-  Typography,
-  Card,
-  View,
+  Easing,
   Text,
-  Button,
-} from "react-native-ui-lib";
-import { MAIN_COLORS } from "~constants/colors";
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+import Colors from "~assets/colors/colors";
+import ScreensHomeMain from "~screens/Home/Main";
+if (Text.defaultProps == null) {
+  Text.defaultProps = {};
+  Text.defaultProps.allowFontScaling = false;
+}
 
-// with plain object
-ThemeManager.setComponentTheme("Card", {
-  borderRadius: 8,
-});
+if (TextInput.defaultProps == null) {
+  TextInput.defaultProps = {};
+  TextInput.defaultProps.allowFontScaling = false;
+}
 
-// with a dynamic function
-ThemeManager.setComponentTheme("Button", (props, context) => {
-  // 'square' is not an original Button prop, but a custom prop that can
-  // be used to create different variations of buttons in your app
-  if (props.square) {
+const Stack = createNativeStackNavigator();
+
+const options = {
+  gestureEnabled: false,
+  headerBackTitleVisible: false,
+  transitionSpec: {
+    open: {
+      animation: "timing",
+      config: { duration: 400, easing: Easing.inOut(Easing.ease) },
+    },
+    close: {
+      animation: "timing",
+      config: { duration: 400, easing: Easing.inOut(Easing.ease) },
+    },
+  },
+  cardStyleInterpolator: ({ current: { progress } }) => {
     return {
-      borderRadius: 0,
+      cardStyle: {
+        opacity: progress,
+      },
     };
-  }
-});
-Colors.loadColors(MAIN_COLORS);
-
-Typography.loadTypographies({
-  heading: { fontSize: 36, fontWeight: "600" },
-  subheading: { fontSize: 28, fontWeight: "500" },
-  body: { fontSize: 18, fontWeight: "400" },
-});
-
-Spacings.loadSpacings({
-  page: 20,
-  card: 12,
-  gridGutter: 16,
-});
-
-const App = () => {
+  },
+  headerShown: false,
+};
+const BottomTab = createBottomTabNavigator();
+const BottomTabNavigator = () => {
   return (
-    <SafeAreaView>
-      <View flex padding-page>
-        <Text heading marginB-s4>
-          My Screen
-        </Text>
-        <Card height={100} center padding-card marginB-s4>
-          <Text body>This is an example card </Text>
-        </Card>
-
-        <Button label="Button" body bg-primaryColor square></Button>
-      </View>
-    </SafeAreaView>
+    <BottomTab.Navigator
+      initialRouteName="Home" // What tab do we want to default to
+      screenOptions={{
+        // This gives us the ability to add addtional
+        tabBarShowLabel: false, // options when we create the bottom tab
+        tabBarStyle: [
+          {
+            // most importantly the style component
+            position: "absolute",
+            bottom: 25,
+            left: 20,
+            right: 20,
+            backgroundColor: "#ffffff",
+            borderRadius: 15,
+            // ...style.shadow,
+            shadowColor: "#7F5DF0",
+            shadowOffset: {
+              width: 0,
+              height: 10,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.5,
+            elevation: 5,
+            paddingBottom: 5,
+          },
+        ],
+      }}
+    >
+      <BottomTab.Screen
+        name="Home1"
+        component={ScreensHomeMain}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Add"
+        component={ScreensHomeMain}
+        options={{
+          tabBarButton: () => (
+            <TouchableWithoutFeedback onPress={() => console.log("test")}>
+              <Icon size={65} name="add-circle" color={Colors.purple} />
+            </TouchableWithoutFeedback>
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="About"
+        component={ScreensHomeMain}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="alarm" color={color} />,
+        }}
+      />
+    </BottomTab.Navigator>
   );
 };
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: "600",
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: "400",
-  },
-  highlight: {
-    fontWeight: "700",
-  },
-});
+function TabBarIcon(props) {
+  return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
+}
+const App = () => {
+  return (
+    <NavigationContainer>
+      <BottomTabNavigator />
+    </NavigationContainer>
+  );
+};
 
 export default App;
