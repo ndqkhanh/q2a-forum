@@ -8,16 +8,11 @@
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import {
-  Easing,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Text, TextInput, TouchableOpacity } from "react-native";
+import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-import Colors from "~assets/colors/colors";
+import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -29,30 +24,6 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps.allowFontScaling = false;
 }
 
-const Stack = createNativeStackNavigator();
-
-const options = {
-  gestureEnabled: false,
-  headerBackTitleVisible: false,
-  transitionSpec: {
-    open: {
-      animation: "timing",
-      config: { duration: 400, easing: Easing.inOut(Easing.ease) },
-    },
-    close: {
-      animation: "timing",
-      config: { duration: 400, easing: Easing.inOut(Easing.ease) },
-    },
-  },
-  cardStyleInterpolator: ({ current: { progress } }) => {
-    return {
-      cardStyle: {
-        opacity: progress,
-      },
-    };
-  },
-  headerShown: false,
-};
 const BottomTab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
   return (
@@ -70,7 +41,6 @@ const BottomTabNavigator = () => {
             right: 20,
             backgroundColor: "#ffffff",
             borderRadius: 15,
-            // ...style.shadow,
             shadowColor: "#7F5DF0",
             shadowOffset: {
               width: 0,
@@ -85,7 +55,7 @@ const BottomTabNavigator = () => {
       }}
     >
       <BottomTab.Screen
-        name="Home1"
+        name="Your Feed"
         component={ScreensHomeMain}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
@@ -96,9 +66,15 @@ const BottomTabNavigator = () => {
         component={ScreensHomeMain}
         options={{
           tabBarButton: () => (
-            <TouchableWithoutFeedback onPress={() => console.log("test")}>
-              <Icon size={65} name="add-circle" color={Colors.purple} />
-            </TouchableWithoutFeedback>
+            <TouchableOpacity
+              onPress={() => console.log("test")}
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon size={65} name="add-circle" color={Colors.purple10} />
+            </TouchableOpacity>
           ),
         }}
       />
@@ -118,9 +94,11 @@ function TabBarIcon(props) {
 }
 const App = () => {
   return (
-    <NavigationContainer>
-      <BottomTabNavigator />
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <BottomTabNavigator />
+      </NavigationContainer>
+    </UserProvider>
   );
 };
 
