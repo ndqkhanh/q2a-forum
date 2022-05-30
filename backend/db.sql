@@ -1,9 +1,11 @@
+-- DROP SCHEMA public;
+
+CREATE SCHEMA public AUTHORIZATION postgres;
 -- public."configuration" definition
 
 -- Drop table
 
 -- DROP TABLE public."configuration";
-CREATE EXTENSION pgcrypto;
 
 CREATE TABLE public."configuration" (
 	slug text NOT NULL,
@@ -45,11 +47,12 @@ CREATE TABLE public.questions (
 	status int2 NULL,
 	created_at date NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at date NULL DEFAULT CURRENT_TIMESTAMP,
+	title text NULL,
 	CONSTRAINT question_check CHECK (((status >= 0) AND (status <= 2))),
 	CONSTRAINT question_pk PRIMARY KEY (id),
 	CONSTRAINT question_fk FOREIGN KEY (uid) REFERENCES public.users(id) ON DELETE CASCADE
 );
-CREATE INDEX question_content_idx ON public.questions USING btree (content);
+CREATE INDEX questions_title_idx ON public.questions USING btree (title);
 
 
 -- public.answers definition

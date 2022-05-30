@@ -11,10 +11,12 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
-  if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-  return User.create(userBody);
+  // if (await User.isEmailTaken(userBody.email)) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  // }
+  return prisma.users.create({
+    data: userBody,
+  });
 };
 
 /**
@@ -37,12 +39,12 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  return User.findById(id);
-  // return prisma.users.findUnique({
-  //   where: {
-  //     id,
-  //   },
-  // });
+  // return User.findById(id);
+  return prisma.users.findUnique({
+    where: {
+      id,
+    },
+  });
 };
 
 /**
@@ -79,12 +81,17 @@ const updateUserById = async (userId, updateBody) => {
  * @returns {Promise<User>}
  */
 const deleteUserById = async (userId) => {
-  const user = await getUserById(userId);
-  if (!user) {
+  const deleteUser = await prisma.users.delete({
+    where: {
+      id: userId,
+    },
+  });
+  // const user = await getUserById(userId);
+  if (!deleteUser) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  await user.remove();
-  return user;
+  // await user.remove();
+  return deleteUser;
 };
 
 module.exports = {
