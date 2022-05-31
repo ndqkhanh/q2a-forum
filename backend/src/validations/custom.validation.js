@@ -5,6 +5,16 @@ const objectId = (value, helpers) => {
   return value;
 };
 
+const username = (value, helpers) => {
+  if (value.length < 5 || value.length > 15) {
+    return helpers.message('username must be in range 5-15 characters');
+  }
+  if (value.match(/ /)) {
+    return helpers.message('username must not contain spaces');
+  }
+  return value;
+};
+
 const password = (value, helpers) => {
   if (value.length < 8) {
     return helpers.message('password must be at least 8 characters');
@@ -18,4 +28,5 @@ const password = (value, helpers) => {
 module.exports = {
   objectId,
   password,
+  username,
 };
