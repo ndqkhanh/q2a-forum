@@ -34,16 +34,16 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
  * @param {boolean} [blacklisted]
  * @returns {Promise<Token>}
  */
-const saveToken = async (token, userId, expires, type, blacklisted = false) => {
-  const tokenDoc = await Token.create({
-    token,
-    user: userId,
-    expires: expires.toDate(),
-    type,
-    blacklisted,
-  });
-  return tokenDoc;
-};
+// const saveToken = async (token, userId, expires, type, blacklisted = false) => {
+//   const tokenDoc = await Token.create({
+//     token,
+//     user: userId,
+//     expires: expires.toDate(),
+//     type,
+//     blacklisted,
+//   });
+//   return tokenDoc;
+// };
 
 /**
  * Verify token and return token doc (or throw an error if it is not valid)
@@ -71,7 +71,7 @@ const generateAuthTokens = async (user) => {
 
   const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
   const refreshToken = generateToken(user.id, refreshTokenExpires, tokenTypes.REFRESH);
-  await saveToken(refreshToken, user.id, refreshTokenExpires, tokenTypes.REFRESH);
+  // await saveToken(refreshToken, user.id, refreshTokenExpires, tokenTypes.REFRESH);
 
   return {
     access: {
@@ -115,7 +115,7 @@ const generateVerifyEmailToken = async (user) => {
 
 module.exports = {
   generateToken,
-  saveToken,
+  // saveToken,
   verifyToken,
   generateAuthTokens,
   generateResetPasswordToken,

@@ -27,9 +27,9 @@ CREATE TABLE public.users (
 	username varchar NOT NULL,
 	"password" text NOT NULL,
 	profilepictureurl text NULL,
-	"role" int2 NULL, -- 0: admin, 1: mod, 2: users
+	"role" int2 NULL DEFAULT 2, -- 0: admin, 1: mod, 2: users
 	"name" text NULL,
-	disabled bool NULL,
+	disabled bool NULL DEFAULT false,
 	CONSTRAINT user_check CHECK (((role >= 0) AND (role <= 2))),
 	CONSTRAINT user_pk PRIMARY KEY (id),
 	CONSTRAINT users_un UNIQUE (username)

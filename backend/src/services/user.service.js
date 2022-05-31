@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const bcrypt = require('bcrypt');
 const { User } = require('../models');
 const { PrismaClient, Prisma } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -11,12 +12,38 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
-  // if (await User.isEmailTaken(userBody.email)) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  // if (await User.isEmailTaken(userBody.username)) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Username already taken');
   // }
-  return prisma.users.create({
+
+  // const user = prisma.users.create({
+  //   data: {
+  //     username: userBody.username,
+  //     password: userBody.password,
+  //     name: userBody.name,
+  //     profilepictureurl: userBody.profilepictureurl
+  //   },
+  // });
+
+  const saltRounds = 10;
+
+  userBody.password = await bcrypt.hash(userBody.password, saltRounds);
+
+  const checkUsername = await prisma.users.findUnique({
+    where: {
+      username: userBody.username,
+    },
+  });
+
+  if (checkUsername) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Username already taken');
+  }
+
+  const user = prisma.users.create({
     data: userBody,
   });
+
+  return user;
 };
 
 /**
@@ -52,8 +79,13 @@ const getUserById = async (id) => {
  * @param {string} email
  * @returns {Promise<User>}
  */
-const getUserByEmail = async (email) => {
-  return User.findOne({ email });
+const getUserByUsername = async (username) => {
+  // return User.findOne({ username });
+  return prisma.users.findUnique({
+    where: {
+      username,
+    },
+  });
 };
 
 /**
@@ -98,7 +130,7 @@ module.exports = {
   createUser,
   queryUsers,
   getUserById,
-  getUserByEmail,
+  getUserByUsername,
   updateUserById,
   deleteUserById,
 };
