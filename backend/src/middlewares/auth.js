@@ -4,9 +4,12 @@ const ApiError = require('../utils/ApiError');
 const { roleRights } = require('../config/roles');
 
 const verifyCallback = (req, resolve, reject, requiredRights) => async (err, user, info) => {
+  console.log("user", user);
   if (err || info || !user) {
     return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
   }
+  const ROLES = ["admin", "moderator", "user"];
+  user.role = ROLES[user.role];
   req.user = user;
 
   if (requiredRights.length) {
