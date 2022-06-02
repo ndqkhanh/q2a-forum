@@ -13,8 +13,22 @@ const updateAnswer = {
   }),
 };
 
+const getAnswer = {
+  params: Joi.object().keys({
+    answerId: Joi.string().uuid().required(),
+  }),
+};
+
+const deleteAnswer = {
+  params: Joi.object().keys({
+    answerId: Joi.string().uuid().required(),
+  }),
+};
+
 
 module.exports = {
   newAnswer,
   updateAnswer,
+  deleteAnswer,
+  getAnswer,
 };

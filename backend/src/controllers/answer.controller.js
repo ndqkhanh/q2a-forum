@@ -2,6 +2,11 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { answerService } = require('../services');
 
+const getAnswer = catchAsync(async (req, res) => {
+  const answer = await answerService.getAnswerById(req);
+  res.send(answer);
+});
+
 const newAnswer = catchAsync(async (req, res) => {
   const answer = await answerService.createAnswer(req);
   res.send(answer);
@@ -12,7 +17,14 @@ const updateAnswer = catchAsync(async (req, res) => {
   res.send(answer);
 });
 
+const deleteAnswer = catchAsync(async (req, res) => {
+  const answer = await answerService.delAnswerById(req.params.answerId);
+  res.send(answer);
+});
+
 module.exports = {
   newAnswer,
   updateAnswer,
+  deleteAnswer,
+  getAnswer,
 };

@@ -8,8 +8,10 @@ const router = express.Router();
 
 router.route('/').post(auth('createAnswer'), validate(ansValidation.newAnswer), ansController.newAnswer);
 
-// router
-    // .route('/:answerId')
-    // .post(validate(ansValidation.updateAnswer), ansController.updateAnswer);
+router
+  .route('/:answerId')
+  .get(validate(ansValidation.getAnswer), ansController.getAnswer)
+  .post(validate(ansValidation.updateAnswer), ansController.updateAnswer)
+  .delete(validate(ansValidation.deleteAnswer), ansController.deleteAnswer);
 
 module.exports = router;
