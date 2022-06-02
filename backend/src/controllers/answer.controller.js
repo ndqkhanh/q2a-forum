@@ -7,6 +7,12 @@ const newAnswer = catchAsync(async (req, res) => {
   res.send(answer);
 });
 
+const updateAnswer = catchAsync(async (req, res) => {
+  const answer = await answerService.changeAnswer(req);
+  res.send(answer);
+});
+
 module.exports = {
   newAnswer,
+  updateAnswer,
 };

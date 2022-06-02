@@ -7,6 +7,14 @@ const newAnswer = {
   }),
 };
 
+const updateAnswer = {
+  body: Joi.object().keys({
+    content: Joi.string().required(),
+  }),
+};
+
+
 module.exports = {
   newAnswer,
+  updateAnswer,
 };
