@@ -1,16 +1,19 @@
-// const tokenService = require('./token.service');
-// const { tokenTypes } = require('../config/tokens');
 const { PrismaClient, Prisma } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const createAnswer = async (userBody) => {
-  // const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTQwMTgzNTEsImV4cCI6MTY1NjYxMDM1MSwidHlwZSI6InJlZnJlc2gifQ.tQ2Fn0xtYLAkp13d4DolSo2CYnpdjydCbT7lX_cKSoc";
-  // const checkTokens = await tokenService.verifyToken(accessToken, tokenTypes.ACCESS);
-  const answer = await prisma.answers.create({
-    data: userBody,
+  // const accessToken = userBody.headers.authorization.split(" ")[1];
+  // const tokens = await tokenService.verifyToken(accessToken[1], tokenTypes.ACCESS_TOKEN);
+  // console.log(tokens.payload.sub);
+  const userid = userBody.user['id'];
+  const answer = prisma.answers.create({
+    data: {
+      qid: userBody.body.qid,
+      content: userBody.body.content,
+      uid: userid,
+    },
   });
   return answer;
-  // return checkTokens ? answer : null;
 };
 
 module.exports = {
