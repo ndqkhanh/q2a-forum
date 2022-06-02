@@ -6,13 +6,11 @@ const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
-router
-    .route('/')
-    .post(auth('answer'), validate(ansValidation.newAnswer), ansController.newAnswer);
+router.route('/').post(auth('createAnswer'), validate(ansValidation.newAnswer), ansController.newAnswer);
 
 router
-    .route('/:answerId')
-    // .post(auth('createAnswer'), validate(ansValidation.newAnswer), ansController.newAnswer);
-    // .delete(auth('deleteAnswer'), validate(ansValidation.delAnswer), ansController.delAnswer);
+  .route('/:answerId')
+  .post(validate(ansValidation.updateAnswer), ansController.updateAnswer)
+  .delete(validate(ansValidation.deleteAnswer), ansController.deleteAnswer);
 
 module.exports = router;

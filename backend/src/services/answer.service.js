@@ -1,18 +1,64 @@
-// const tokenService = require('./token.service');
-// const { tokenTypes } = require('../config/tokens');
+const httpStatus = require('http-status');
 const { PrismaClient, Prisma } = require('@prisma/client');
 const prisma = new PrismaClient();
+const ApiError = require('../utils/ApiError');
 
 const createAnswer = async (userBody) => {
-  // const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTQwMTgzNTEsImV4cCI6MTY1NjYxMDM1MSwidHlwZSI6InJlZnJlc2gifQ.tQ2Fn0xtYLAkp13d4DolSo2CYnpdjydCbT7lX_cKSoc";
-  // const checkTokens = await tokenService.verifyToken(accessToken, tokenTypes.ACCESS);
-  const answer = await prisma.answers.create({
-    data: userBody,
+  const checkQuestionExists = await prisma.questions.findUnique({
+    where: {
+      id: userBody.body.qid,
+    },
+  });
+  if (!checkQuestionExists) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Question does not exist');
+  }
+
+  const userid = userBody.user.id;
+  const answer = prisma.answers.create({
+    data: {
+      qid: userBody.body.qid,
+      content: userBody.body.content,
+      uid: userid,
+    },
   });
   return answer;
-  // return checkTokens ? answer : null;
+};
+
+const changeAnswer = async (userBody) => {
+  const checkAnswerExists = await prisma.answers.findUnique({
+    where: {
+      id: userBody.params.answerId,
+    },
+  });
+  if (!checkAnswerExists) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Answer does not exist');
+  }
+
+  const answer = prisma.answers.update({
+    where: {
+      id: userBody.params.answerId,
+    },
+    data: {
+      content: userBody.body.content,
+    },
+  });
+  return answer;
+};
+
+const delAnswerById = async (userBody) => {
+  const deleteAnswer = await prisma.answers.delete({
+    where: {
+      id: userBody,
+    },
+  });
+  if (!deleteAnswer) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Answer not found');
+  }
+  return deleteAnswer;
 };
 
 module.exports = {
   createAnswer,
+  changeAnswer,
+  delAnswerById,
 };
