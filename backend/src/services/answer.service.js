@@ -3,23 +3,14 @@ const { PrismaClient, Prisma } = require('@prisma/client');
 const prisma = new PrismaClient();
 const ApiError = require('../utils/ApiError');
 
-const getAnswerById = async (userBody) => {
-  const answer = prisma.answers.findUnique({
-    where: {
-      id: userBody.params.answerId,
-    },
-  });
-  return answer;
-};
-
 const createAnswer = async (userBody) => {
-  const checkQuestionExists = await prisma.questions.findFirst({
+  const checkQuestionExists = await prisma.questions.findUnique({
     where: {
       id: userBody.body.qid,
     },
   });
   if (!checkQuestionExists) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Question is not exists');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Question does not exist');
   }
 
   const userid = userBody.user.id;
@@ -34,6 +25,15 @@ const createAnswer = async (userBody) => {
 };
 
 const changeAnswer = async (userBody) => {
+  const checkAnswerExists = await prisma.answers.findUnique({
+    where: {
+      id: userBody.params.answerId,
+    },
+  });
+  if (!checkAnswerExists) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Answer does not exist');
+  }
+
   const answer = prisma.answers.update({
     where: {
       id: userBody.params.answerId,
@@ -61,5 +61,4 @@ module.exports = {
   createAnswer,
   changeAnswer,
   delAnswerById,
-  getAnswerById,
 };
