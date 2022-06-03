@@ -23,7 +23,7 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }
-
+import { LoginScreen } from "~login/login";
 const BottomTab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
   return (
@@ -54,6 +54,13 @@ const BottomTabNavigator = () => {
         ],
       }}
     >
+      <BottomTab.Screen
+        name="Log in/ Sign up"
+        component={LoginScreen}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+        }}
+      />
       <BottomTab.Screen
         name="Your Feed"
         component={ScreensHomeMain}
@@ -92,6 +99,7 @@ const BottomTabNavigator = () => {
 function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
+
 const App = () => {
   return (
     <UserProvider>
