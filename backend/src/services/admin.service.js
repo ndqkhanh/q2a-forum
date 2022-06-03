@@ -16,6 +16,9 @@ const disableUser = async (req) => {
   if (!checkUserExists) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
+  if (!checkUserExists.role === 2) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User is a moderator or an admin');
+  }
   if (checkUserExists.disabled === true && req.body.status === true) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User already banned');
   } else if (checkUserExists.disabled === false && req.body.status === false) {
