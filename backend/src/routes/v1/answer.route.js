@@ -10,7 +10,7 @@ router.route('/').post(auth('createAnswer'), validate(ansValidation.newAnswer), 
 
 router
   .route('/:answerId')
-  .post(validate(ansValidation.updateAnswer), ansController.updateAnswer)
-  .delete(validate(ansValidation.deleteAnswer), ansController.deleteAnswer);
+  // .post(validate(ansValidation.updateAnswer), ansController.updateAnswer)
+  // .delete(validate(ansValidation.deleteAnswer), ansController.deleteAnswer);
 
 module.exports = router;
