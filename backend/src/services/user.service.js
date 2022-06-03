@@ -12,19 +12,6 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
-  // if (await User.isEmailTaken(userBody.username)) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Username already taken');
-  // }
-
-  // const user = prisma.users.create({
-  //   data: {
-  //     username: userBody.username,
-  //     password: userBody.password,
-  //     name: userBody.name,
-  //     profilepictureurl: userBody.profilepictureurl
-  //   },
-  // });
-
   const saltRounds = 10;
 
   userBody.password = await bcrypt.hash(userBody.password, saltRounds);
@@ -66,7 +53,6 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  // return User.findById(id);
   return prisma.users.findUnique({
     where: {
       id,
@@ -95,35 +81,20 @@ const getUserByUsername = async (username) => {
  * @returns {Promise<User>}
  */
 const updateUserById = async (userId, updateBody) => {
-  const user = await getUserById(userId);
-  if (!user) {
+  const checkUserExists = await getUserById(userId);
+  if (!checkUserExists) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-  Object.assign(user, updateBody);
-  await user.save();
-  return user;
-};
-
-/**
- * Delete user by id
- * @param {ObjectId} userId
- * @returns {Promise<User>}
- */
-const deleteUserById = async (userId) => {
-  const deleteUser = await prisma.users.delete({
+  const user = prisma.users.update({
     where: {
       id: userId,
     },
+    data: {
+      name: updateBody.name,
+      profilepictureurl: updateBody.profilepictureurl,
+    },
   });
-  // const user = await getUserById(userId);
-  if (!deleteUser) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-  // await user.remove();
-  return deleteUser;
+  return user;
 };
 
 module.exports = {
@@ -132,5 +103,4 @@ module.exports = {
   getUserById,
   getUserByUsername,
   updateUserById,
-  deleteUserById,
 };
