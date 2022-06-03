@@ -7,6 +7,21 @@ const newAnswer = {
   }),
 };
 
+const updateAnswer = {
+  body: Joi.object().keys({
+    content: Joi.string().required(),
+  }),
+};
+
+const deleteAnswer = {
+  params: Joi.object().keys({
+    answerId: Joi.string().uuid().required(),
+  }),
+};
+
+
 module.exports = {
   newAnswer,
+  updateAnswer,
+  deleteAnswer,
 };
