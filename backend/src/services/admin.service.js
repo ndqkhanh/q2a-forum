@@ -16,7 +16,7 @@ const disableUser = async (req) => {
   if (!checkUserExists) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  if (!checkUserExists.role === 2) {
+  if (!(checkUserExists.role === 2)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User is a moderator or an admin');
   }
   if (checkUserExists.disabled === true && req.body.status === true) {
