@@ -24,8 +24,11 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps.allowFontScaling = false;
 }
 import { LoginScreen } from "~login/login";
+
 const BottomTab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
+  const csignup = <LoginScreen SignUp = {true}></LoginScreen>
+
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -55,10 +58,18 @@ const BottomTabNavigator = () => {
       }}
     >
       <BottomTab.Screen
-        name="Log in/ Sign up"
+        name="Log in"
         component={LoginScreen}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="log-in-outline" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Sign up"
+        component={LoginScreen}
+        initialParams = {{SignUp: true}}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="person-add-outline" color={color} />,
         }}
       />
       <BottomTab.Screen
