@@ -6,7 +6,11 @@ const questionControlller = require ('../../controllers/question.controller');
 const route = express.Router();
 
 route
-    .route('/ask')
+    .route('/')
     .post(auth('createQuestion'), validate(questionValidation.createQuestion),questionControlller.createQuestion );
+    
+route
+    .route('/:questionId')
+    .delete(validate(questionValidation.deleteQuestion),questionControlller.deleteQuestion);
 
 module.exports = route;

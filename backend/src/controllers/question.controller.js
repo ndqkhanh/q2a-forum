@@ -16,6 +16,17 @@ const createQuestion = catchAsync( async (req, res) => {
     res.status(httpStatus.CREATED).send(question);
 });
 
+const deleteQuestion = catchAsync ( async(req, res) => {
+    const question = await questionService.deleteQuestionById(req.params.questionId);
+    console.log (question);
+    if (!question)
+    {
+        res.send({"success": False});
+    }
+    res.status(httpStatus.NO_CONTENT).send({"success" : True});
+});
+
 module.exports = {
     createQuestion,
+    deleteQuestion,
 };
