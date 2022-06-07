@@ -11,6 +11,7 @@ route
     
 route
     .route('/:questionId')
-    .delete(validate(questionValidation.deleteQuestion),questionControlller.deleteQuestion);
+    .delete(validate(questionValidation.deleteQuestion),questionControlller.deleteQuestion)
+    .post(validate(questionValidation.updateQuestion),questionControlller.updateQuestion);
 
 module.exports = route;
