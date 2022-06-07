@@ -1,15 +1,16 @@
-const {PrismaClient, Prisma, prisma} = require ('@prisma/client');
+const {PrismaClient, Prisma} = require ('@prisma/client');
 const ApiError = require ('../utils/ApiError');
+const prisma = new PrismaClient();
 
 
-const createQuestion = async(questionContent, questionTitle) => {
+const createQuestion = async(req) => {
+    const userid = req.user.id;
     const question = prisma.questions.create(
         {
             data: {
-               uid : 1,
-               content: questionContent,
-               title: questionTitle,
-               //status : 0,
+               uid: userid,
+               content: req.body.content,
+               title: req.body.title,
             },
         });
     return question;

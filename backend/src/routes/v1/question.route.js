@@ -7,6 +7,6 @@ const route = express.Router();
 
 route
     .route('/ask')
-    .post(validate(questionValidation.createQuestion),questionControlller.createQuestion );
+    .post(auth('createQuestion'), validate(questionValidation.createQuestion),questionControlller.createQuestion );
 
 module.exports = route;
