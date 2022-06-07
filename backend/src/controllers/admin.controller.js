@@ -9,8 +9,7 @@ const getMetrics = catchAsync(async (req, res) => {
 
 const banUser = catchAsync(async (req, res) => {
   const user = await adminService.disableUser(req);
-  if (user) res.send({ success: true });
-  else res.send({ success: false });
+  res.send({ success: !!user });
 });
 
 module.exports = {

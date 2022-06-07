@@ -47,17 +47,23 @@ const queryUsers = async (filter, options) => {
   return users;
 };
 
-/**
- * Get user by id
- * @param {ObjectId} id
- * @returns {Promise<User>}
- */
 const getUserById = async (id) => {
-  return prisma.users.findUnique({
+  const user = await prisma.users.findUnique({
     where: {
       id,
     },
   });
+  user.numOfQuestions = await prisma.questions.count({
+    where: {
+      uid: id,
+    },
+  });
+  user.numOfAnswers = await prisma.answers.count({
+    where: {
+      uid: id,
+    },
+  });
+  return user;
 };
 
 /**
@@ -66,7 +72,6 @@ const getUserById = async (id) => {
  * @returns {Promise<User>}
  */
 const getUserByUsername = async (username) => {
-  // return User.findOne({ username });
   return prisma.users.findUnique({
     where: {
       username,
@@ -85,7 +90,7 @@ const updateUserById = async (userId, updateBody) => {
   if (!checkUserExists) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  const user = prisma.users.update({
+  const user = await prisma.users.update({
     where: {
       id: userId,
     },

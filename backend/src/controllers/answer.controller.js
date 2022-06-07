@@ -14,14 +14,12 @@ const updateAnswer = catchAsync(async (req, res) => {
 
 const pickCorrectAnswer = catchAsync(async (req, res) => {
   const answer = await answerService.pickCorrectAnswerById(req);
-  if (answer) res.send({ success: true });
-  else res.send({ success: false });
+  res.send({ success: !!answer });
 });
 
 const deleteAnswer = catchAsync(async (req, res) => {
   const answer = await answerService.delAnswerById(req.params.answerId);
-  if (answer) res.send({ success: true });
-  else res.send({ success: false });
+  res.send({ success: !!answer });
 });
 
 module.exports = {
