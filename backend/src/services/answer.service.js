@@ -3,52 +3,71 @@ const { PrismaClient, Prisma } = require('@prisma/client');
 const prisma = new PrismaClient();
 const ApiError = require('../utils/ApiError');
 
-const createAnswer = async (userBody) => {
+const createAnswer = async (req) => {
   const checkQuestionExists = await prisma.questions.findUnique({
     where: {
-      id: userBody.body.qid,
+      id: req.body.qid,
     },
   });
   if (!checkQuestionExists) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Question does not exist');
   }
 
-  const userid = userBody.user.id;
+  const userid = req.user.id;
   const answer = prisma.answers.create({
     data: {
-      qid: userBody.body.qid,
-      content: userBody.body.content,
+      qid: req.body.qid,
+      content: req.body.content,
       uid: userid,
     },
   });
   return answer;
 };
 
-const changeAnswer = async (userBody) => {
+const changeAnswer = async (req) => {
   const checkAnswerExists = await prisma.answers.findUnique({
     where: {
-      id: userBody.params.answerId,
+      id: req.params.answerId,
     },
   });
   if (!checkAnswerExists) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Answer does not exist');
   }
-
   const answer = prisma.answers.update({
     where: {
-      id: userBody.params.answerId,
+      id: req.params.answerId,
     },
     data: {
-      content: userBody.body.content,
+      content: req.body.content,
     },
   });
   return answer;
 };
 
-const delAnswerById = async (userBody) => {
+const pickCorrectAnswerById = async (req) => {
+  const checkAnswerExists = await prisma.answers.findUnique({
+    where: {
+      id: req.params.answerId,
+    },
+  });
+  if (!checkAnswerExists) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Answer does not exist');
+  }
+  const answer = prisma.answers.update({
+    where: {
+      id: req.params.answerId,
+    },
+    data: {
+      correct: req.body.correct === true ? true : null,
+    },
+  });
+  return answer;
+};
+
+const delAnswerById = async (answerId) => {
   const deleteAnswer = await prisma.answers.delete({
     where: {
-      id: userBody,
+      id: answerId,
     },
   });
   if (!deleteAnswer) {
@@ -61,4 +80,5 @@ module.exports = {
   createAnswer,
   changeAnswer,
   delAnswerById,
+  pickCorrectAnswerById,
 };
