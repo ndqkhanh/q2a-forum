@@ -8,12 +8,14 @@
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import { Text, TextInput, TouchableOpacity } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
+import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
   Text.defaultProps.allowFontScaling = false;
@@ -23,11 +25,11 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }
-import { LoginScreen } from "~SignupAndLogin/login/login";
-import { SignupScreen } from "~SignupAndLogin/signup/signup";
-import { SignupAndLogin } from "~SignupAndLogin/signupAndLogin";
+
+
 
 const BottomTab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
 
   return (
@@ -58,13 +60,6 @@ const BottomTabNavigator = () => {
         ],
       }}
     >
-      <BottomTab.Screen
-        name="Log in"
-        component={LoginScreen}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="log-in-outline" color={color} />,
-        }}
-      />
       <BottomTab.Screen
         name="Your Feed"
         component={ScreensHomeMain}
@@ -106,12 +101,19 @@ function TabBarIcon(props) {
 
 const App = () => {
   return (
-    // <UserProvider>
-    //   <NavigationContainer>
-    //     <BottomTabNavigator />
-    //   </NavigationContainer>
-    // </UserProvider>
-    <SignupAndLogin></SignupAndLogin>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name='login_signup' component={SignupAndLogin}
+            options={{ header: () => null }}
+          />
+          <Stack.Screen name='after_login' component={BottomTabNavigator}
+            options={{ header: () => null }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
+
   );
 };
 

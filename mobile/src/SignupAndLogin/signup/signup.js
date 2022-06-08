@@ -77,8 +77,7 @@ const SignupScreen = ({navigation}) => {
         navigation.goBack();
     }
     const [hidePass, setHidePass] = useState(true);
-    const signUpButtonStyle = StyleSheet.compose(styles.buttonStyle, color.signUp);
-    const goBackButtonStyle = StyleSheet.compose(styles.buttonStyle, color.goBack);
+
     return (
         <ImageBackground source={backGroundImg} style={styles.styleBackground}>
             <ScrollView>
@@ -95,12 +94,12 @@ const SignupScreen = ({navigation}) => {
                         <TextInput placeholder="Enter password" style={styles.inputStyle} maxLength={20} secureTextEntry = {hidePass}/>
                         <TextInput placeholder="Re-Enter password" style={styles.inputStyle} maxLength={20} secureTextEntry = {hidePass}/>
                         <TextInput placeholder="Enter picture url" style={styles.inputStyle} maxLength={20} />
-                        <TouchableOpacity style = {signUpButtonStyle} activeOpacity = {0.8}>
+                        <TouchableOpacity style = {[styles.buttonStyle, color.signUp]} activeOpacity = {0.8}>
                             <Text style = {styles.buttonText}>
                                 Sign Up
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress = {goBack} style = {goBackButtonStyle} activeOpacity = {0.8}>
+                        <TouchableOpacity onPress = {goBack} style = {[styles.buttonStyle, color.goBack]} activeOpacity = {0.8}>
                             <Text style = {styles.buttonText}>
                                 Go Back
                             </Text>
@@ -111,4 +110,4 @@ const SignupScreen = ({navigation}) => {
         </ImageBackground>
     );
 }
-export { SignupScreen };
+export default SignupScreen;

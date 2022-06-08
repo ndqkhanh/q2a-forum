@@ -98,4 +98,4 @@ const LoginScreen = ({navigation}) => {
         </ImageBackground>
     );
 }
-export { LoginScreen };
+export default LoginScreen;
