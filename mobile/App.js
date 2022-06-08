@@ -26,10 +26,11 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps.allowFontScaling = false;
 }
 import { LoginScreen } from "~login/login";
+import { createStackNavigator } from "@react-navigation/stack";
 
 const BottomTab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
-  const csignup = <LoginScreen SignUp = {true}></LoginScreen>
+  const csignup = <LoginScreen SignUp={true}></LoginScreen>;
 
   return (
     <BottomTab.Navigator
@@ -63,15 +64,19 @@ const BottomTabNavigator = () => {
         name="Log in"
         component={LoginScreen}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="log-in-outline" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="log-in-outline" color={color} />
+          ),
         }}
       />
       <BottomTab.Screen
         name="Sign up"
         component={LoginScreen}
-        initialParams = {{SignUp: true}}
+        initialParams={{ SignUp: true }}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="person-add-outline" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="person-add-outline" color={color} />
+          ),
         }}
       />
       <BottomTab.Screen
@@ -119,12 +124,17 @@ const BottomTabNavigator = () => {
 function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
+const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <BottomTabNavigator />
+        <Stack.Navigator>
+          <Stack.Screen name="Log in" component={LoginScreen} />
+          <Stack.Screen name="Home" component={BottomTabNavigator} />
+        </Stack.Navigator>
+        {/* <BottomTabNavigator /> */}
       </NavigationContainer>
     </UserProvider>
   );
