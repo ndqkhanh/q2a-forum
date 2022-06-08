@@ -23,11 +23,12 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }
-import { LoginScreen } from "~login/login";
+import { LoginScreen } from "~SignupAndLogin/login/login";
+import { SignupScreen } from "~SignupAndLogin/signup/signup";
+import { SignupAndLogin } from "~SignupAndLogin/signupAndLogin";
 
 const BottomTab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
-  const csignup = <LoginScreen SignUp = {true}></LoginScreen>
 
   return (
     <BottomTab.Navigator
@@ -62,14 +63,6 @@ const BottomTabNavigator = () => {
         component={LoginScreen}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="log-in-outline" color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name="Sign up"
-        component={LoginScreen}
-        initialParams = {{SignUp: true}}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="person-add-outline" color={color} />,
         }}
       />
       <BottomTab.Screen
@@ -113,11 +106,12 @@ function TabBarIcon(props) {
 
 const App = () => {
   return (
-    <UserProvider>
-      <NavigationContainer>
-        <BottomTabNavigator />
-      </NavigationContainer>
-    </UserProvider>
+    // <UserProvider>
+    //   <NavigationContainer>
+    //     <BottomTabNavigator />
+    //   </NavigationContainer>
+    // </UserProvider>
+    <SignupAndLogin></SignupAndLogin>
   );
 };
 
