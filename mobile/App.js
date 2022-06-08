@@ -14,7 +14,8 @@ import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
-import ProfileScreen from "~screens/Profile";
+import ProfileScreen from "~screens/Profile/UserProfile";
+
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
   Text.defaultProps.allowFontScaling = false;

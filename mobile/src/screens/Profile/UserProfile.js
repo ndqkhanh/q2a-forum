@@ -1,8 +1,7 @@
 import React from "react";
-import {View, Text, Avatar, Card, Colors} from "react-native-ui-lib";
-import { SafeAreaView, StyleSheet } from "react-native";
+import {View, Text, Avatar, Card} from "react-native-ui-lib";
+import { SafeAreaView, StyleSheet, Button, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { color } from "react-native-reanimated";
 
 const ProfileScreen = () => {
     return (
@@ -11,7 +10,7 @@ const ProfileScreen = () => {
                 <Avatar
                     rounded
                     source={
-                        require('../screens/penguin.png')
+                        require('../assets/img/penguin.png')
                     }
                     size={70}
                 />
@@ -53,16 +52,25 @@ const ProfileScreen = () => {
                     </Text>
                     Nguyễn Vũ Kiến Quốc
                 </Text>
-                <Text>
-                    Name:
-                </Text>
-                <Text>
-                    Name:
-                </Text>
-                <Text>
-                    Name:
+                <Text text60>
+                    <Text black>
+                        Join date:{'   '}
+                    </Text>
+                    30/5/2022
                 </Text>
             </Card>
+            <View style={styles.logOutButton}>
+                <TouchableOpacity style={{backgroundColor:'red', borderRadius: 20}}>
+                    <Text style={styles.logOutText}>
+                        Log out
+                    </Text>
+                </TouchableOpacity>
+                <Button
+                    title='Log out'
+                    color='red'
+                >
+                </Button>
+            </View>
         </SafeAreaView>
     );
 };
@@ -92,9 +100,21 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     infoCard: {
-        height: 250,
+        height: 100,
         width: '100%',
         padding: 10,
-        justifyContent:'space-evenly'
+        justifyContent: 'space-around'
+    },
+    logOutButton:{
+        flex: 1,
+        justifyContent: 'flex-end',
+        paddingBottom: 120,
+        alignItems: 'flex-end',
+    },
+    logOutText:{
+        fontSize: 20,
+        margin: 7,
+        color: 'white',
+        fontWeight: 'bold'
     }
 });
