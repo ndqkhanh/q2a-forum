@@ -14,6 +14,8 @@ import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
+import ProfileScreen from "~screens/Profile/UserProfile";
+
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
   Text.defaultProps.allowFontScaling = false;
@@ -83,6 +85,13 @@ const BottomTabNavigator = () => {
         component={ScreensHomeMain}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="alarm" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({color}) => <TabBarIcon name="person-circle-outline" color={color} />,
         }}
       />
     </BottomTab.Navigator>
