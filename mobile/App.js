@@ -37,6 +37,7 @@ const BottomTabNavigator = () => {
       initialRouteName="Home" // What tab do we want to default to
       screenOptions={{
         // This gives us the ability to add addtional
+        headerShown: false,
         tabBarShowLabel: false, // options when we create the bottom tab
         tabBarStyle: [
           {
@@ -60,7 +61,7 @@ const BottomTabNavigator = () => {
         ],
       }}
     >
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Log in"
         component={LoginScreen}
         options={{
@@ -68,8 +69,8 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="log-in-outline" color={color} />
           ),
         }}
-      />
-      <BottomTab.Screen
+      /> */}
+      {/* <BottomTab.Screen
         name="Sign up"
         component={LoginScreen}
         initialParams={{ SignUp: true }}
@@ -78,11 +79,12 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="person-add-outline" color={color} />
           ),
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Your Feed"
         component={ScreensHomeMain}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
@@ -103,18 +105,14 @@ const BottomTabNavigator = () => {
           ),
         }}
       />
-      <BottomTab.Screen
-        name="About"
-        component={ScreensHomeMain}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="alarm" color={color} />,
-        }}
-      />
+
       <BottomTab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({color}) => <TabBarIcon name="person-circle-outline" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="person-circle-outline" color={color} />
+          ),
         }}
       />
     </BottomTab.Navigator>
@@ -130,8 +128,12 @@ const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Log in" component={LoginScreen} />
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          {/* <Stack.Screen name="Log in" component={LoginScreen} /> */}
           <Stack.Screen name="Home" component={BottomTabNavigator} />
         </Stack.Navigator>
         {/* <BottomTabNavigator /> */}
