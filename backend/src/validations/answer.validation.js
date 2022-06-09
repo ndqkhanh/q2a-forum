@@ -13,6 +13,15 @@ const updateAnswer = {
   }),
 };
 
+const pickCorrectAnswer = {
+  params: Joi.object().keys({
+    answerId: Joi.string().uuid().required(),
+  }),
+  body: Joi.object().keys({
+    correct: Joi.boolean().required(),
+  }),
+};
+
 const deleteAnswer = {
   params: Joi.object().keys({
     answerId: Joi.string().uuid().required(),
@@ -24,4 +33,5 @@ module.exports = {
   newAnswer,
   updateAnswer,
   deleteAnswer,
+  pickCorrectAnswer,
 };
