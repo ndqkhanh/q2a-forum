@@ -27,18 +27,23 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }
+import { LoginScreen } from "~login/login";
+import { createStackNavigator } from "@react-navigation/stack";
 
 
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
+  const csignup = <LoginScreen SignUp={true}></LoginScreen>;
+
 
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
       screenOptions={{
         // This gives us the ability to add addtional
+        headerShown: false,
         tabBarShowLabel: false, // options when we create the bottom tab
         tabBarStyle: [
           {
@@ -62,10 +67,30 @@ const BottomTabNavigator = () => {
         ],
       }}
     >
+      {/* <BottomTab.Screen
+        name="Log in"
+        component={LoginScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="log-in-outline" color={color} />
+          ),
+        }}
+      /> */}
+      {/* <BottomTab.Screen
+        name="Sign up"
+        component={LoginScreen}
+        initialParams={{ SignUp: true }}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="person-add-outline" color={color} />
+          ),
+        }}
+      /> */}
       <BottomTab.Screen
         name="Your Feed"
         component={ScreensHomeMain}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
@@ -86,18 +111,14 @@ const BottomTabNavigator = () => {
           ),
         }}
       />
-      <BottomTab.Screen
-        name="About"
-        component={ScreensHomeMain}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="alarm" color={color} />,
-        }}
-      />
+
       <BottomTab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({color}) => <TabBarIcon name="person-circle-outline" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="person-circle-outline" color={color} />
+          ),
         }}
       />
     </BottomTab.Navigator>
@@ -108,18 +129,20 @@ function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
+const Stack = createStackNavigator();
+
+
 const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name='login_signup' component={SignupAndLogin}
-            options={{ header: () => null }}
-          />
-          <Stack.Screen name='after_login' component={BottomTabNavigator}
-            options={{ header: () => null }}
-          />
+        <Stack.Navigator  screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Screen name='Login' component={SignupAndLogin}/>
+          <Stack.Screen name="Home" component={BottomTabNavigator} />
         </Stack.Navigator>
+
       </NavigationContainer>
     </UserProvider>
 

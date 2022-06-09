@@ -20,9 +20,9 @@ const UserProvider = ({ children }) => {
       console.error("error", error);
     }
   };
-  useEffect(() => {
-    fetchUserInformation("088d3c0a-d428-443e-ae40-79caa7286355");
-  }, []);
+  // useEffect(() => {
+  //   fetchUserInformation("088d3c0a-d428-443e-ae40-79caa7286355");
+  // }, []);
   return (
     <UserContext.Provider
       value={{
