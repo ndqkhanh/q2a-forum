@@ -8,12 +8,14 @@
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import { Text, TextInput, TouchableOpacity } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
+import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 import ProfileScreen from "~screens/Profile/UserProfile";
 
 if (Text.defaultProps == null) {
@@ -26,8 +28,12 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps.allowFontScaling = false;
 }
 
+
+
 const BottomTab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
+
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -101,13 +107,22 @@ const BottomTabNavigator = () => {
 function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
+
 const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <BottomTabNavigator />
+        <Stack.Navigator>
+          <Stack.Screen name='login_signup' component={SignupAndLogin}
+            options={{ header: () => null }}
+          />
+          <Stack.Screen name='after_login' component={BottomTabNavigator}
+            options={{ header: () => null }}
+          />
+        </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
+
   );
 };
 
