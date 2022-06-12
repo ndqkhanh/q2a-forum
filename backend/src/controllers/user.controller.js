@@ -5,12 +5,11 @@ const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
 
 const getUser = catchAsync(async (req, res) => {
-  // console.log('req.params.userId', req.params.userId);
-  // res.send({ success: true });
   const user = await userService.getUserById(req.params.userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
+  delete user.password;
   res.send(user);
 });
 
@@ -28,12 +27,8 @@ const getUsers = catchAsync(async (req, res) => {
 
 const updateUser = catchAsync(async (req, res) => {
   const user = await userService.updateUserById(req.params.userId, req.body);
+  delete user.password;
   res.send(user);
-});
-
-const deleteUser = catchAsync(async (req, res) => {
-  await userService.deleteUserById(req.params.userId);
-  res.status(httpStatus.NO_CONTENT).send();
 });
 
 module.exports = {
@@ -41,5 +36,4 @@ module.exports = {
   getUsers,
   getUser,
   updateUser,
-  deleteUser,
 };

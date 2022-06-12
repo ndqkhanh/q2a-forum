@@ -3,6 +3,7 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const answerRoute = require('./answer.route');
+const adminRoute = require('./admin.route');
 const config = require('../../config/config');
 const questionRoute = require ('./question.route');
 const votingRoute = require ('./voting.route');
@@ -14,7 +15,7 @@ const defaultRoutes = [
     route: authRoute,
   },
   {
-    path: '/users',
+    path: '/user',
     route: userRoute,
   },
   {
@@ -28,6 +29,9 @@ const defaultRoutes = [
   {
     path: '/voting',
     route: votingRoute,
+  },
+  { path : '/admin',
+    route : adminRoute,
   }
 ];
 
