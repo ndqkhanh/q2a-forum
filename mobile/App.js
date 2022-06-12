@@ -129,9 +129,6 @@ function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
-const Stack = createStackNavigator();
-
-
 const App = () => {
   return (
     <UserProvider>
