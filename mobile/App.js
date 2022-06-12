@@ -17,6 +17,7 @@ import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
 import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 import ProfileScreen from "~screens/Profile/UserProfile";
+import AdminScreen from "~screens/Profile/AdminProfile";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -33,7 +34,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 
 const BottomTab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+//const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
   const csignup = <LoginScreen SignUp={true}></LoginScreen>;
 
@@ -121,6 +122,15 @@ const BottomTabNavigator = () => {
           ),
         }}
       />
+      <BottomTab.Screen
+        name="Admin Profile"
+        component={AdminScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="person-circle-outline" color={color} />
+          ),
+        }}
+      />
     </BottomTab.Navigator>
   );
 };
@@ -139,10 +149,9 @@ const App = () => {
         <Stack.Navigator  screenOptions={{
             headerShown: false,
           }}>
-          <Stack.Screen name='Login' component={SignupAndLogin}/>
+          {/* <Stack.Screen name='Login' component={SignupAndLogin}/> */}
           <Stack.Screen name="Home" component={BottomTabNavigator} />
         </Stack.Navigator>
-
       </NavigationContainer>
     </UserProvider>
 
