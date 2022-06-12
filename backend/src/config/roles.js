@@ -1,4 +1,10 @@
 const allRoles = {
+  user: ['createAnswer','createQuestion','deleteQuestion','updateQuestion'
+  ,'voteAnswer', 'searchQuestion'],
+  admin: ['createAnswer','createQuestion','deleteQuestion','updateQuestion' ,'getUsers', 'manageUsers'
+  ,'voteAnswer', 'searchQuestion'],
+  moderator: ['createAnswer', 'createQuestion','deleteQuestion','updateQuestion'
+  ,'voteAnswer', 'searchQuestion'],
   user: ['getUser', 'updateUser', 'createAnswer', 'updateAnswer', 'deleteAnswer', 'pickCorrectAnswer'],
   admin: [
     'banUser',
