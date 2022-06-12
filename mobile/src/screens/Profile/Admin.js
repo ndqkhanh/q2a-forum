@@ -3,7 +3,7 @@ import {View, Text, Avatar, Card} from "react-native-ui-lib";
 import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const ProfileScreen = () => {
+const AdminScreen = () => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.infoSection}>
@@ -20,26 +20,31 @@ const ProfileScreen = () => {
                     </Text>
                     <Text>
                         <Icon size={10} name="ellipse" color="blue"/>
-                        Role
+                        Admin
                     </Text>
                 </View>
             </View>
+            
             <View style={styles.infoSection}>
                 <Card style={styles.QA_card}>
-                    <Text text10 center black>
-                        150
-                    </Text>
-                    <Text text60 center black>
-                        Questions
-                    </Text>
+                    <TouchableOpacity>
+                        <Text text10 center black>
+                            150
+                        </Text>
+                        <Text style={{fontWeight:'bold', fontSize:18}} center black >
+                            Pending Questions
+                        </Text>
+                    </TouchableOpacity>
                 </Card>
                 <Card style={styles.QA_card}>
-                    <Text text10 center black>
-                        1500
-                    </Text>
-                    <Text text60 center black>
-                        Answers
-                    </Text>
+                    <TouchableOpacity>
+                        <Text text10 center black>
+                            1500
+                        </Text>
+                        <Text text60 center black>
+                            Users
+                        </Text>
+                    </TouchableOpacity>
                 </Card>
             </View>
             <Text style={styles.title}>
@@ -61,12 +66,18 @@ const ProfileScreen = () => {
             </Card>
             <TouchableOpacity activeOpacity={0.7}>
                 <Text style={{lineHeight:50, fontSize:20, textDecorationLine:'underline', color:'#1e90ff'}}>
+                    <Icon size={20} name="settings-outline"/>
+                    {' '}Config Forum
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.7}>
+                <Text style={{lineHeight:20, fontSize:20, textDecorationLine:'underline', color:'#1e90ff'}}>
                     <Icon size={20} name="create-outline"/>
                     {' '}Edit Profile
                 </Text>
             </TouchableOpacity>
             <View style={styles.logOutButton}>
-                <TouchableOpacity style={{backgroundColor:'red', borderRadius: 20}}>
+                <TouchableOpacity style={{backgroundColor:'red', borderRadius: 20}} activeOpacity={0.7}>
                     <Text style={styles.logOutText}>
                         Log out
                     </Text>
@@ -76,7 +87,7 @@ const ProfileScreen = () => {
     );
 };
 
-export default ProfileScreen;
+export default AdminScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -105,6 +116,10 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 10,
         justifyContent: 'space-around'
+    },
+    configCard: {
+        backgroundColor: '#dcdcdc',
+        width: '100%'
     },
     logOutButton:{
         flex: 1,

@@ -15,6 +15,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
 import ProfileScreen from "~screens/Profile/UserProfile";
+import AdminScreen from "~screens/Profile/Admin";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -87,13 +88,20 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ color }) => <TabBarIcon name="alarm" color={color} />,
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({color}) => <TabBarIcon name="person-circle-outline" color={color} />,
         }}
-      />
+      /> */}
+      <BottomTab.Screen
+        name="Admin Profile"
+        component={AdminScreen}
+          options={{
+           tabBarIcon: ({color}) => <TabBarIcon name="person-circle-outline" color={color} />,
+          }}
+        />
     </BottomTab.Navigator>
   );
 };
