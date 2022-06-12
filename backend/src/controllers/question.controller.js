@@ -5,12 +5,6 @@ const questionService = require ('../services/question.service');
 
 
 const createQuestion = catchAsync( async (req, res) => {
-    // console.log (req);
-    // const questionContent = req.body.content;
-    // const questionTitle = req.body.title;
-
-    // Bug dong nay
-    // khong tra ve record question duoc
     const question = await questionService.createQuestion(req);
 
     res.status(httpStatus.CREATED).send(question);
@@ -18,25 +12,25 @@ const createQuestion = catchAsync( async (req, res) => {
 
 const deleteQuestion = catchAsync ( async(req, res) => {
     const question = await questionService.deleteQuestionById(req.params.questionId);
-    if (!question)
-    {
-        res.send({"success": False});
-    }
-    res.status(httpStatus.NO_CONTENT).send({"success" : True});
+    res.send ({success : !!question});
 });
 
 const updateQuestion = catchAsync ( async (req, res) =>
 {
     const question = await questionService.updateQuestion (req);
-    console.log (question);
     res.send(question);
 }
 
 );
 
+const searchQuestion = catchAsync (async (req, res) => {
+    const listQuestions = await questionService.searchQuestion(req);
+    res.send(listQuestions);
+});
 
 module.exports = {
     createQuestion,
     deleteQuestion,
     updateQuestion,
+    searchQuestion,
 };

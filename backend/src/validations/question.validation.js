@@ -20,8 +20,14 @@ const updateQuestion = {
     }),
 };
 
+const searchQuestion = {
+    body: Joi.object().keys({
+        keyword: Joi.string().required(),
+    }),
+};
 module.exports = {
     createQuestion,
     deleteQuestion,
     updateQuestion,
+    searchQuestion,
 };

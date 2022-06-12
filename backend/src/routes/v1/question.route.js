@@ -11,7 +11,10 @@ route
     
 route
     .route('/:questionId')
-    .delete(validate(questionValidation.deleteQuestion),questionControlller.deleteQuestion)
-    .post(validate(questionValidation.updateQuestion),questionControlller.updateQuestion);
+    .delete(auth('deleteQuestion'), validate(questionValidation.deleteQuestion),questionControlller.deleteQuestion)
+    .post(auth('updateQuestion'), validate(questionValidation.updateQuestion),questionControlller.updateQuestion);
 
+route
+    .route('/search/:offset/:limit')
+    .post(auth('searchQuestion'), validate(questionValidation.searchQuestion), questionControlller.searchQuestion);
 module.exports = route;

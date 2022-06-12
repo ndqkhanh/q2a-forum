@@ -5,7 +5,7 @@ const docsRoute = require('./docs.route');
 const answerRoute = require('./answer.route');
 const config = require('../../config/config');
 const questionRoute = require ('./question.route');
-
+const votingRoute = require ('./voting.route');
 const router = express.Router();
 
 const defaultRoutes = [
@@ -24,6 +24,10 @@ const defaultRoutes = [
   {
     path: '/question',
     route: questionRoute,
+  },
+  {
+    path: '/voting',
+    route: votingRoute,
   }
 ];
 

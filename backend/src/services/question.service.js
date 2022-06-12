@@ -25,17 +25,16 @@ const deleteQuestionById = async (questionId) =>
         },
     });
 
-    if (existQuestion == null) 
+    if (!existQuestion ) 
     {
         throw new ApiError(httpStatus.NOT_FOUND, 'Question Not Found');
     }
-    else{
+
     const deleteQuestion = await prisma.questions.delete({
         where : {
             id : questionId,
         },
     });
-    }
 
     //return deleteQuestion;
 };
@@ -49,7 +48,7 @@ const updateQuestion = async (req) =>
         },
     });
 
-    if (question == null)
+    if (!question)
     {
         throw new ApiError(httpStatus.NOT_FOUND,'Question Not Found');
     }
@@ -68,10 +67,34 @@ const updateQuestion = async (req) =>
     });
 
     return updatedQuestion;
-}
+};
 
+const searchQuestion = async (req) =>
+{
+    const listQuestions = await prisma.answers.findMany(
+        {
+            cursor : {
+                id : req.params.offset,
+            },
+            take: req.params.limit,
+            where : {
+                body : {
+                    search : req.body.keyword,
+                },
+            },
+        }
+    );
+
+    if (!listQuestions)
+    {
+        throw new ApiError (httpStatus.NOT_FOUND, "There is no questions related to keywords");  
+    }
+
+    return listQuestions;
+};
 module.exports = {
     createQuestion,
     deleteQuestionById,
     updateQuestion,
+    searchQuestion,
 };
