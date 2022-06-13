@@ -15,7 +15,8 @@ import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
-import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
+import SignupAndLogin from "~screens/SignupAndLogin/signupAndLogin";
+import SearchScreen from "~screens/Search/Search";
 import ProfileScreen from "~screens/Profile/UserProfile";
 
 if (Text.defaultProps == null) {
@@ -27,17 +28,11 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }
-import { LoginScreen } from "~login/login";
-import { createStackNavigator } from "@react-navigation/stack";
-
 
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
-  const csignup = <LoginScreen SignUp={true}></LoginScreen>;
-
-
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -67,25 +62,14 @@ const BottomTabNavigator = () => {
         ],
       }}
     >
-      {/* <BottomTab.Screen
-        name="Log in"
-        component={LoginScreen}
+      <BottomTab.Screen
+        name="Search"
+        component={SearchScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="log-in-outline" color={color} />
-          ),
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="search-circle-outline" color={color} />,
         }}
-      /> */}
-      {/* <BottomTab.Screen
-        name="Sign up"
-        component={LoginScreen}
-        initialParams={{ SignUp: true }}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-add-outline" color={color} />
-          ),
-        }}
-      /> */}
+      />
       <BottomTab.Screen
         name="Your Feed"
         component={ScreensHomeMain}
@@ -129,7 +113,6 @@ function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
-const Stack = createStackNavigator();
 
 
 const App = () => {
@@ -139,7 +122,7 @@ const App = () => {
         <Stack.Navigator  screenOptions={{
             headerShown: false,
           }}>
-          <Stack.Screen name='Login' component={SignupAndLogin}/>
+          {/* <Stack.Screen name='Login' component={SignupAndLogin}/> */}
           <Stack.Screen name="Home" component={BottomTabNavigator} />
         </Stack.Navigator>
 

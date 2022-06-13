@@ -5,34 +5,21 @@ import {
     Text, View, StyleSheet,
     ScrollView, Image, TextInput, ImageBackground, TouchableOpacity
 } from 'react-native';
+import { Colors } from "react-native-ui-lib";
 
 const styles = StyleSheet.create({
-    LogoImage: {
-        flex: 1,
-        width: null,
-        height: 300,
-    },
     HeaderText: {
         fontWeight: 'bold',
         fontSize: 40,
-        marginLeft:20,
     },
     SignupView: {
-        marginTop: 10
-    },
-    SignupMenu: {
-        marginLeft: 10,
+        marginTop: 10,
         alignItems: 'center',
     },
-    styleBackground: {
-        flex: 1
-    },
-    body: {
-
-        justifyContent: 'space-between'
+    SignupMenu: {
+        alignItems: 'center',
     },
     inputStyle: {
-        flex: 1,
         borderWidth: 3,
         borderRadius: 10,
         width: 300,
@@ -58,7 +45,10 @@ const styles = StyleSheet.create({
         color: '#ffff',
         fontWeight: 'bold',
         fontSize: 20
-    }
+    },
+    scorllViewStyle: {
+        backgroundColor: Colors.cyan70,
+    },
 
 });
 const color = StyleSheet.create({
@@ -69,8 +59,6 @@ const color = StyleSheet.create({
         backgroundColor: '#FF3333',
     }
 });
-const backGroundImg = require('../../assets/img/backgroundLogin.png');
-const logo = require('../../assets/img/logo.png');
 
 const SignupScreen = ({navigation}) => {
     const goBack = () =>{
@@ -79,11 +67,7 @@ const SignupScreen = ({navigation}) => {
     const [hidePass, setHidePass] = useState(true);
 
     return (
-        <ImageBackground source={backGroundImg} style={styles.styleBackground}>
-            <ScrollView>
-            {/*<Image source={logo}
-                    style={styles.LogoImage}
-                />*/}
+            <ScrollView style = {styles.scorllViewStyle}>
                 <View style={styles.SignupView}>
 
                     <Text style={styles.HeaderText}>
@@ -107,7 +91,6 @@ const SignupScreen = ({navigation}) => {
                     </View>
                 </View>
             </ScrollView>
-        </ImageBackground>
     );
 }
 export default SignupScreen;
