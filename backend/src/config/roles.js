@@ -1,24 +1,22 @@
 const allRoles = {
-  user: ['createAnswer','createQuestion','deleteQuestion','updateQuestion'
-  ,'voteAnswer', 'searchQuestion'],
-  admin: ['createAnswer','createQuestion','deleteQuestion','updateQuestion' ,'getUsers', 'manageUsers'
-  ,'voteAnswer', 'searchQuestion'],
-  moderator: ['createAnswer', 'createQuestion','deleteQuestion','updateQuestion'
-  ,'voteAnswer', 'searchQuestion'],
-  user: ['getUser', 'updateUser', 'createAnswer', 'updateAnswer', 'deleteAnswer', 'pickCorrectAnswer'],
+  user: ['getUser', 'updateUser','createQuestion','deleteQuestion','updateQuestion', 'createAnswer'
+  ,'voteAnswer', 'searchQuestion', 'updateAnswer', 'deleteAnswer', 'pickCorrectAnswer'],
+
   admin: [
     'banUser',
     'getMetrics',
-    'getUser',
-    'updateUser',
-    'createAnswer',
-    'updateAnswer',
-    'deleteAnswer',
-    'pickCorrectAnswer',
     'getUsers',
   ],
-  moderator: ['getMetrics', 'getUser', 'updateUser', 'createAnswer', 'updateAnswer', 'deleteAnswer', 'pickCorrectAnswer'],
+
+  moderator: [
+    'banUser',
+    'getMetrics',
+    'getUsers',
+  ],
 };
+
+allRoles.admin = allRoles.admin.concat(allRoles.user)
+allRoles.moderator = allRoles.moderator.concat(allRoles.user)
 
 const roles = Object.keys(allRoles);
 const roleRights = new Map(Object.entries(allRoles));

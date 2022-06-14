@@ -36,7 +36,7 @@ const deleteQuestionById = async (questionId) =>
         },
     });
 
-    //return deleteQuestion;
+    return deleteQuestion;
 };
 
 const updateQuestion = async (req) =>
