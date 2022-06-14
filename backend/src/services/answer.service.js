@@ -12,7 +12,6 @@ const createAnswer = async (req) => {
   if (!checkQuestionExists) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Question does not exist');
   }
-
   const userid = req.user.id;
   const answer = prisma.answers.create({
     data: {
@@ -53,6 +52,14 @@ const pickCorrectAnswerById = async (req) => {
   if (!checkAnswerExists) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Answer does not exist');
   }
+  const checkOwnQuestion = await prisma.questions.findUnique({
+    where: {
+      id: checkAnswerExists.qid,
+    },
+  });
+  if (checkOwnQuestion.uid !== req.user.id) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'You are not the owner of this question');
+  };
   const answer = prisma.answers.update({
     where: {
       id: req.params.answerId,

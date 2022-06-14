@@ -30,7 +30,7 @@ model questions {
   id         String    @id(map: "question_pk") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   uid        String    @db.Uuid
   content    String?
-  status     Int?      @db.SmallInt
+  status     Int?      @default(0) @db.SmallInt
   created_at DateTime? @default(now()) @db.Date
   updated_at DateTime? @default(now()) @db.Date
   title      String
