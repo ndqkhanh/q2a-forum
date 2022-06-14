@@ -10,4 +10,5 @@ router.route('/metrics').get(auth('getMetrics'), adminController.getMetrics);
 
 router.route('/ban-user/:userId').post(auth('banUser'), validate(adminValidation.banUser), adminController.banUser);
 
+
 module.exports = router;
