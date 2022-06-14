@@ -25,7 +25,8 @@ const updateQuestion = catchAsync ( async (req, res) =>
 
 const searchQuestion = catchAsync (async (req, res) => {
     const listQuestions = await questionService.searchQuestion(req);
-    res.send(listQuestions);
+    res.send({ Number: listQuestions.length,
+        Questions: listQuestions,});
 });
 
 module.exports = {

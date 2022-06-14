@@ -36,7 +36,7 @@ const deleteQuestionById = async (questionId) =>
         },
     });
 
-    //return deleteQuestion;
+    return deleteQuestion;
 };
 
 const updateQuestion = async (req) =>
@@ -71,15 +71,26 @@ const updateQuestion = async (req) =>
 
 const searchQuestion = async (req) =>
 {
-    const listQuestions = await prisma.answers.findMany(
+    const countQuestions = await prisma.questions.count({});
+    if (req.params.offset >= countQuestions)
+    {
+        throw new ApiError (httpStatus.NOT_FOUND, "Not Found Questions Related");
+    }
+    else 
+    {
+        if (req.params.offset + req.params.limit >= countQuestions)
         {
-            cursor : {
-                id : req.params.offset,
-            },
-            take: req.params.limit,
+            req.params.limit = countQuestions - 1 - req.params.offset;
+        }
+    }
+
+    const listQuestions = await prisma.questions.findMany(
+        {
+            skip: parseInt(req.params.offset),
+            take: parseInt(req.params.limit),
             where : {
-                body : {
-                    search : req.body.keyword,
+                title : {
+                   contains : req.body.keyword,
                 },
             },
         }
@@ -89,7 +100,7 @@ const searchQuestion = async (req) =>
     {
         throw new ApiError (httpStatus.NOT_FOUND, "There is no questions related to keywords");  
     }
-
+    console.log (listQuestions)
     return listQuestions;
 };
 module.exports = {
