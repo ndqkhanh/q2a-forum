@@ -17,7 +17,7 @@ import { UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
 import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 import ProfileScreen from "~screens/Profile/UserProfile";
-import AdminScreen from "~screens/Profile/AdminProfile";
+import ManageForumScreen from "~screens/Profile/ManageForum";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -113,7 +113,7 @@ const BottomTabNavigator = () => {
         }}
       />
 
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -121,10 +121,10 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="person-circle-outline" color={color} />
           ),
         }}
-      />
+      /> */}
       <BottomTab.Screen
-        name="Admin Profile"
-        component={AdminScreen}
+        name="Manage forum"
+        component={ManageForumScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="person-circle-outline" color={color} />
