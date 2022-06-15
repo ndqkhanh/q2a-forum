@@ -12,6 +12,10 @@ const createAnswer = async (req) => {
   if (!checkQuestionExists) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Question does not exist');
   }
+  // Check if the question is approved
+  if (checkQuestionExists.status !== 2) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Question is not approved');
+  }
   const userid = req.user.id;
   const answer = prisma.answers.create({
     data: {
