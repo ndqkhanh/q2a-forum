@@ -31,7 +31,19 @@ const disableUser = async (req) => {
   return user;
 };
 
+const getPendingQuestions = async (page, limit) => {
+  const list_pending_quetions = await prisma.questions.findMany({
+    skip: page * limit,
+    take: limit,
+    orderBy: {
+      updated_at: 'desc',
+    },
+  });
+  return list_pending_quetions;
+};
+
 module.exports = {
   getAllMetrics,
   disableUser,
+  getPendingQuestions,
 };
