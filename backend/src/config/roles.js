@@ -13,7 +13,7 @@ const allRoles = {
     'pickCorrectAnswer',
   ],
 
-  moderator: ['getPendingQuestions', 'banUser', 'getMetrics', 'getUsers'],
+  moderator: ['approveDeclineQuestion', 'getPendingQuestions', 'banUser', 'getMetrics', 'getUsers'],
 
   admin: ['configForum'],
 };

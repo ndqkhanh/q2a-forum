@@ -17,9 +17,15 @@ const getPendingQuestions = catchAsync(async (req, res) => {
   res.send(list_pending_quetions);
 });
 
+const approveDeclineQuestion = catchAsync(async (req, res) => {
+  const questionResult = await adminService.approveDeclineQuestion(req.body.questionId, req.body.status);
+  res.send({ success: !!questionResult });
+});
+
 
 module.exports = {
   getMetrics,
   banUser,
   getPendingQuestions,
+  approveDeclineQuestion,
 };

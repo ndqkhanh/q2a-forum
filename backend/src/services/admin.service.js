@@ -42,8 +42,28 @@ const getPendingQuestions = async (page, limit) => {
   return list_pending_quetions;
 };
 
+const approveDeclineQuestion = async (questionId, status) => {
+  const question = await prisma.questions.findUnique({
+    where: { id: questionId },
+  });
+  if (!question) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
+  }
+  if (question.status !== 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Question is already approved or declined');
+  }
+  const questionResult = await prisma.questions.update({
+    where: { id: questionId },
+    data: {
+      status: status === 0 ? 2 : 1,
+    },
+  });
+  return questionResult;
+};
+
 module.exports = {
   getAllMetrics,
   disableUser,
   getPendingQuestions,
+  approveDeclineQuestion,
 };

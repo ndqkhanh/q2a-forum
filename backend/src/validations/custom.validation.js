@@ -25,8 +25,16 @@ const password = (value, helpers) => {
   return value;
 };
 
+const status = (value, helpers) => {
+  if (value !== 1 && value !== 0) {
+    return helpers.message('status must be 0 or 1 (approved or declined)');
+  }
+  return value;
+};
+
 module.exports = {
   objectId,
   password,
   username,
+  status,
 };

@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { status } = require('./custom.validation');
 
 const banUser = {
   params: Joi.object().keys({
@@ -16,7 +17,15 @@ const getPendingQuestions = {
   }),
 };
 
+const approveDeclineQuestion = {
+  body: Joi.object().keys({
+    questionId: Joi.string().uuid().required(),
+    status: Joi.number().required().custom(status),
+  }),
+};
+
 module.exports = {
   banUser,
   getPendingQuestions,
+  approveDeclineQuestion,
 };
