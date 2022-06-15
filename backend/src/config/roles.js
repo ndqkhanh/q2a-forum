@@ -18,8 +18,8 @@ const allRoles = {
   admin: ['configForum'],
 };
 
-allRoles.moderator = allRoles.moderator.concat(allRoles.user);
-allRoles.admin = allRoles.admin.concat(allRoles.moderator);
+allRoles.moderator = [...allRoles.moderator, ...allRoles.user];
+allRoles.admin = [...allRoles.admin, ...allRoles.moderator];
 
 const roles = Object.keys(allRoles);
 const roleRights = new Map(Object.entries(allRoles));
