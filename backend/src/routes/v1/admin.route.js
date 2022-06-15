@@ -24,4 +24,6 @@ router
 
 router.route('/list-users/:page/:limit').get(auth('getUsers'), validate(adminValidation.getUsers), adminController.getUsers);
 
+router.route('/list-configuration').get(auth('listConfigurations'), adminController.listConfigurations);
+
 module.exports = router;

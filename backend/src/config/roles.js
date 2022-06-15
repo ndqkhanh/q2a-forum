@@ -15,7 +15,7 @@ const allRoles = {
 
   moderator: ['approveDeclineQuestion', 'getPendingQuestions', 'banUser', 'getMetrics', 'getUsers'],
 
-  admin: ['configForum'],
+  admin: ['listConfigurations'],
 };
 
 allRoles.moderator = [...allRoles.moderator, ...allRoles.user];

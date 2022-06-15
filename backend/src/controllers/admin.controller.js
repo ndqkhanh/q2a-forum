@@ -27,6 +27,10 @@ const getUsers = catchAsync(async (req, res) => {
   res.send(users);
 });
 
+const listConfigurations = catchAsync(async (req, res) => {
+  const users = await adminService.listConfigurations();
+  res.send(users);
+});
 
 module.exports = {
   getMetrics,
@@ -34,4 +38,5 @@ module.exports = {
   getPendingQuestions,
   approveDeclineQuestion,
   getUsers,
+  listConfigurations,
 };

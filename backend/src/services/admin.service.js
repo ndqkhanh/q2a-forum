@@ -77,10 +77,21 @@ const getUsers = async (page, limit) => {
   return listUsers;
 };
 
+const listConfigurations = async () => {
+  const Configurations = await prisma.configuration.findMany({
+    select: {
+      slug: true,
+      value: true,
+    },
+  });
+  return Configurations;
+};
+
 module.exports = {
   getAllMetrics,
   disableUser,
   getPendingQuestions,
   approveDeclineQuestion,
   getUsers,
+  listConfigurations,
 };
