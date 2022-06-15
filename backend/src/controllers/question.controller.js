@@ -28,9 +28,15 @@ const searchQuestion = catchAsync (async (req, res) => {
     res.send(listQuestions);
 });
 
+const getLatestFeed = catchAsync (async (req, res) => {
+    const latestFeed = await questionService.getLatestFeed(req.params.page);
+    res.send(latestFeed);
+});
+
 module.exports = {
     createQuestion,
     deleteQuestion,
     updateQuestion,
     searchQuestion,
+    getLatestFeed,
 };

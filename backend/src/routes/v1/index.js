@@ -30,9 +30,7 @@ const defaultRoutes = [
     path: '/voting',
     route: votingRoute,
   },
-  { path : '/admin',
-    route : adminRoute,
-  }
+  { path: '/admin', route: adminRoute },
 ];
 
 const devRoutes = [
