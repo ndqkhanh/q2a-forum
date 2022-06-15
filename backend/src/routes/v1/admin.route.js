@@ -22,4 +22,6 @@ router
   .route('/manage-questions/:page/:limit')
   .get(auth('getPendingQuestions'), validate(adminValidation.getPendingQuestions), adminController.getPendingQuestions);
 
+router.route('/list-users/:page/:limit').get(auth('getUsers'), validate(adminValidation.getUsers), adminController.getUsers);
+
 module.exports = router;

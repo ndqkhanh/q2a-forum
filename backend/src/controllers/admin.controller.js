@@ -22,10 +22,16 @@ const approveDeclineQuestion = catchAsync(async (req, res) => {
   res.send({ success: !!questionResult });
 });
 
+const getUsers = catchAsync(async (req, res) => {
+  const users = await adminService.getUsers(req.params.page, req.params.limit);
+  res.send(users);
+});
+
 
 module.exports = {
   getMetrics,
   banUser,
   getPendingQuestions,
   approveDeclineQuestion,
+  getUsers,
 };

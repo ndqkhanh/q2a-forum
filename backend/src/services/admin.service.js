@@ -61,9 +61,26 @@ const approveDeclineQuestion = async (questionId, status) => {
   return questionResult;
 };
 
+const getUsers = async (page, limit) => {
+  const listUsers = await prisma.users.findMany({
+    skip: page * limit,
+    take: limit,
+    select: {
+      id: true,
+      username: true,
+      profilepictureurl: true,
+      role: true,
+      name: true,
+      disabled: true,
+    },
+  });
+  return listUsers;
+};
+
 module.exports = {
   getAllMetrics,
   disableUser,
   getPendingQuestions,
   approveDeclineQuestion,
+  getUsers,
 };
