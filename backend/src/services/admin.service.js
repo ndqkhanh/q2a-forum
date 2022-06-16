@@ -32,14 +32,17 @@ const disableUser = async (req) => {
 };
 
 const getPendingQuestions = async (page, limit) => {
-  const list_pending_quetions = await prisma.questions.findMany({
+  const listPendingQuestions = await prisma.questions.findMany({
     skip: page * limit,
     take: limit,
+    where: {
+      status: 0,
+    },
     orderBy: {
       updated_at: 'desc',
     },
   });
-  return list_pending_quetions;
+  return listPendingQuestions;
 };
 
 const approveDeclineQuestion = async (questionId, status) => {
