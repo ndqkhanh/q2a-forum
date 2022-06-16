@@ -72,21 +72,14 @@ const updateQuestion = async (req) =>
 const searchQuestion = async (req) =>
 {
     const countQuestions = await prisma.questions.count({});
-    if (req.params.offset >= countQuestions)
+    if (req.params.offset > countQuestions / req.params.limit)
     {
         throw new ApiError (httpStatus.NOT_FOUND, "Not Found Questions Related");
-    }
-    else 
-    {
-        if (req.params.offset + req.params.limit >= countQuestions)
-        {
-            req.params.limit = countQuestions - 1 - req.params.offset;
-        }
     }
 
     const listQuestions = await prisma.questions.findMany(
         {
-            skip: parseInt(req.params.offset),
+            skip: parseInt(req.params.offset) * parseInt(req.params.limit),
             take: parseInt(req.params.limit),
             where : {
                 title : {
@@ -100,7 +93,6 @@ const searchQuestion = async (req) =>
     {
         throw new ApiError (httpStatus.NOT_FOUND, "There is no questions related to keywords");  
     }
-    console.log (listQuestions)
     return listQuestions;
 };
 module.exports = {
