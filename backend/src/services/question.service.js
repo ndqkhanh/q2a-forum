@@ -107,6 +107,16 @@ const getLatestFeed = async (page) => {
       updated_at: 'desc',
     },
   });
+
+  for (let i = 0; i < feed.length; i++) {
+    const question = feed[i];
+    question.numOfAnswers = await prisma.answers.count({
+      where: {
+        qid: feed[i].id,
+      },
+    });
+  }
+
   return feed;
 };
 
