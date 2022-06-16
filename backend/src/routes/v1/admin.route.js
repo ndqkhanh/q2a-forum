@@ -10,5 +10,20 @@ router.route('/metrics').get(auth('getMetrics'), adminController.getMetrics);
 
 router.route('/ban-user/:userId').post(auth('banUser'), validate(adminValidation.banUser), adminController.banUser);
 
+router
+  .route('/manage-questions')
+  .post(
+    auth('approveDeclineQuestion'),
+    validate(adminValidation.approveDeclineQuestion),
+    adminController.approveDeclineQuestion
+  );
+
+router
+  .route('/manage-questions/:page/:limit')
+  .get(auth('getPendingQuestions'), validate(adminValidation.getPendingQuestions), adminController.getPendingQuestions);
+
+router.route('/list-users/:page/:limit').get(auth('getUsers'), validate(adminValidation.getUsers), adminController.getUsers);
+
+router.route('/list-configuration').get(auth('listConfigurations'), adminController.listConfigurations);
 
 module.exports = router;
