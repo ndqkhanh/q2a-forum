@@ -7,7 +7,7 @@ const allRoles = {
     'getMetrics',
     'getUsers',
     'createAnswer','createQuestion','deleteQuestion','updateQuestion' ,'getUsers', 'manageUsers'
-  ,'voteAnswer', 'searchQuestion',
+  ,'voteAnswer', 'searchQuestion', 'setConfiguration',
   ],
 
   moderator: [
