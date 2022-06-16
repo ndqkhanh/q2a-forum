@@ -61,8 +61,72 @@ const setConfiguration = async (req) =>
   }
 
 };
+
+const getPendingQuestions = async (page, limit) => {
+  const listPendingQuestions = await prisma.questions.findMany({
+    skip: page * limit,
+    take: limit,
+    where: {
+      status: 0,
+    },
+    orderBy: {
+      updated_at: 'desc',
+    },
+  });
+  return listPendingQuestions;
+};
+
+const approveDeclineQuestion = async (questionId, status) => {
+  const question = await prisma.questions.findUnique({
+    where: { id: questionId },
+  });
+  if (!question) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
+  }
+  if (question.status !== 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Question is already approved or declined');
+  }
+  const questionResult = await prisma.questions.update({
+    where: { id: questionId },
+    data: {
+      status: status === 0 ? 2 : 1,
+    },
+  });
+  return questionResult;
+};
+
+const getUsers = async (page, limit) => {
+  const listUsers = await prisma.users.findMany({
+    skip: page * limit,
+    take: limit,
+    select: {
+      id: true,
+      username: true,
+      profilepictureurl: true,
+      role: true,
+      name: true,
+      disabled: true,
+    },
+  });
+  return listUsers;
+};
+
+const listConfigurations = async () => {
+  const Configurations = await prisma.configuration.findMany({
+    select: {
+      slug: true,
+      value: true,
+    },
+  });
+  return Configurations;
+};
+
 module.exports = {
   getAllMetrics,
   disableUser,
+  getPendingQuestions,
+  approveDeclineQuestion,
+  getUsers,
+  listConfigurations,
   setConfiguration,
 };
