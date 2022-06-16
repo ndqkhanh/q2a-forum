@@ -1,6 +1,9 @@
 const Joi = require ('joi');
 
 const VoteAnswer = {
+    params: Joi.object().keys({
+        answerID : Joi.string().uuid().required(),
+    }),
     body : Joi.object().keys({
         status : Joi.number().required(),
     }),

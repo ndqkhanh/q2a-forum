@@ -16,11 +16,30 @@ const VoteAnswer = async (req) =>
         throw new ApiError(httpStatus.NOT_FOUND, 'Answer Not Found');
     }
 
-    const voting = await prisma.voting.create ({
+    const checkVotingExist = await prisma.voting.findUnique({
+        where :{
+            aid: req.params.answerID,
+        },
+    });
+    
+    if (!checkVotingExist)
+    {
+        const voting = await prisma.voting.create ({
         status : req.body.status,
     });
+        return voting;
+    }
+    else
+    {
+        const voting = await prisma.voting.update({
+            data:
+            {
+                status: req.body.status,
+            }
+        });
+        return voting;
+    }
 
-    return voting;
 }
 module.exports = {
     VoteAnswer,
