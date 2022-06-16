@@ -36,10 +36,10 @@ const deleteQuestionById = async (questionId) => {
 };
 
 const updateQuestion = async (req) => {
-  const questionId = req.params.questionId;
+  const { questionId: id } = req.params;
   const question = await prisma.questions.findUnique({
     where: {
-      id: questionId,
+      id,
     },
   });
 
@@ -112,9 +112,16 @@ const getLatestFeed = async (page) => {
     const question = feed[i];
     question.numOfAnswers = await prisma.answers.count({
       where: {
-        qid: feed[i].id,
+        qid: question.id,
       },
     });
+    const answer = await prisma.answers.findFirst({
+      where: {
+        qid: question.id,
+        correct: true,
+      },
+    });
+    question.correctAnswerExists = !!answer;
   }
 
   return feed;
