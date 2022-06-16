@@ -4,10 +4,10 @@ const ApiError = require('../utils/ApiError');
 const prisma = new PrismaClient();
 
 const createQuestion = async (req) => {
-  const userid = req.user.id;
+  const userId = req.user.id;
   const question = prisma.questions.create({
     data: {
-      uid: userid,
+      uid: userId,
       content: req.body.content,
       title: req.body.title,
     },
