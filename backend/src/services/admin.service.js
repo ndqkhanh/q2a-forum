@@ -8,7 +8,7 @@ const getAllMetrics = async () => {
   const questionCount = await prisma.questions.count();
   const userCount = await prisma.users.count();
   const answerCount = await prisma.answers.count();
-  return { numOfQuestions: questionCount, numOfUsers: userCount, numOfAnswer: answerCount };
+  return { numOfQuestions: questionCount, numOfUsers: userCount, numOfAnswers: answerCount };
 };
 
 const disableUser = async (req) => {
