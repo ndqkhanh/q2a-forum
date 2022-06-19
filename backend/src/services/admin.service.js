@@ -8,7 +8,7 @@ const getAllMetrics = async () => {
   const questionCount = await prisma.questions.count();
   const userCount = await prisma.users.count();
   const answerCount = await prisma.answers.count();
-  return { questionCount, userCount, answerCount };
+  return { numOfQuestions: questionCount, numOfUsers: userCount, numOfAnswers: answerCount };
 };
 
 const disableUser = async (req) => {
@@ -42,7 +42,12 @@ const getPendingQuestions = async (page, limit) => {
       updated_at: 'desc',
     },
   });
-  return listPendingQuestions;
+  const countPendingQuestions = await prisma.questions.count({
+    where: {
+      status: 0,
+    },
+  });
+  return { count: countPendingQuestions, data: listPendingQuestions };
 };
 
 const approveDeclineQuestion = async (questionId, status) => {
@@ -77,7 +82,8 @@ const getUsers = async (page, limit) => {
       disabled: true,
     },
   });
-  return listUsers;
+  const countUsers = await prisma.users.count();
+  return { count: countUsers, data: listUsers };
 };
 
 const listConfigurations = async () => {

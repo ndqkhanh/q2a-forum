@@ -13,8 +13,8 @@ const banUser = catchAsync(async (req, res) => {
 });
 
 const getPendingQuestions = catchAsync(async (req, res) => {
-  const list_pending_quetions = await adminService.getPendingQuestions(req.params.page, req.params.limit);
-  res.send(list_pending_quetions);
+  const result = await adminService.getPendingQuestions(req.params.page, req.params.limit);
+  res.send(result);
 });
 
 const approveDeclineQuestion = catchAsync(async (req, res) => {
@@ -23,13 +23,13 @@ const approveDeclineQuestion = catchAsync(async (req, res) => {
 });
 
 const getUsers = catchAsync(async (req, res) => {
-  const users = await adminService.getUsers(req.params.page, req.params.limit);
-  res.send(users);
+  const result = await adminService.getUsers(req.params.page, req.params.limit);
+  res.send(result);
 });
 
 const listConfigurations = catchAsync(async (req, res) => {
-  const users = await adminService.listConfigurations();
-  res.send(users);
+  const configuration = await adminService.listConfigurations();
+  res.send(configuration);
 });
 
 module.exports = {
