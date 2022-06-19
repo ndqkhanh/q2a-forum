@@ -1,44 +1,51 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors, Card } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-const User = ({
-  userData,
-  image,
-}) => {
-    const [Banned,setBanned]=useState(false);
-    const pressBan = () => {
-        if(Banned)
-            setBanned(false)
-        else setBanned(true)
-    }
+const User = ({ userData, image }) => {
+  const [Banned, setBanned] = useState(false);
+  const pressBan = () => {
+    if (Banned) setBanned(false);
+    else setBanned(true);
+  };
   return (
     <View style={styles.postContainer}>
-        <View style={styles.postContentContainer}>
-            <View style={styles.infoUserContainer}>
-                <Image
-                    source={{
-                    uri: userData.avatarUrl,
-                    }}
-                    style={styles.avatar}
-                ></Image>
+      <View style={styles.postContentContainer}>
+        <View style={styles.infoUserContainer}>
+          <Image
+            source={{
+              uri: userData.avatarUrl,
+            }}
+            style={styles.avatar}
+          ></Image>
 
-                <View style={styles.nameAndDate}>
-                    <Text style={styles.name}>{userData.name}</Text>
-                </View>
-                <TouchableOpacity onPress={pressBan}>
-                    <View flexDirection={'row'} alignItems={'center'}>
-                        <Icon {...Banned ? {name:"checkbox-outline", color:Colors.green10, style:styles.icon}:{name:"remove-circle", color:Colors.red10, style:styles.icon}}/>
-                        {Banned ? 
-                            <Text style={styles.unban}>Unban</Text>
-                            :
-                            <Text style={styles.ban}>Ban</Text>
-                        }
-                        
-                    </View>
-                </TouchableOpacity>
+          <View style={styles.nameAndDate}>
+            <Text style={styles.name}>{userData.name}</Text>
+          </View>
+          <TouchableOpacity onPress={pressBan}>
+            <View flexDirection={"row"} alignItems={"center"}>
+              <Icon
+                {...(Banned
+                  ? {
+                      name: "checkbox-outline",
+                      color: Colors.green10,
+                      style: styles.icon,
+                    }
+                  : {
+                      name: "remove-circle",
+                      color: Colors.red10,
+                      style: styles.icon,
+                    })}
+              />
+              {Banned ? (
+                <Text style={styles.unban}>Unban</Text>
+              ) : (
+                <Text style={styles.ban}>Ban</Text>
+              )}
             </View>
+          </TouchableOpacity>
         </View>
+      </View>
     </View>
   );
 };
@@ -76,12 +83,12 @@ const styles = StyleSheet.create({
   ban: {
     marginLeft: 5,
     fontWeight: "bold",
-    color: Colors.red10
+    color: Colors.red10,
   },
   unban: {
     marginLeft: 5,
     fontWeight: "bold",
-    color: Colors.green10
+    color: Colors.green10,
   },
 });
 export default User;

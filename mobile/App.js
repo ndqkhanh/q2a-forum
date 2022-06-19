@@ -31,13 +31,10 @@ if (TextInput.defaultProps == null) {
 import { LoginScreen } from "~login/login";
 import { createStackNavigator } from "@react-navigation/stack";
 
-
-
 const BottomTab = createBottomTabNavigator();
 //const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
   const csignup = <LoginScreen SignUp={true}></LoginScreen>;
-
 
   return (
     <BottomTab.Navigator
@@ -139,19 +136,22 @@ function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
+const Stack = createStackNavigator();
+
 const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator  screenOptions={{
+        <Stack.Navigator
+          screenOptions={{
             headerShown: false,
-          }}>
-          {/* <Stack.Screen name='Login' component={SignupAndLogin}/> */}
-          <Stack.Screen name="Home" component={BottomTabNavigator} />
+          }}
+        >
+          <Stack.Screen name="Login" component={SignupAndLogin} />
+          {/* <Stack.Screen name="Home" component={BottomTabNavigator} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
-
   );
 };
 

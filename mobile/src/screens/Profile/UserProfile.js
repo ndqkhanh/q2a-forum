@@ -14,8 +14,8 @@ const ProfileScreen = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Profile</Text>
         <Icon
-         name="log-out-outline"
-         style={{
+          name="log-out-outline"
+          style={{
             fontSize: 30,
             color: Colors.cyan10,
           }}
@@ -66,14 +66,23 @@ const ProfileScreen = () => {
           </Text>
         </Card>
         <TouchableOpacity activeOpacity={0.7}>
-          <Text style={{lineHeight:50, fontSize:20, textDecorationLine:'underline', color:'#1e90ff'}}>
-          <Icon size={20} name="create-outline"/>
-            {' '}Edit Profile
+          <Text
+            style={{
+              lineHeight: 50,
+              fontSize: 20,
+              textDecorationLine: "underline",
+              color: "#1e90ff",
+            }}
+          >
+            <Icon size={20} name="create-outline" /> Edit Profile
           </Text>
         </TouchableOpacity>
-        
+
         <View style={styles.logOutButton}>
-          <TouchableOpacity style={{ backgroundColor: "red", borderRadius: 20 }} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={{ backgroundColor: "red", borderRadius: 20 }}
+            activeOpacity={0.7}
+          >
             <Text style={styles.logOutText}>Log out</Text>
           </TouchableOpacity>
         </View>
@@ -86,11 +95,11 @@ export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   body: {
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   headerContainer: {
     height: 50,
@@ -105,7 +114,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: "bold",
-},
+  },
   infoSection: {
     margin: 10,
     flexDirection: "row",
