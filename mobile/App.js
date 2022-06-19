@@ -122,7 +122,7 @@ const App = () => {
         <Stack.Navigator  screenOptions={{
             headerShown: false,
           }}>
-          {/* <Stack.Screen name='Login' component={SignupAndLogin}/> */}
+          <Stack.Screen name='Login' component={SignupAndLogin}/>
           <Stack.Screen name="Home" component={BottomTabNavigator} />
         </Stack.Navigator>
 

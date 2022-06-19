@@ -14,7 +14,7 @@ const SearchBar = (props) => {
     }
     //const [ha,setha] = React.useState('123')
     return (
-        <View style={styles.searchBarView}>
+        <View style={[styles.searchBarView,{...props.style}]}>
             <TouchableOpacity onPress={props?.onPressSearch}>
                 <Icon style={styles.searchIcon} name="ios-search" size={20} color="#000" />
             </TouchableOpacity>
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     inputStyle: {
         textAlign: 'left',
         fontSize: 20,
-        width: wid * 0.8,
+        //width: wid * 0.8,
         paddingTop: 10,
         paddingRight: 20,
         paddingBottom: 10,

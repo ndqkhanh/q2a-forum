@@ -2,9 +2,10 @@ import * as React from "react";
 
 import {
     Text, View, StyleSheet,
-    ScrollView, Image, TextInput, Dimensions, Pressable, TouchableOpacity, SafeAreaView
+    ScrollView, Image, TextInput, Dimensions, Pressable, TouchableOpacity, SafeAreaView, Alert
 } from 'react-native';
 import { Colors } from "react-native-ui-lib";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //const backGroundImg = require('../../assets/img/backgroundLogin.png');
 const logo = require('~assets/img/logo.png');
@@ -13,6 +14,48 @@ const heigh = Dimensions.get('screen').height;
 const LoginScreen = ({ navigation }) => {
     const toSignUp = () => {
         navigation.navigate('signup_screen')
+    }
+    const [userName, setUserName] = React.useState(null);
+    const [password, setPassword] = React.useState(null);
+
+    React.useEffect(() => { getLocalToken(); }, [])
+
+    const getLocalToken = () => {
+        try {
+            AsyncStorage.getItem('UserAccount').then(
+                (value) => {
+                    let user = JSON.parse(value)
+                    if (user.username == 'Hoang')
+                    {
+                        navigation.navigate('Home');
+                    //or if token exist => navigate('Home')
+                        
+                    }
+                }
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const requestUserNamePassword = async () => {
+        // request on database to get token and then if valid username and password, 
+        //we will store them or store token
+        if (userName.length == 0) {
+            Alert.alert('Warning!', 'Please enter your username')
+        } else {
+            try {
+                var UserAccount ={
+                    username: userName,
+                    pass: password,
+                }
+                await AsyncStorage.setItem('UserAccount', JSON.stringify(UserAccount));
+                //store token as well.
+                navigation.navigate('Home');
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
     return (
         <SafeAreaView>
@@ -24,12 +67,18 @@ const LoginScreen = ({ navigation }) => {
                     <View style={styles.LoginView}>
 
                         <Text style={styles.HeaderText}>
-                            Log-in
+                            Log-innn
                         </Text>
                         <View style={styles.LoginMenu}>
-                            <TextInput placeholder="Enter username" style={styles.inputStyle} maxLength={20} />
-                            <TextInput placeholder="Enter password" style={styles.inputStyle} maxLength={20} secureTextEntry={true} />
-                            <TouchableOpacity style={styles.buttonStyle} activeOpacity={0.8}>
+                            <TextInput placeholder="Enter username" style={styles.inputStyle} maxLength={20}
+                                onChangeText={(name) => setUserName(name)}
+                            />
+                            <TextInput placeholder="Enter password" style={styles.inputStyle} maxLength={20} secureTextEntry={true}
+                                onChangeText={(pass) => setPassword(pass)}
+                            />
+                            <TouchableOpacity style={styles.buttonStyle} activeOpacity={0.8}
+                                onPress={requestUserNamePassword}
+                            >
                                 <Text style={styles.buttonText}>
                                     Log in
                                 </Text>

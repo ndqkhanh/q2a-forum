@@ -7,13 +7,33 @@ import {
 import { Colors } from "react-native-ui-lib";
 import { SearchBar } from "~components/SearchBar/SearchBar";
 import Post from "~components/Common/Post";
-
+import Icon from "react-native-vector-icons/Ionicons";
 const SearchScreen = ({ navigation }) => {
     const [titleSearch, setTitleSearch] = React.useState('')
     return (
         <SafeAreaView style={styles.backgroundView}>
-            <Text style={{ fontSize: 30, alignSelf: 'center', color: Colors.blue40 }}>Find question</Text>
-            <SearchBar textChange={setTitleSearch}></SearchBar>
+            {/* <Text style={{ fontSize: 30, alignSelf: 'center', color: Colors.blue40 }}>Find question</Text> */}
+            <View style={styles.headerContainer}>
+                <View style={{
+                    height: 50,
+                    marginHorizontal: 20,
+                    alignItems: "center",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                }}>
+                    <Text style={styles.header}>Q & A Forum</Text>
+                    <Icon
+                        name="log-out-outline"
+                        style={{
+                            fontSize: 30,
+                            color: Colors.cyan10,
+                        }}
+                    />
+                </View>
+            </View>
+            <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
+                <SearchBar textChange={setTitleSearch} ></SearchBar>
+            </View>
             <View style={{ flex: 1 }}>
                 <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
                     <Post
@@ -68,6 +88,14 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingHorizontal: 20,
         backgroundColor: Colors.cyan70,
-      },
+    },
+    headerContainer: {
+        backgroundColor: Colors.white,
+        // justifyContent: "center",
+    },
+    header: {
+        fontSize: 20,
+        fontWeight: "bold",
+    },
 
 });
