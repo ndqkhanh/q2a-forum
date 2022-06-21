@@ -134,8 +134,10 @@ const getLatestFeed = async (page) => {
   return feed;
 };
 
-const GetAnswersByQuestionID = async(req) => {
+const GetAnswersByQuestionIDPagination = async(req) => {
   const answers = await prisma.answers.findMany({
+    skip: req.params.page * req.params.limit,
+    take: req.params.limit,
     where : {qid: req.params.questionId,},
   });
 
@@ -169,12 +171,22 @@ const GetAnswersAndVotings = async (answers) => {
 
   return answersAndvotings;
 };
+
+const countAnswerByQuestionID = async (req) =>
+{
+  const answers = await prisma.answers.findMany({
+    where : {qid: req.params.questionId,},
+  });
+
+  return answers.length;
+}
 module.exports = {
   createQuestion,
   deleteQuestionById,
   updateQuestion,
   searchQuestion,
   getLatestFeed,
-  GetAnswersByQuestionID,
+  GetAnswersByQuestionIDPagination,
   GetAnswersAndVotings,
+  countAnswerByQuestionID,
 };
