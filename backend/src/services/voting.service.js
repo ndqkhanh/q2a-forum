@@ -7,7 +7,7 @@ const VoteAnswer = async (req) =>
 {
     const answer = await prisma.answers.findUnique ({
         where : {
-            id : req.answer.id,
+            id : req.params.answerId,
         },
     });
 
@@ -16,16 +16,33 @@ const VoteAnswer = async (req) =>
         throw new ApiError(httpStatus.NOT_FOUND, 'Answer Not Found');
     }
 
-    const checkVotingExist = await prisma.voting.findUnique({
-        where :{
-            aid: req.params.answerID,
+    const checkVotingExist = await prisma.voting.findFirst({
+        where : {
+            aid : req.params.answerId
         },
     });
     
+    if (req.body.status == 2)
+    {
+        const voting = await prisma.voting.delete({
+            where : {
+                aid : req.params.answerId,
+            }
+        });
+    }
+
+
+    let flag = true;
+    if (req.body.status == 0)  flag = true; else flag = false;
     if (!checkVotingExist)
     {
         const voting = await prisma.voting.create ({
-        status : req.body.status,
+        data: 
+        {
+            uid: answer.uid,
+            aid: answer.id,
+            status: flag, 
+        },
     });
         return voting;
     }
@@ -34,7 +51,7 @@ const VoteAnswer = async (req) =>
         const voting = await prisma.voting.update({
             data:
             {
-                status: req.body.status,
+                status: flag,
             }
         });
         return voting;

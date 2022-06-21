@@ -34,10 +34,17 @@ const getLatestFeed = catchAsync (async (req, res) => {
     res.send(latestFeed);
 });
 
+const getAllAnswersAndVotings = catchAsync ( async (req, res) => {
+    const answers = await questionService.GetAnswersByQuestionID (req);
+    const answersAndvotings = await questionService.GetAnswersAndVotings (answers);
+    res.send({count: answers.length, data: answersAndvotings});
+
+}); 
 module.exports = {
     createQuestion,
     deleteQuestion,
     updateQuestion,
     searchQuestion,
     getLatestFeed,
+    getAllAnswersAndVotings,
 };

@@ -32,10 +32,18 @@ const getLatestFeed = {
     }),
 };
 
+const getAllAnswersAndVotings = {
+    params : Joi.object().keys({
+        questionId: Joi.string().uuid().required(),
+        page: Joi.number().required(),
+        limit: Joi.number().required(),
+    }),
+};
 module.exports = {
     createQuestion,
     deleteQuestion,
     updateQuestion,
     searchQuestion,
     getLatestFeed,
+    getAllAnswersAndVotings,
 };

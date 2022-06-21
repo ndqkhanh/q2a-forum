@@ -134,10 +134,47 @@ const getLatestFeed = async (page) => {
   return feed;
 };
 
+const GetAnswersByQuestionID = async(req) => {
+  const answers = await prisma.answers.findMany({
+    where : {qid: req.params.questionId,},
+  });
+
+  return answers;
+};
+
+const GetAnswersAndVotings = async (answers) => {
+  answersAndvotings = []
+  for (let i = 0; i < answers.length; i++)
+  {
+    const upvotes = await prisma.voting.findMany({
+      where : {aid: answers[i].id, status : true }
+    });
+
+    const downvotes = await prisma.voting.findMany({
+      where : {aid: answers[i].id, status : false }
+    });
+
+    const user = await prisma.users.findUnique({
+      where : {id: answers[i].uid}
+    });
+
+    answersAndvotings.push({
+      answer: answers[i], 
+      count_upvotes: upvotes.length,
+      count_downvotes: downvotes.length,
+      minus_upvote_downvote: upvotes.length - downvotes.length,
+      username: user.username,
+      profilepictureurl: user.profilepictureurl})
+  }
+
+  return answersAndvotings;
+};
 module.exports = {
   createQuestion,
   deleteQuestionById,
   updateQuestion,
   searchQuestion,
   getLatestFeed,
+  GetAnswersByQuestionID,
+  GetAnswersAndVotings,
 };
