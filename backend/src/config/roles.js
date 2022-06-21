@@ -12,6 +12,7 @@ const allRoles = {
     'deleteAnswer',
     'pickCorrectAnswer',
     'getLatestFeed',
+    'getMyQuestions',
   ],
 
   moderator: ['approveDeclineQuestion', 'getPendingQuestions', 'banUser', 'getMetrics', 'getUsers'],
