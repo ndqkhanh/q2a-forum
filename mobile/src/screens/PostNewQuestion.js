@@ -31,9 +31,7 @@ const PostQuestionScreen = () => {
       <View style={styles.body}>
         <Text style={styles.textTitle}>Title</Text>
         <Card style={styles.typingTitle}>
-          <ScrollView>
-            <TextInput multiline={true} />
-          </ScrollView>
+          <TextInput />
         </Card>
         <Text style={styles.textTitle}>Content</Text>
         <RichToolbar
@@ -50,9 +48,15 @@ const PostQuestionScreen = () => {
           />
         </Card>
       </View>
-      <View style={styles.submitButton}>
+      <View style={styles.button}>
+      <TouchableOpacity
+          style={{ backgroundColor: Colors.red30, borderRadius: 20 }}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.submitText}>Cancel</Text>
+        </TouchableOpacity>
         <TouchableOpacity
-          style={{ backgroundColor: Colors.blue40, borderRadius: 20 }}
+          style={{ backgroundColor: Colors.blue40, borderRadius: 20, leftMargin:20 }}
           activeOpacity={0.7}
         >
           <Text style={styles.submitText}>Submit</Text>
@@ -100,17 +104,18 @@ const styles = StyleSheet.create({
   typingTitle: {
     marginLeft: 10,
     marginTop: 10,
-    width: "90%",
+    width: "95%",
   },
   typingContent: {
     marginLeft: 10,
     marginTop: 10,
-    width: "90%",
+    width: "95%",
     height: "50%",
   },
-  submitButton: {
+  button: {
     justifyContent: "flex-end",
-    alignItems: "center",
+    flexDirection:'row',
+    justifyContent: 'space-evenly',
   },
   submitText: {
     fontSize: 20,
