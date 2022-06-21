@@ -3,6 +3,7 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -16,46 +17,52 @@ const ScreensSignInMain = ({ navigation }) => {
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-      <View style={styles.mainIntro}>
-        <Image
-          source={require("~assets/img/login.gif")}
-          style={styles.imgIntro}
-        />
-        <Text style={styles.title}>Create better together.</Text>
-        <Text style={styles.subTitle}>Join our community</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.signInText}>Sign in</Text>
-
-        <View style={styles.fieldContainer}>
-          <Icon name="person-outline" style={styles.fieldIcon} />
-
-          <TextInput style={styles.fieldInput} placeholder="Username" />
+      <ScrollView
+        style={{
+          flex: 1,
+        }}
+      >
+        <View style={styles.mainIntro}>
+          <Image
+            source={require("~assets/img/login.gif")}
+            style={styles.imgIntro}
+          />
+          <Text style={styles.title}>Create better together.</Text>
+          <Text style={styles.subTitle}>Join our community</Text>
         </View>
-        <View style={styles.fieldContainer}>
-          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+        <View style={styles.inputContainer}>
+          <Text style={styles.signInText}>Sign in</Text>
 
-          <TextInput style={styles.fieldInput} placeholder="Password" />
-        </View>
+          <View style={styles.fieldContainer}>
+            <Icon name="person-outline" style={styles.fieldIcon} />
 
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
+            <TextInput style={styles.fieldInput} placeholder="Username" />
+          </View>
+          <View style={styles.fieldContainer}>
+            <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+
+            <TextInput style={styles.fieldInput} placeholder="Password" />
+          </View>
+
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Login</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.signUpText}>
-        <Text style={styles.newForum}>
-          New to Forum?{" "}
-          <Text
-            style={{
-              color: Colors.blue40,
-              fontWeight: "bold",
-            }}
-            onPress={onSignUp}
-          >
-            Sign Up
+        <View style={styles.signUpText}>
+          <Text style={styles.newForum}>
+            New to Forum?{" "}
+            <Text
+              style={{
+                color: Colors.blue40,
+                fontWeight: "bold",
+              }}
+              onPress={onSignUp}
+            >
+              Sign Up
+            </Text>
           </Text>
-        </Text>
-      </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -93,6 +100,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flexDirection: "row",
     marginTop: 20,
+    alignItems: "center",
   },
   fieldIcon: {
     fontSize: 28,
@@ -103,7 +111,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.cyan70,
     borderBottomWidth: 1,
     paddingBottom: 5,
-    marginLeft: 20,
+    marginLeft: 10,
     fontWeight: "500",
     fontSize: 16,
   },
