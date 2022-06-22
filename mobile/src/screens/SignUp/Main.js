@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   Image,
@@ -7,13 +7,56 @@ import {
   Text,
   TextInput,
   View,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
+
+
 const ScreensSignUpMain = ({ navigation }) => {
   const onSignIn = () => {
     navigation.navigate("login_screen");
   };
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [repassword, setRepassword] = useState(null);
+  const [picurl, setPicurl] = useState(null);
+
+  const fetchSignup = async (username, password, repassword, picurl) => {
+    if(password == repassword){
+    try {
+      let responseNewUser = await fetch('http://192.168.178.211:3000/v1/auth/signup', {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: 'Bearer '
+        },
+        body: JSON.stringify({
+          username: `${username}`,
+          password: `${password}`,
+          name: `${username}`,
+          profilepictureurl: `${picurl}`,
+        })
+      })
+      const mjson = await responseNewUser.json()
+      if (mjson.hasOwnProperty('tokens')) {
+        Alert.alert('Ancouncement', 'Your account has been successfully created.')
+      } else {
+        Alert.alert('Invalid', mjson['message'])
+      }
+    } catch (error) {
+      console.log('error', error)
+      Alert.alert('error', error)
+    }
+  }
+  else{
+    Alert.alert('Invalid', 'Two passwords are not the same.')
+  }
+
+
+  }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
       <View style={styles.mainIntro}>
@@ -30,12 +73,12 @@ const ScreensSignUpMain = ({ navigation }) => {
         <View style={styles.fieldContainer}>
           <Icon name="person-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Username" />
+          <TextInput style={styles.fieldInput} placeholder="Username" onChangeText={setUsername} />
         </View>
         <View style={styles.fieldContainer}>
           <Icon name="lock-closed-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Password" />
+          <TextInput style={styles.fieldInput} placeholder="Password" onChangeText={setPassword} secureTextEntry={true}/>
         </View>
         <View style={styles.fieldContainer}>
           <Icon name="lock-closed-outline" style={styles.fieldIcon} />
@@ -43,18 +86,21 @@ const ScreensSignUpMain = ({ navigation }) => {
           <TextInput
             style={styles.fieldInput}
             placeholder="Re-enter Password"
+            onChangeText={setRepassword}
+            secureTextEntry={true}
           />
         </View>
 
         <View style={styles.fieldContainer}>
           <Icon name="image-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Picture" />
+          <TextInput style={styles.fieldInput} placeholder="Picture" onChangeText={setPicurl} />
         </View>
-
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Register</Text>
-        </View>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => fetchSignup(username, password, repassword, picurl)}>
+          <View style={styles.button} >
+            <Text style={styles.buttonText}>Register</Text>
+          </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.signUpText}>
         <Text style={styles.newForum}>

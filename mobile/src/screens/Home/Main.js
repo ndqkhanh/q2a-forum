@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import HomeMainWelcome from "~components/Home/Main/Welcome";
@@ -13,7 +14,8 @@ import { UserContext } from "~provider/UserProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
-const ScreensHomeMain = () => {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const ScreensHomeMain = ({navigation}) => {
   const { userData } = useContext(UserContext);
   return (
     <SafeAreaView
@@ -24,6 +26,7 @@ const ScreensHomeMain = () => {
     >
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Q & A Forum</Text>
+        <TouchableOpacity activeOpacity={0.8} onPress={async () => {await AsyncStorage.clear(); navigation.navigate('Login')}}>
         <Icon
           name="log-out-outline"
           style={{
@@ -31,6 +34,7 @@ const ScreensHomeMain = () => {
             color: Colors.cyan10,
           }}
         />
+        </TouchableOpacity>
       </View>
       <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
         <HomeMainPosting />
