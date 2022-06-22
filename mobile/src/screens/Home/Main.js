@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -10,11 +10,38 @@ import {
 import { Colors } from "react-native-ui-lib";
 import HomeMainWelcome from "~components/Home/Main/Welcome";
 import { UserContext } from "~provider/UserProvider";
+// import { FeedContext } from "~provider/FeedProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
 const ScreensHomeMain = () => {
   const { userData } = useContext(UserContext);
+  const [feedData, setFeedData] = useState({});
+  const fetchFeedInformation = async (page) => {
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTU4OTU4MzQsImV4cCI6MTY1NTg5NzYzNCwidHlwZSI6ImFjY2VzcyJ9.M1OhiIHkoGjPUhWiWO0pQMOjzxRTxxPNRE4OGnlP_Og";
+    try {
+      let data = await fetch(
+        `http://192.168.1.116:3000/v1/question/feed/${page}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      data = await data.json();
+      setFeedData(data);
+      console.log("data", data);
+    } catch (error) {
+      console.error("error---", error);
+    }
+  };
+  useEffect(() => {
+    fetchFeedInformation(0);
+  }, []);
   return (
     <SafeAreaView
       style={{

@@ -147,8 +147,8 @@ const App = () => {
             headerShown: false,
           }}
         >
-          <Stack.Screen name="Login" component={SignupAndLogin} />
-          {/* <Stack.Screen name="Home" component={BottomTabNavigator} /> */}
+          {/* <Stack.Screen name="Login" component={SignupAndLogin} /> */}
+          <Stack.Screen name="Home" component={BottomTabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
