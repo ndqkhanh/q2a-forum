@@ -18,6 +18,7 @@ import ScreensHomeMain from "~screens/Home/Main";
 import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 import ProfileScreen from "~screens/Profile/UserProfile";
 import ManageForumScreen from "~screens/Profile/ManageForum";
+import PostQuestionScreen from "~screens/PostNewQuestion";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -119,9 +120,18 @@ const BottomTabNavigator = () => {
           ),
         }}
       /> */}
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Manage forum"
         component={ManageForumScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="person-circle-outline" color={color} />
+          ),
+        }}
+      /> */}
+      <BottomTab.Screen
+        name="Post a question"
+        component={PostQuestionScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="person-circle-outline" color={color} />
