@@ -122,9 +122,24 @@ const getLatestFeed = async (page) => {
       },
     });
     question.correctAnswerExists = !!answer;
+    question.userData = await prisma.users.findUnique({
+      where: {
+        id: question.uid,
+      },
+      select: {
+        name: true,
+        profilepictureurl: true,
+      },
+    });
   }
 
-  return feed;
+  const quesCount = await prisma.questions.count({
+    where: {
+      status: 2,
+    },
+  });
+
+  return { count: quesCount, data: feed };
 };
 
 module.exports = {
