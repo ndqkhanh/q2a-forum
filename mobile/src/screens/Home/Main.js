@@ -14,7 +14,7 @@ import { UserContext } from "~provider/UserProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
-import { formatDistance } from 'date-fns';
+import { formatDistance } from "date-fns";
 const ScreensHomeMain = () => {
   // const { userData } = useContext(UserContext);
   const [feedData, setFeedData] = useState([]);
@@ -29,7 +29,7 @@ const ScreensHomeMain = () => {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -66,19 +66,29 @@ const ScreensHomeMain = () => {
           }}
         />
       </View>
-      <ScrollView 
+      <ScrollView
         style={styles.body}
-        refreshControl={<RefreshControl
-          refreshing={ Refreshing }
-          onRefresh={onRefresh}
-        />
+        refreshControl={
+          <RefreshControl
+            refreshing={Refreshing}
+            onRefresh={onRefresh}
+            tintColor="#ff0000"
+            title="Loading..."
+            titleColor="#00ff00"
+            colors={["#ff0000", "#00ff00", "#0000ff"]}
+            progressBackgroundColor="#ffffff"
+          />
         }
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
         <HomeMainPosting />
-        {feedData.map((record,index) => (
-          <Post key={index}
+        {feedData.map((record, index) => (
+          <Post
+            key={index}
             voting={30}
-            dateText={formatDistance(new Date(record.updated_at), Date.now(), {addSuffix: true})}
+            dateText={formatDistance(new Date(record.updated_at), Date.now(), {
+              addSuffix: true,
+            })}
             title={record.title}
             content={record.content}
             numOfAnswers={record.numOfAnswers}
