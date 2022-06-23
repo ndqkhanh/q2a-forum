@@ -15,15 +15,24 @@ import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
 import { formatDistance } from "date-fns";
+import { Alert } from "react-native";
+
+const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom;
+};
+
 const ScreensHomeMain = () => {
-  // const { userData } = useContext(UserContext);
+  const [maxLength, setMaxLength] = useState(0);
+  const [page, setPage] = useState(0);
   const [feedData, setFeedData] = useState([]);
   const fetchFeedInformation = async (page) => {
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTU5NTk3OTgsImV4cCI6MTY1NTk2MTU5OCwidHlwZSI6ImFjY2VzcyJ9.QJFB91T6qYC_lNqSt3M9XwHoQIBVB26fQyiKN2BS7LI";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTU5OTQ3ODAsImV4cCI6MTY1NTk5NjU4MCwidHlwZSI6ImFjY2VzcyJ9.usP1fOKBPbzRanaq_5O-uktxPRTGSYFaBXIYBgwLhyM";
     try {
       let data = await fetch(
-        `http://192.168.1.12:3000/v1/question/feed/${page}`,
+        `http://192.168.1.7:3000/v1/question/feed/${page}`,
         {
           method: "GET",
           headers: {
@@ -34,7 +43,10 @@ const ScreensHomeMain = () => {
         },
       );
       data = await data.json();
-      setFeedData(data.data);
+      var maxLength = parseInt(data.count);
+      setMaxLength(maxLength);
+      setFeedData([...feedData, ...data.data]);
+      setPage(page + 1);
       console.log("data:", feedData);
     } catch (error) {
       console.error("error---", error);
@@ -43,12 +55,7 @@ const ScreensHomeMain = () => {
   useEffect(() => {
     fetchFeedInformation(0);
   }, []);
-  const [Refreshing, setRefreshing] = useState(false);
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchFeedInformation(0);
-    setRefreshing(false);
-  };
+
   return (
     <SafeAreaView
       style={{
@@ -68,17 +75,13 @@ const ScreensHomeMain = () => {
       </View>
       <ScrollView
         style={styles.body}
-        refreshControl={
-          <RefreshControl
-            refreshing={Refreshing}
-            onRefresh={onRefresh}
-            tintColor="#ff0000"
-            title="Loading..."
-            titleColor="#00ff00"
-            colors={["#ff0000", "#00ff00", "#0000ff"]}
-            progressBackgroundColor="#ffffff"
-          />
-        }
+        onScroll={({nativeEvent}) => {
+          if (isCloseToBottom(nativeEvent) && feedData.length < maxLength) {
+            console.log("scrolled to bottom");
+            fetchFeedInformation(page);
+          }
+        }}
+        scrollEventThrottle={400}
         showsVerticalScrollIndicator={false}
       >
         <HomeMainPosting />
@@ -95,75 +98,6 @@ const ScreensHomeMain = () => {
             userData={record.userData}
           />
         ))}
-
-        {/* {[
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              feedData[0].content,
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-        ].map((record) => (
-          <Post
-            voting={record.voting}
-            dateText={record.dateText}
-            title={record.title}
-            content={record.content}
-            numOfAnswers={record.numOfAnswers}
-            userData={record.userData}
-          />
-        ))} */}
-
-        {/* <Post
-          voting={69}
-          dateText={"14 days ago"}
-          title={"Alo alo?"}
-          content={
-            "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-          }
-          numOfAnswers={22}
-          image={
-            "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
-          }
-          userData={{
-            name: "Chó Khánh",
-            avatarUrl:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
-          }}
-        /> */}
       </ScrollView>
     </SafeAreaView>
   );
