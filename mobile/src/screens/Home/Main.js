@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -19,7 +20,7 @@ const ScreensHomeMain = () => {
   const [feedData, setFeedData] = useState([]);
   const fetchFeedInformation = async (page) => {
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTU5NTIwMjQsImV4cCI6MTY1NTk1MzgyNCwidHlwZSI6ImFjY2VzcyJ9.wkbUSmUgv8OSta7OOfB-RK64Hc2-l8zBemFrkDYyNDw";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTU5NTk3OTgsImV4cCI6MTY1NTk2MTU5OCwidHlwZSI6ImFjY2VzcyJ9.QJFB91T6qYC_lNqSt3M9XwHoQIBVB26fQyiKN2BS7LI";
     try {
       let data = await fetch(
         `http://192.168.1.12:3000/v1/question/feed/${page}`,
@@ -42,6 +43,12 @@ const ScreensHomeMain = () => {
   useEffect(() => {
     fetchFeedInformation(0);
   }, []);
+  const [Refreshing, setRefreshing] = useState(false);
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchFeedInformation(0);
+    setRefreshing(false);
+  };
   return (
     <SafeAreaView
       style={{
@@ -59,7 +66,14 @@ const ScreensHomeMain = () => {
           }}
         />
       </View>
-      <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.body}
+        refreshControl={<RefreshControl
+          refreshing={ Refreshing }
+          onRefresh={onRefresh}
+        />
+        }
+        showsVerticalScrollIndicator={false}>
         <HomeMainPosting />
         {feedData.map((record,index) => (
           <Post key={index}
