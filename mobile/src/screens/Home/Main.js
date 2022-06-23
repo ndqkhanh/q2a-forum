@@ -10,31 +10,31 @@ import {
 import { Colors } from "react-native-ui-lib";
 import HomeMainWelcome from "~components/Home/Main/Welcome";
 import { UserContext } from "~provider/UserProvider";
-// import { FeedContext } from "~provider/FeedProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
+import { formatDistance } from 'date-fns';
 const ScreensHomeMain = () => {
-  const { userData } = useContext(UserContext);
-  const [feedData, setFeedData] = useState({});
+  // const { userData } = useContext(UserContext);
+  const [feedData, setFeedData] = useState([]);
   const fetchFeedInformation = async (page) => {
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTU4OTU4MzQsImV4cCI6MTY1NTg5NzYzNCwidHlwZSI6ImFjY2VzcyJ9.M1OhiIHkoGjPUhWiWO0pQMOjzxRTxxPNRE4OGnlP_Og";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTU5NTIwMjQsImV4cCI6MTY1NTk1MzgyNCwidHlwZSI6ImFjY2VzcyJ9.wkbUSmUgv8OSta7OOfB-RK64Hc2-l8zBemFrkDYyNDw";
     try {
       let data = await fetch(
-        `http://192.168.1.116:3000/v1/question/feed/${page}`,
+        `http://192.168.1.12:3000/v1/question/feed/${page}`,
         {
           method: "GET",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         },
       );
       data = await data.json();
-      setFeedData(data);
-      console.log("data", data);
+      setFeedData(data.data);
+      console.log("data:", feedData);
     } catch (error) {
       console.error("error---", error);
     }
@@ -61,22 +61,69 @@ const ScreensHomeMain = () => {
       </View>
       <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
         <HomeMainPosting />
-        <Post
-          voting={30}
-          dateText={"3 days ago"}
-          title={"Câu hỏi về game?"}
-          content={
-            "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-          }
-          numOfAnswers={100}
-          userData={{
-            name: "Bảo Dragon",
-            avatarUrl:
-              "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-          }}
-        />
+        {feedData.map((record,index) => (
+          <Post key={index}
+            voting={30}
+            dateText={formatDistance(new Date(record.updated_at), Date.now(), {addSuffix: true})}
+            title={record.title}
+            content={record.content}
+            numOfAnswers={record.numOfAnswers}
+            userData={record.userData}
+          />
+        ))}
 
-        <Post
+        {/* {[
+          {
+            voting: 30,
+            dateText: "3 days ago",
+            title: "Câu hỏi về game?",
+            content:
+              feedData[0].content,
+            numOfAnswers: 100,
+            userData: {
+              name: "Bảo Dragon",
+              avatarUrl:
+                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            },
+          },
+          {
+            voting: 30,
+            dateText: "3 days ago",
+            title: "Câu hỏi về game?",
+            content:
+              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
+            numOfAnswers: 100,
+            userData: {
+              name: "Bảo Dragon",
+              avatarUrl:
+                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            },
+          },
+          {
+            voting: 30,
+            dateText: "3 days ago",
+            title: "Câu hỏi về game?",
+            content:
+              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
+            numOfAnswers: 100,
+            userData: {
+              name: "Bảo Dragon",
+              avatarUrl:
+                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            },
+          },
+        ].map((record) => (
+          <Post
+            voting={record.voting}
+            dateText={record.dateText}
+            title={record.title}
+            content={record.content}
+            numOfAnswers={record.numOfAnswers}
+            userData={record.userData}
+          />
+        ))} */}
+
+        {/* <Post
           voting={69}
           dateText={"14 days ago"}
           title={"Alo alo?"}
@@ -92,7 +139,7 @@ const ScreensHomeMain = () => {
             avatarUrl:
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
           }}
-        />
+        /> */}
       </ScrollView>
     </SafeAreaView>
   );

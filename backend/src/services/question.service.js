@@ -122,6 +122,15 @@ const getLatestFeed = async (page) => {
       },
     });
     question.correctAnswerExists = !!answer;
+    question.userData = await prisma.users.findUnique({
+      where: {
+        id: question.uid,
+      },
+      select: {
+        name: true,
+        profilepictureurl: true,
+      },
+    });
   }
 
   const quesCount = await prisma.questions.count({
