@@ -110,7 +110,7 @@ const BottomTabNavigator = () => {
         }}
       />
 
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -118,8 +118,8 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="person-circle-outline" color={color} />
           ),
         }}
-      /> */}
-      <BottomTab.Screen
+      />
+      {/* <BottomTab.Screen
         name="Manage forum"
         component={ManageForumScreen}
         options={{
@@ -127,7 +127,7 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="person-circle-outline" color={color} />
           ),
         }}
-      />
+      /> */}
     </BottomTab.Navigator>
   );
 };
@@ -147,8 +147,8 @@ const App = () => {
             headerShown: false,
           }}
         >
-          <Stack.Screen name="Login" component={SignupAndLogin} />
-          {/* <Stack.Screen name="Home" component={BottomTabNavigator} /> */}
+          {/* <Stack.Screen name="Login" component={SignupAndLogin} /> */}
+          <Stack.Screen name="Home" component={BottomTabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

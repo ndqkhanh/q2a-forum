@@ -8,13 +8,12 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-
 const ProfileScreen = () => {
   const [userData, setUserData] = useState({});
   const fetchUserInformation = async (userId) => {
-    const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NjdkMGJiMC02ODY0LTQ2ODEtYjg5Yi0zMTE4MjAxMmRmNTgiLCJpYXQiOjE2NTU5NTA4MzcsImV4cCI6MTY1NTk1MjYzNywidHlwZSI6ImFjY2VzcyJ9.JByCeeBnv5VmQ5NM8g2RARBBZcXedxe39GmWlO1AiCE";
+    const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NjdkMGJiMC02ODY0LTQ2ODEtYjg5Yi0zMTE4MjAxMmRmNTgiLCJpYXQiOjE2NTYwMzkzMDcsImV4cCI6MTY1NjA0MTEwNywidHlwZSI6ImFjY2VzcyJ9.58R40P2E0BMOIS4VrhN32xsMWA44rhQz2h3HxOBetM0";
     try {
-      let data = await fetch(`http://192.168.2.104:3000/v1/user/${userId}`, {
+      let data = await fetch(`http://${API_URL}:3000/v1/user`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -30,7 +29,7 @@ const ProfileScreen = () => {
     }
   };
   useEffect(() => {
-    fetchUserInformation("467d0bb0-6864-4681-b89b-31182012df58");
+    fetchUserInformation(userData.id);
   }, []);
   return (
     <SafeAreaView style={styles.container}>
