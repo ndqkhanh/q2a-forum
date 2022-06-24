@@ -2,7 +2,7 @@ import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-const Post = ({
+const Answer = ({
   voting,
   content,
   title,
@@ -10,17 +10,14 @@ const Post = ({
   dateText,
   image,
   numOfAnswers,
-  correctAnswer = false,
 }) => {
   return (
     <View style={styles.postContainer}>
-      {typeof voting == "number" && (
-        <View style={styles.votingContainer}>
-          <Icon name="caret-up-outline" style={styles.votingUp} />
-          <Icon name="caret-down-outline" style={styles.votingDown} />
-          <Text style={styles.votingScore}>+{voting}</Text>
-        </View>
-      )}
+      <View style={styles.votingContainer}>
+        <Icon name="caret-up-outline" style={styles.votingUp} />
+        <Icon name="caret-down-outline" style={styles.votingDown} />
+        <Text style={styles.votingScore}>+{voting}</Text>
+      </View>
 
       <View style={styles.postContentContainer}>
         <View style={styles.infoUserContainer}>
@@ -30,36 +27,10 @@ const Post = ({
             }}
             style={styles.avatar}
           ></Image>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <View style={styles.nameAndDate}>
-              <Text style={styles.name}>{userData.name}</Text>
-              <Text style={styles.createdAt}>{dateText}</Text>
-            </View>
 
-            {correctAnswer && (
-              <View
-                style={{
-                  width: 50,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon
-                  name="checkmark-circle"
-                  style={{
-                    color: Colors.yellow10,
-                    fontSize: 40,
-                  }}
-                />
-              </View>
-            )}
+          <View style={styles.nameAndDate}>
+            <Text style={styles.name}>{userData.name}</Text>
+            <Text style={styles.createdAt}>{dateText}</Text>
           </View>
         </View>
 
@@ -68,9 +39,9 @@ const Post = ({
             marginTop: 10,
           }}
         >
-          {title && <Text style={styles.questionTitle}>{title}</Text>}
+          <Text style={styles.questionTitle}>{title}</Text>
 
-          {content && <Text style={styles.questionContent}>{content}</Text>}
+          <Text style={styles.questionContent}>{content}</Text>
 
           {image && (
             <Image
@@ -87,12 +58,10 @@ const Post = ({
         </View>
       </View>
 
-      {numOfAnswers && (
-        <View style={styles.questionFooterContainer}>
-          <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
-          <Text style={styles.numOfAnswers}>{numOfAnswers}</Text>
-        </View>
-      )}
+      <View style={styles.questionFooterContainer}>
+        <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
+        <Text style={styles.numOfAnswers}>{numOfAnswers}</Text>
+      </View>
     </View>
   );
 };
@@ -149,7 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   questionTitle: {
-    color: Colors.blue40,
+    color: Colors.blue20,
     fontSize: 25,
     fontWeight: "bold",
   },
@@ -178,4 +147,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-export default Post;
+export default Answer;
