@@ -40,25 +40,19 @@ const setConfiguration = async (req) =>
 
   if (!isConfigExist)
   {
-    const config = await prisma.configuration.create({
-      data: {
-        slug: req.params.slug, value:req.body.value},
-    });
-
-    return config;
+    throw new ApiError(httpStatus.NOT_FOUND, "Configuration Not Found");
   }
-  else
-  {
-    const config = await prisma.configuration.update({
-      where : { slug: req.params.slug,},
-      data: 
-      {
+
+  const config = await prisma.configuration.update({
+    where : { slug: req.params.slug,},
+    data: 
+    {
         value: req.body.value,
-      }
-    });
+    }
+  });
 
     return config;
-  }
+  
 
 };
 

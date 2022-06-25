@@ -63,6 +63,11 @@ const updateQuestion = async (req) => {
   return updatedQuestion;
 };
 
+const countQuestionInDB = async (req) =>
+{
+  const countQuestion = await prisma.questions.count({});
+  return countQuestion;
+}
 const searchQuestion = async (req) =>
 {
     const countQuestions = await prisma.questions.count({});
@@ -73,8 +78,8 @@ const searchQuestion = async (req) =>
 
     const listQuestions = await prisma.questions.findMany(
         {
-            skip: parseInt(req.params.offset) * parseInt(req.params.limit),
-            take: parseInt(req.params.limit),
+            skip: req.params.offset * req.params.limit,
+            take: req.params.limit,
             where : {
                 title : {
                    contains : req.body.keyword,
@@ -134,6 +139,13 @@ const getLatestFeed = async (page) => {
   return feed;
 };
 
+const getQuestionByID = async (req) =>
+{
+  const question = await prisma.questions.findUnique ({
+    where : {id: req.params.questionId,},
+  }); 
+  return question;
+}
 const GetAnswersByQuestionIDPagination = async(req) => {
   const answers = await prisma.answers.findMany({
     skip: req.params.page * req.params.limit,
@@ -189,4 +201,6 @@ module.exports = {
   GetAnswersByQuestionIDPagination,
   GetAnswersAndVotings,
   countAnswerByQuestionID,
+  countQuestionInDB,
+  getQuestionByID,
 };
