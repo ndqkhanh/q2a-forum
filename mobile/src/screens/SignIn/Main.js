@@ -3,6 +3,7 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -76,8 +77,8 @@ const ScreensSignInMain = ({ navigation }) => {
 
           <TextInput style={styles.fieldInput} placeholder="Username" onChangeText={setUsername} />
         </View>
-        <View style={styles.fieldContainer}>
-          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+        <View style={styles.inputContainer}>
+          <Text style={styles.signInText}>Sign in</Text>
 
           <TextInput style={styles.fieldInput} placeholder="Password" onChangeText={setPassword} secureTextEntry={true}/>
         </View>
@@ -99,8 +100,8 @@ const ScreensSignInMain = ({ navigation }) => {
           >
             Sign Up
           </Text>
-        </Text>
-      </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flexDirection: "row",
     marginTop: 20,
+    alignItems: "center",
   },
   fieldIcon: {
     fontSize: 28,
@@ -148,7 +150,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.cyan70,
     borderBottomWidth: 1,
     paddingBottom: 5,
-    marginLeft: 20,
+    marginLeft: 10,
     fontWeight: "500",
     fontSize: 16,
   },

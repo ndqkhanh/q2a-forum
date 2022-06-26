@@ -3,6 +3,7 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -59,63 +60,66 @@ const ScreensSignUpMain = ({ navigation }) => {
   }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-      <View style={styles.mainIntro}>
-        <Image
-          source={require("~assets/img/signUp.gif")}
-          style={styles.imgIntro}
-        />
-        <Text style={styles.title}>Create better together.</Text>
-        <Text style={styles.subTitle}>Join our community</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.signInText}>Sign up</Text>
-
-        <View style={styles.fieldContainer}>
-          <Icon name="person-outline" style={styles.fieldIcon} />
-
-          <TextInput style={styles.fieldInput} placeholder="Username" onChangeText={setUsername} />
-        </View>
-        <View style={styles.fieldContainer}>
-          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
-
-          <TextInput style={styles.fieldInput} placeholder="Password" onChangeText={setPassword} secureTextEntry={true}/>
-        </View>
-        <View style={styles.fieldContainer}>
-          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
-
-          <TextInput
-            style={styles.fieldInput}
-            placeholder="Re-enter Password"
-            onChangeText={setRepassword}
-            secureTextEntry={true}
+      <ScrollView
+        style={{
+          flex: 1,
+        }}
+      >
+        <View style={styles.mainIntro}>
+          <Image
+            source={require("~assets/img/signUp.gif")}
+            style={styles.imgIntro}
           />
+          <Text style={styles.title}>Create better together.</Text>
+          <Text style={styles.subTitle}>Join our community</Text>
         </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.signInText}>Sign up</Text>
 
-        <View style={styles.fieldContainer}>
-          <Icon name="image-outline" style={styles.fieldIcon} />
+          <View style={styles.fieldContainer}>
+            <Icon name="person-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Picture" onChangeText={setPicurl} />
-        </View>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => fetchSignup(username, password, repassword, picurl)}>
-          <View style={styles.button} >
+            <TextInput style={styles.fieldInput} placeholder="Username" />
+          </View>
+          <View style={styles.fieldContainer}>
+            <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+
+            <TextInput style={styles.fieldInput} placeholder="Password" />
+          </View>
+          <View style={styles.fieldContainer}>
+            <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Re-enter Password"
+            />
+          </View>
+
+          <View style={styles.fieldContainer}>
+            <Icon name="image-outline" style={styles.fieldIcon} />
+
+            <TextInput style={styles.fieldInput} placeholder="Picture" />
+          </View>
+
+          <View style={styles.button}>
             <Text style={styles.buttonText}>Register</Text>
           </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.signUpText}>
-        <Text style={styles.newForum}>
-          Joined us before?{" "}
-          <Text
-            style={{
-              color: Colors.blue40,
-              fontWeight: "bold",
-            }}
-            onPress={onSignIn}
-          >
-            Login
+        </View>
+        <View style={styles.signUpText}>
+          <Text style={styles.newForum}>
+            Joined us before?{" "}
+            <Text
+              style={{
+                color: Colors.blue40,
+                fontWeight: "bold",
+              }}
+              onPress={onSignIn}
+            >
+              Login
+            </Text>
           </Text>
-        </Text>
-      </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -153,6 +157,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flexDirection: "row",
     marginTop: 20,
+    alignItems: "center",
   },
   fieldIcon: {
     fontSize: 28,
@@ -163,7 +168,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.cyan70,
     borderBottomWidth: 1,
     paddingBottom: 5,
-    marginLeft: 20,
+    marginLeft: 10,
     fontWeight: "500",
     fontSize: 16,
   },
