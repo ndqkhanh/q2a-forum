@@ -12,6 +12,16 @@ const Post = ({
   numOfAnswers,
   correctAnswer = false,
 }) => {
+  console.log(
+    voting,
+    content,
+    title,
+    userData,
+    dateText,
+    image,
+    numOfAnswers,
+    correctAnswer,
+  );
   return (
     <View style={styles.postContainer}>
       {typeof voting == "number" && (
@@ -24,12 +34,14 @@ const Post = ({
 
       <View style={styles.postContentContainer}>
         <View style={styles.infoUserContainer}>
-          <Image
-            source={{
-              uri: userData.avatarUrl,
-            }}
-            style={styles.avatar}
-          ></Image>
+          {userData.avatarUrl && (
+            <Image
+              source={{
+                uri: userData.avatarUrl,
+              }}
+              style={styles.avatar}
+            ></Image>
+          )}
           <View
             style={{
               flex: 1,
@@ -39,8 +51,10 @@ const Post = ({
             }}
           >
             <View style={styles.nameAndDate}>
-              <Text style={styles.name}>{userData.name}</Text>
-              <Text style={styles.createdAt}>{dateText}</Text>
+              {userData.name && (
+                <Text style={styles.name}>{userData.name}</Text>
+              )}
+              {dateText && <Text style={styles.createdAt}>{dateText}</Text>}
             </View>
 
             {correctAnswer && (
@@ -87,7 +101,7 @@ const Post = ({
         </View>
       </View>
 
-      {numOfAnswers && (
+      {typeof numOfAnswers == "number" && (
         <View style={styles.questionFooterContainer}>
           <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
           <Text style={styles.numOfAnswers}>{numOfAnswers}</Text>
