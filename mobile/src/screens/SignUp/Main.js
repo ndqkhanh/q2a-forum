@@ -13,6 +13,7 @@ import {
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {API_URL} from '@env';
 
 const ScreensSignUpMain = ({ navigation }) => {
   const onSignIn = () => {
@@ -28,7 +29,7 @@ const ScreensSignUpMain = ({ navigation }) => {
     if (password == repassword) {
       try {
         let responseNewUser = await fetch(
-          "http://192.168.216.211:3000/v1/auth/signup",
+          `${API_URL}auth/signup`,
           {
             method: "POST",
             headers: {

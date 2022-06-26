@@ -13,6 +13,7 @@ import {
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from '@env';
 
 const ScreensSignInMain = ({ navigation }) => {
   const onSignUp = () => {
@@ -27,7 +28,7 @@ const ScreensSignInMain = ({ navigation }) => {
     try {
       storageToken = await AsyncStorage.getItem("UserToken");
       let responseCheckToken = await fetch(
-        "http://192.168.216.211:3000/v1/user",
+        `${API_URL}user`,
         {
           method: "GET",
           headers: {
@@ -49,7 +50,7 @@ const ScreensSignInMain = ({ navigation }) => {
   const fetchSignin = async (username, password) => {
     try {
       let responseLogin = await fetch(
-        "http://192.168.216.211:3000/v1/auth/signin",
+        `${API_URL}auth/signin`,
         {
           method: "POST",
           headers: {
