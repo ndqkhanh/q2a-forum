@@ -19,6 +19,7 @@ import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 import ProfileScreen from "~screens/Profile/UserProfile";
 import ManageForumScreen from "~screens/Profile/ManageForum";
 import PostQuestionScreen from "~screens/PostNewQuestion";
+import SearchScreen from "~screens/Search/Search";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -66,31 +67,22 @@ const BottomTabNavigator = () => {
         ],
       }}
     >
-      {/* <BottomTab.Screen
-        name="Log in"
-        component={LoginScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="log-in-outline" color={color} />
-          ),
-        }}
-      /> */}
-      {/* <BottomTab.Screen
-        name="Sign up"
-        component={LoginScreen}
-        initialParams={{ SignUp: true }}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-add-outline" color={color} />
-          ),
-        }}
-      /> */}
       <BottomTab.Screen
         name="Your Feed"
         component={ScreensHomeMain}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="search-circle-outline" color={color} />
+          ),
         }}
       />
       <BottomTab.Screen

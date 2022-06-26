@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import HomeMainWelcome from "~components/Home/Main/Welcome";
@@ -15,6 +16,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
 import { formatDistance } from "date-fns";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import { API_URL } from "@env";
 
@@ -39,7 +41,7 @@ const ScreensHomeMain = () => {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -69,13 +71,21 @@ const ScreensHomeMain = () => {
     >
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Q & A Forum</Text>
-        <Icon
-          name="log-out-outline"
-          style={{
-            fontSize: 30,
-            color: Colors.cyan10,
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={async () => {
+            await AsyncStorage.clear();
+            navigation.navigate("Login");
           }}
-        />
+        >
+          <Icon
+            name="log-out-outline"
+            style={{
+              fontSize: 30,
+              color: Colors.cyan10,
+            }}
+          />
+        </TouchableOpacity>
       </View>
       <ScrollView
         style={styles.body}
