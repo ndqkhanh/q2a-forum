@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -13,16 +14,26 @@ import { UserContext } from "~provider/UserProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
-import { formatDistance } from 'date-fns';
+import { formatDistance } from "date-fns";
+import { Alert } from "react-native";
+import { API_URL } from "@env";
+
+const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom;
+};
+
 const ScreensHomeMain = () => {
-  // const { userData } = useContext(UserContext);
+  const [maxLength, setMaxLength] = useState(0);
+  const [page, setPage] = useState(0);
   const [feedData, setFeedData] = useState([]);
   const fetchFeedInformation = async (page) => {
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTU5NTIwMjQsImV4cCI6MTY1NTk1MzgyNCwidHlwZSI6ImFjY2VzcyJ9.wkbUSmUgv8OSta7OOfB-RK64Hc2-l8zBemFrkDYyNDw";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTYyNDg1NDAsImV4cCI6MTY1NjI1MDM0MCwidHlwZSI6ImFjY2VzcyJ9.okWLM3sxOQSnEaFpIx333L6t_NNU1jtrtp1dsyR5r-Y";
     try {
       let data = await fetch(
-        `http://192.168.1.12:3000/v1/question/feed/${page}`,
+        `${API_URL}/question/feed/${page}`,
         {
           method: "GET",
           headers: {
@@ -33,8 +44,14 @@ const ScreensHomeMain = () => {
         },
       );
       data = await data.json();
-      setFeedData(data.data);
+      var maxLength = parseInt(data.count);
+      setMaxLength(maxLength);
+      setFeedData([...feedData, ...data.data]);
+      setPage(page + 1);
       console.log("data:", feedData);
+      // console.log(formatDistance(new Date(feedData[0].updated_at), Date.now(), {
+      //   addSuffix: true,
+      // }));
     } catch (error) {
       console.error("error---", error);
     }
@@ -42,6 +59,7 @@ const ScreensHomeMain = () => {
   useEffect(() => {
     fetchFeedInformation(0);
   }, []);
+
   return (
     <SafeAreaView
       style={{
@@ -59,16 +77,31 @@ const ScreensHomeMain = () => {
           }}
         />
       </View>
-      <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.body}
+        onScroll={({nativeEvent}) => {
+          if (isCloseToBottom(nativeEvent) && feedData.length < maxLength) {
+            console.log("scrolled to bottom");
+            fetchFeedInformation(page);
+          }
+        }}
+        scrollEventThrottle={400}
+        showsVerticalScrollIndicator={false}
+      >
         <HomeMainPosting />
-        {feedData.map((record,index) => (
+        {feedData.map((record, index) => (
           <Post key={index}
-            voting={30}
-            dateText={formatDistance(new Date(record.updated_at), Date.now(), {addSuffix: true})}
+            dateText={formatDistance(new Date(record.updated_at), Date.now(), {
+              addSuffix: true,
+            })}
             title={record.title}
             content={record.content}
             numOfAnswers={record.numOfAnswers}
-            userData={record.userData}
+            userData={{
+              name: record.userData.name,
+              avatarUrl: record.userData.profilepictureurl,
+            }}
+            correctAnswer={record.correctAnswerExists}
           />
         ))}
 
@@ -78,7 +111,7 @@ const ScreensHomeMain = () => {
             dateText: "3 days ago",
             title: "Câu hỏi về game?",
             content:
-              feedData[0].content,
+              "feedData[0].content",
             numOfAnswers: 100,
             userData: {
               name: "Bảo Dragon",
@@ -112,8 +145,8 @@ const ScreensHomeMain = () => {
                 "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
             },
           },
-        ].map((record) => (
-          <Post
+        ].map((record, index) => (
+          <Post key={index}
             voting={record.voting}
             dateText={record.dateText}
             title={record.title}
@@ -140,6 +173,7 @@ const ScreensHomeMain = () => {
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
           }}
         /> */}
+
       </ScrollView>
     </SafeAreaView>
   );
