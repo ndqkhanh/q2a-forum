@@ -12,16 +12,6 @@ const Post = ({
   numOfAnswers,
   correctAnswer = false,
 }) => {
-  console.log(
-    voting,
-    content,
-    title,
-    userData,
-    dateText,
-    image,
-    numOfAnswers,
-    correctAnswer,
-  );
   return (
     <View style={styles.postContainer}>
       {typeof voting == "number" && (
