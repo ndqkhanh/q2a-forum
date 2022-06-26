@@ -15,7 +15,8 @@ import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
 import { formatDistance } from 'date-fns';
-const ScreensHomeMain = () => {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const ScreensHomeMain = ({navigation}) => {
   // const { userData } = useContext(UserContext);
   const [feedData, setFeedData] = useState([]);
   const fetchFeedInformation = async (page) => {

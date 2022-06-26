@@ -3,7 +3,6 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -13,21 +12,22 @@ import {
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ScreensSignUpMain = ({ navigation }) => {
   const onSignIn = () => {
     navigation.navigate("login_screen");
   };
   const [username, setUsername] = useState(null);
+  const [name, setName] = useState(null);
   const [password, setPassword] = useState(null);
   const [repassword, setRepassword] = useState(null);
   const [picurl, setPicurl] = useState(null);
 
-  const fetchSignup = async (username, password, repassword, picurl) => {
+  const fetchSignup = async (username, name, password, repassword, picurl) => {
     if(password == repassword){
     try {
-      let responseNewUser = await fetch('http://192.168.178.211:3000/v1/auth/signup', {
+      let responseNewUser = await fetch('http://192.168.216.211:3000/v1/auth/signup', {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -37,13 +37,15 @@ const ScreensSignUpMain = ({ navigation }) => {
         body: JSON.stringify({
           username: `${username}`,
           password: `${password}`,
-          name: `${username}`,
+          name: `${name}`,
           profilepictureurl: `${picurl}`,
         })
       })
       const mjson = await responseNewUser.json()
       if (mjson.hasOwnProperty('tokens')) {
         Alert.alert('Ancouncement', 'Your account has been successfully created.')
+        await AsyncStorage.setItem('UserToken', mjson['tokens']['access']['token'])
+        navigation.navigate('Home')
       } else {
         Alert.alert('Invalid', mjson['message'])
       }
@@ -60,66 +62,70 @@ const ScreensSignUpMain = ({ navigation }) => {
   }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-      <ScrollView
-        style={{
-          flex: 1,
-        }}
-      >
-        <View style={styles.mainIntro}>
-          <Image
-            source={require("~assets/img/signUp.gif")}
-            style={styles.imgIntro}
-          />
-          <Text style={styles.title}>Create better together.</Text>
-          <Text style={styles.subTitle}>Join our community</Text>
+      <View style={styles.mainIntro}>
+        <Image
+          source={require("~assets/img/signUp.gif")}
+          style={styles.imgIntro}
+        />
+        <Text style={styles.title}>Create better together.</Text>
+        <Text style={styles.subTitle}>Join our community</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.signInText}>Sign up</Text>
+
+        <View style={styles.fieldContainer}>
+          <Icon name="person-outline" style={styles.fieldIcon} />
+
+          <TextInput style={styles.fieldInput} placeholder="Username" onChangeText={setUsername} />
         </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.signInText}>Sign up</Text>
 
-          <View style={styles.fieldContainer}>
-            <Icon name="person-outline" style={styles.fieldIcon} />
+        <View style={styles.fieldContainer}>
+          <Icon name="id-card-outline" style={styles.fieldIcon} />
 
-            <TextInput style={styles.fieldInput} placeholder="Username" />
-          </View>
-          <View style={styles.fieldContainer}>
-            <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+          <TextInput style={styles.fieldInput} placeholder="Name" onChangeText={setName} />
+        </View>
 
-            <TextInput style={styles.fieldInput} placeholder="Password" />
-          </View>
-          <View style={styles.fieldContainer}>
-            <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+        <View style={styles.fieldContainer}>
+          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
 
-            <TextInput
-              style={styles.fieldInput}
-              placeholder="Re-enter Password"
-            />
-          </View>
+          <TextInput style={styles.fieldInput} placeholder="Password" onChangeText={setPassword} secureTextEntry={true}/>
+        </View>
+        <View style={styles.fieldContainer}>
+          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
 
-          <View style={styles.fieldContainer}>
-            <Icon name="image-outline" style={styles.fieldIcon} />
+          <TextInput
+            style={styles.fieldInput}
+            placeholder="Re-enter Password"
+            onChangeText={setRepassword}
+            secureTextEntry={true}
+          />
+        </View>
 
-            <TextInput style={styles.fieldInput} placeholder="Picture" />
-          </View>
+        <View style={styles.fieldContainer}>
+          <Icon name="image-outline" style={styles.fieldIcon} />
 
-          <View style={styles.button}>
+          <TextInput style={styles.fieldInput} placeholder="Picture" onChangeText={setPicurl} />
+        </View>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => fetchSignup(username, name, password, repassword, picurl)}>
+          <View style={styles.button} >
             <Text style={styles.buttonText}>Register</Text>
           </View>
-        </View>
-        <View style={styles.signUpText}>
-          <Text style={styles.newForum}>
-            Joined us before?{" "}
-            <Text
-              style={{
-                color: Colors.blue40,
-                fontWeight: "bold",
-              }}
-              onPress={onSignIn}
-            >
-              Login
-            </Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.signUpText}>
+        <Text style={styles.newForum}>
+          Joined us before?{" "}
+          <Text
+            style={{
+              color: Colors.blue40,
+              fontWeight: "bold",
+            }}
+            onPress={onSignIn}
+          >
+            Login
           </Text>
-        </View>
-      </ScrollView>
+        </Text>
+      </View>
     </SafeAreaView>
   );
 };
@@ -157,7 +163,6 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flexDirection: "row",
     marginTop: 20,
-    alignItems: "center",
   },
   fieldIcon: {
     fontSize: 28,
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.cyan70,
     borderBottomWidth: 1,
     paddingBottom: 5,
-    marginLeft: 10,
+    marginLeft: 20,
     fontWeight: "500",
     fontSize: 16,
   },
