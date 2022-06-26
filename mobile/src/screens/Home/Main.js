@@ -26,7 +26,7 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     contentSize.height - paddingToBottom;
 };
 
-const ScreensHomeMain = () => {
+const ScreensHomeMain = ({navigation}) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
   const [feedData, setFeedData] = useState([]);

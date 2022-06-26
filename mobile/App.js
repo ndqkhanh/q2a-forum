@@ -149,7 +149,7 @@ const App = () => {
             headerShown: false,
           }}
         >
-          {/* <Stack.Screen name="Login" component={SignupAndLogin} /> */}
+          <Stack.Screen name="Login" component={SignupAndLogin} />
           <Stack.Screen name="Home" component={BottomTabNavigator} />
           {/* <Stack.Screen name="Q2A" component={ScreensQ2AMain} /> */}
         </Stack.Navigator>

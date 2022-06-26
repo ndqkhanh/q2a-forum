@@ -28,7 +28,7 @@ const ScreensSignUpMain = ({ navigation }) => {
   const fetchSignup = async (username, name, password, repassword, picurl) => {
     if (password == repassword) {
       try {
-        let responseNewUser = await fetch(`${API_URL}auth/signup`, {
+        let responseNewUser = await fetch(`${API_URL}/auth/signup`, {
           method: "POST",
           headers: {
             Accept: "application/json",

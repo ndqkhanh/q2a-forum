@@ -26,8 +26,9 @@ const ScreensSignInMain = ({ navigation }) => {
   }, []);
   const getStorageToken = async () => {
     try {
+      
       storageToken = await AsyncStorage.getItem("UserToken");
-      let responseCheckToken = await fetch(`${API_URL}user`, {
+      let responseCheckToken = await fetch(`${API_URL}/user`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -46,7 +47,7 @@ const ScreensSignInMain = ({ navigation }) => {
 
   const fetchSignin = async (username, password) => {
     try {
-      let responseLogin = await fetch(`${API_URL}auth/signin`, {
+      let responseLogin = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
         headers: {
           Accept: "application/json",
