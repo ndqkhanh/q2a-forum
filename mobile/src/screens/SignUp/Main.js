@@ -13,7 +13,7 @@ import {
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {API_URL} from '@env';
+import { API_URL } from "@env";
 
 const ScreensSignUpMain = ({ navigation }) => {
   const onSignIn = () => {
@@ -28,23 +28,20 @@ const ScreensSignUpMain = ({ navigation }) => {
   const fetchSignup = async (username, name, password, repassword, picurl) => {
     if (password == repassword) {
       try {
-        let responseNewUser = await fetch(
-          `${API_URL}auth/signup`,
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              Authorization: "Bearer ",
-            },
-            body: JSON.stringify({
-              username: `${username}`,
-              password: `${password}`,
-              name: `${name}`,
-              profilepictureurl: `${picurl}`,
-            }),
+        let responseNewUser = await fetch(`${API_URL}auth/signup`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer ",
           },
-        );
+          body: JSON.stringify({
+            username: `${username}`,
+            password: `${password}`,
+            name: `${name}`,
+            profilepictureurl: `${picurl}`,
+          }),
+        });
         const mjson = await responseNewUser.json();
         if (mjson.hasOwnProperty("tokens")) {
           Alert.alert(

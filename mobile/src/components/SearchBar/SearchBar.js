@@ -41,7 +41,7 @@ const SearchBar = (props) => {
     </View>
   );
 };
-export { SearchBar };
+export default SearchBar;
 const wid = Dimensions.get("screen").width;
 const styles = StyleSheet.create({
   searchIcon: {

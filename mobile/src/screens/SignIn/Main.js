@@ -13,7 +13,7 @@ import {
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL } from '@env';
+import { API_URL } from "@env";
 
 const ScreensSignInMain = ({ navigation }) => {
   const onSignUp = () => {
@@ -27,17 +27,14 @@ const ScreensSignInMain = ({ navigation }) => {
   const getStorageToken = async () => {
     try {
       storageToken = await AsyncStorage.getItem("UserToken");
-      let responseCheckToken = await fetch(
-        `${API_URL}user`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${storageToken}`,
-          },
+      let responseCheckToken = await fetch(`${API_URL}user`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storageToken}`,
         },
-      );
+      });
       const mjson = await responseCheckToken.json();
       if (mjson.hasOwnProperty("id")) {
         navigation.navigate("Home");
@@ -49,21 +46,18 @@ const ScreensSignInMain = ({ navigation }) => {
 
   const fetchSignin = async (username, password) => {
     try {
-      let responseLogin = await fetch(
-        `${API_URL}auth/signin`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: "Bearer ",
-          },
-          body: JSON.stringify({
-            username: `${username}`,
-            password: `${password}`,
-          }),
+      let responseLogin = await fetch(`${API_URL}auth/signin`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer ",
         },
-      );
+        body: JSON.stringify({
+          username: `${username}`,
+          password: `${password}`,
+        }),
+      });
 
       const mjson = await responseLogin.json();
       if (mjson.hasOwnProperty("tokens")) {

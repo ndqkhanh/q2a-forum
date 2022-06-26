@@ -13,7 +13,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
-import { SearchBar } from "~components/SearchBar/SearchBar";
+import SearchBar from "~components/SearchBar/SearchBar";
 import Post from "~components/Common/Post";
 import Icon from "react-native-vector-icons/Ionicons";
 const SearchScreen = ({ navigation }) => {
