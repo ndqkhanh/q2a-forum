@@ -91,7 +91,6 @@ const ScreensHomeMain = () => {
         <HomeMainPosting />
         {feedData.map((record, index) => (
           <Post key={index}
-            voting={30}
             dateText={formatDistance(new Date(record.updated_at), Date.now(), {
               addSuffix: true,
             })}
@@ -102,6 +101,7 @@ const ScreensHomeMain = () => {
               name: record.userData.name,
               avatarUrl: record.userData.profilepictureurl,
             }}
+            correctAnswer={record.correctAnswerExists}
           />
         ))}
 
