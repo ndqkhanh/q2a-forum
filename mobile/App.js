@@ -80,7 +80,9 @@ const BottomTabNavigator = () => {
         component={SearchScreen}
         options={{
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="search-circle-outline" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="search-circle-outline" color={color} />
+          ),
         }}
       />
       <BottomTab.Screen

@@ -14,9 +14,9 @@ import { UserContext } from "~provider/UserProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
-import { formatDistance } from 'date-fns';
+import { formatDistance } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const ScreensHomeMain = ({navigation}) => {
+const ScreensHomeMain = ({ navigation }) => {
   // const { userData } = useContext(UserContext);
   const [feedData, setFeedData] = useState([]);
   const fetchFeedInformation = async (page) => {
@@ -30,7 +30,7 @@ const ScreensHomeMain = ({navigation}) => {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -53,22 +53,31 @@ const ScreensHomeMain = ({navigation}) => {
     >
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Q & A Forum</Text>
-        <TouchableOpacity activeOpacity={0.8} onPress={async () => {await AsyncStorage.clear(); navigation.navigate('Login')}}>
-        <Icon
-          name="log-out-outline"
-          style={{
-            fontSize: 30,
-            color: Colors.cyan10,
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={async () => {
+            await AsyncStorage.clear();
+            navigation.navigate("Login");
           }}
-        />
+        >
+          <Icon
+            name="log-out-outline"
+            style={{
+              fontSize: 30,
+              color: Colors.cyan10,
+            }}
+          />
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
         <HomeMainPosting />
-        {feedData.map((record,index) => (
-          <Post key={index}
+        {feedData.map((record, index) => (
+          <Post
+            key={index}
             voting={30}
-            dateText={formatDistance(new Date(record.updated_at), Date.now(), {addSuffix: true})}
+            dateText={formatDistance(new Date(record.updated_at), Date.now(), {
+              addSuffix: true,
+            })}
             title={record.title}
             content={record.content}
             numOfAnswers={record.numOfAnswers}

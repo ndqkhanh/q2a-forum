@@ -8,7 +8,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
-  Alert
+  Alert,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -20,55 +20,65 @@ const ScreensSignInMain = ({ navigation }) => {
   };
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
-  useEffect(() => { getStorageToken() }, [])
-  const getStorageToken = async() => {
+  useEffect(() => {
+    getStorageToken();
+  }, []);
+  const getStorageToken = async () => {
     try {
-      storageToken =  await AsyncStorage.getItem('UserToken')
-      let responseCheckToken = await fetch('http://192.168.216.211:3000/v1/user', {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${storageToken}`
-        }
-      })
-      const mjson = await responseCheckToken.json()
-      if (mjson.hasOwnProperty('id')) {
-        navigation.navigate('Home')
+      storageToken = await AsyncStorage.getItem("UserToken");
+      let responseCheckToken = await fetch(
+        "http://192.168.216.211:3000/v1/user",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storageToken}`,
+          },
+        },
+      );
+      const mjson = await responseCheckToken.json();
+      if (mjson.hasOwnProperty("id")) {
+        navigation.navigate("Home");
       }
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
     }
-  }
+  };
 
   const fetchSignin = async (username, password) => {
-    
     try {
-      let responseLogin = await fetch('http://192.168.216.211:3000/v1/auth/signin', {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: 'Bearer '
+      let responseLogin = await fetch(
+        "http://192.168.216.211:3000/v1/auth/signin",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer ",
+          },
+          body: JSON.stringify({
+            username: `${username}`,
+            password: `${password}`,
+          }),
         },
-        body: JSON.stringify({
-          username: `${username}`,
-          password: `${password}`,
-        })
-      })
-      
-      const mjson = await responseLogin.json()
-      if (mjson.hasOwnProperty('tokens')) {
-        await AsyncStorage.setItem('UserToken', mjson['tokens']['access']['token'])
-        navigation.navigate('Home')
+      );
+
+      const mjson = await responseLogin.json();
+      if (mjson.hasOwnProperty("tokens")) {
+        await AsyncStorage.setItem(
+          "UserToken",
+          mjson["tokens"]["access"]["token"],
+        );
+        navigation.navigate("Home");
       } else {
-        Alert.alert('Invalid', mjson['message'])
+        Alert.alert("Invalid", mjson["message"]);
       }
     } catch (error) {
-      console.log('error', error)
-      Alert.alert('error', error)
+      console.log("error", error);
+      Alert.alert("error", error);
     }
-  }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
       <View style={styles.mainIntro}>
@@ -85,14 +95,26 @@ const ScreensSignInMain = ({ navigation }) => {
         <View style={styles.fieldContainer}>
           <Icon name="person-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Username" onChangeText={setUsername} />
+          <TextInput
+            style={styles.fieldInput}
+            placeholder="Username"
+            onChangeText={setUsername}
+          />
         </View>
         <View style={styles.fieldContainer}>
           <Icon name="lock-closed-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Password" onChangeText={setPassword} secureTextEntry={true}/>
+          <TextInput
+            style={styles.fieldInput}
+            placeholder="Password"
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
         </View>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => fetchSignin(username, password)}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => fetchSignin(username, password)}
+        >
           <View style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
           </View>

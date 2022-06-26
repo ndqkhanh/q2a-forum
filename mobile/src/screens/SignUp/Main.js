@@ -25,41 +25,47 @@ const ScreensSignUpMain = ({ navigation }) => {
   const [picurl, setPicurl] = useState(null);
 
   const fetchSignup = async (username, name, password, repassword, picurl) => {
-    if(password == repassword){
-    try {
-      let responseNewUser = await fetch('http://192.168.216.211:3000/v1/auth/signup', {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: 'Bearer '
-        },
-        body: JSON.stringify({
-          username: `${username}`,
-          password: `${password}`,
-          name: `${name}`,
-          profilepictureurl: `${picurl}`,
-        })
-      })
-      const mjson = await responseNewUser.json()
-      if (mjson.hasOwnProperty('tokens')) {
-        Alert.alert('Ancouncement', 'Your account has been successfully created.')
-        await AsyncStorage.setItem('UserToken', mjson['tokens']['access']['token'])
-        navigation.navigate('Home')
-      } else {
-        Alert.alert('Invalid', mjson['message'])
+    if (password == repassword) {
+      try {
+        let responseNewUser = await fetch(
+          "http://192.168.216.211:3000/v1/auth/signup",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: "Bearer ",
+            },
+            body: JSON.stringify({
+              username: `${username}`,
+              password: `${password}`,
+              name: `${name}`,
+              profilepictureurl: `${picurl}`,
+            }),
+          },
+        );
+        const mjson = await responseNewUser.json();
+        if (mjson.hasOwnProperty("tokens")) {
+          Alert.alert(
+            "Ancouncement",
+            "Your account has been successfully created.",
+          );
+          await AsyncStorage.setItem(
+            "UserToken",
+            mjson["tokens"]["access"]["token"],
+          );
+          navigation.navigate("Home");
+        } else {
+          Alert.alert("Invalid", mjson["message"]);
+        }
+      } catch (error) {
+        console.log("error", error);
+        Alert.alert("error", error);
       }
-    } catch (error) {
-      console.log('error', error)
-      Alert.alert('error', error)
+    } else {
+      Alert.alert("Invalid", "Two passwords are not the same.");
     }
-  }
-  else{
-    Alert.alert('Invalid', 'Two passwords are not the same.')
-  }
-
-
-  }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
       <View style={styles.mainIntro}>
@@ -76,19 +82,32 @@ const ScreensSignUpMain = ({ navigation }) => {
         <View style={styles.fieldContainer}>
           <Icon name="person-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Username" onChangeText={setUsername} />
+          <TextInput
+            style={styles.fieldInput}
+            placeholder="Username"
+            onChangeText={setUsername}
+          />
         </View>
 
         <View style={styles.fieldContainer}>
           <Icon name="id-card-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Name" onChangeText={setName} />
+          <TextInput
+            style={styles.fieldInput}
+            placeholder="Name"
+            onChangeText={setName}
+          />
         </View>
 
         <View style={styles.fieldContainer}>
           <Icon name="lock-closed-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Password" onChangeText={setPassword} secureTextEntry={true}/>
+          <TextInput
+            style={styles.fieldInput}
+            placeholder="Password"
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
         </View>
         <View style={styles.fieldContainer}>
           <Icon name="lock-closed-outline" style={styles.fieldIcon} />
@@ -104,10 +123,19 @@ const ScreensSignUpMain = ({ navigation }) => {
         <View style={styles.fieldContainer}>
           <Icon name="image-outline" style={styles.fieldIcon} />
 
-          <TextInput style={styles.fieldInput} placeholder="Picture" onChangeText={setPicurl} />
+          <TextInput
+            style={styles.fieldInput}
+            placeholder="Picture"
+            onChangeText={setPicurl}
+          />
         </View>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => fetchSignup(username, name, password, repassword, picurl)}>
-          <View style={styles.button} >
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() =>
+            fetchSignup(username, name, password, repassword, picurl)
+          }
+        >
+          <View style={styles.button}>
             <Text style={styles.buttonText}>Register</Text>
           </View>
         </TouchableOpacity>
