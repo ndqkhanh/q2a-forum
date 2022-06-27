@@ -9,11 +9,13 @@ import {
   View,
   TouchableOpacity,
   Alert,
+
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
+import { ScrollView } from "react-native-gesture-handler";
 
 const ScreensSignInMain = ({ navigation }) => {
   const onSignUp = () => {
@@ -76,6 +78,7 @@ const ScreensSignInMain = ({ navigation }) => {
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
+      <ScrollView style = {{flex: 1}}>
       <View style={styles.mainIntro}>
         <Image
           source={require("~assets/img/login.gif")}
@@ -129,6 +132,7 @@ const ScreensSignInMain = ({ navigation }) => {
           </Text>
         </Text>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -166,6 +170,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flexDirection: "row",
     marginTop: 20,
+    alignItems: 'center',
   },
   fieldIcon: {
     fontSize: 28,
@@ -176,7 +181,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.cyan70,
     borderBottomWidth: 1,
     paddingBottom: 5,
-    marginLeft: 20,
+    marginLeft: 10,
     fontWeight: "500",
     fontSize: 16,
   },
