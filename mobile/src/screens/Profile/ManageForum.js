@@ -49,8 +49,8 @@ const ManageForumScreen = () => {
     fetchMetricsInformation();
   }, []);
 
-  const [maxLength, setMaxLength] = useState(0);
-  const [page, setPage] = useState(0);
+  const [maxPendingQuestionsLength, setMaxPendingQuestionsLength] = useState(0);
+  const [pendingQuestionsPage, setPendingQuestionsPage] = useState(0);
   const [pendingQuestionsData, setPendingQuestionsData] = useState([]);
   const fetchPendingQuestions = async (page, limit) => {
     const data = await getPendingQuestions(page, limit);
@@ -60,10 +60,10 @@ const ManageForumScreen = () => {
     } catch (e) {
       console.log(e);
     }
-    setMaxLength(maxLength);
+    setMaxPendingQuestionsLength(maxLength);
     setPendingQuestionsData([...pendingQuestionsData, ...data.data]);
-    setPage(page + 1);
-    console.log("data:", data);
+    setPendingQuestionsPage(pendingQuestionsPage + 1);
+    console.log("data:", pendingQuestionsData);
   };
   useEffect(() => {
     fetchPendingQuestions(0, 5);
@@ -76,10 +76,10 @@ const ManageForumScreen = () => {
         onScroll={({ nativeEvent }) => {
           if (
             isCloseToBottom(nativeEvent) &&
-            pendingQuestionsData.length < maxLength
+            pendingQuestionsData.length < maxPendingQuestionsLength
           ) {
             console.log("scrolled to bottom");
-            fetchPendingQuestions(page, 5);
+            fetchPendingQuestions(pendingQuestionsPage, 5);
           }
         }}
         scrollEventThrottle={400}
