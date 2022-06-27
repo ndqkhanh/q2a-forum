@@ -63,36 +63,30 @@ const updateQuestion = async (req) => {
   return updatedQuestion;
 };
 
-const countQuestionInDB = async (req) =>
-{
+const countQuestionInDB = async (req) => {
   const countQuestion = await prisma.questions.count({});
   return countQuestion;
-}
-const searchQuestion = async (req) =>
-{
-    const countQuestions = await prisma.questions.count({});
-    if (req.params.offset > countQuestions / req.params.limit)
-    {
-        throw new ApiError (httpStatus.NOT_FOUND, "Not Found Questions Related");
-    }
+};
+const searchQuestion = async (req) => {
+  const countQuestions = await prisma.questions.count({});
+  if (req.params.offset > countQuestions / req.params.limit) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Not Found Questions Related');
+  }
 
-    const listQuestions = await prisma.questions.findMany(
-        {
-            skip: req.params.offset * req.params.limit,
-            take: req.params.limit,
-            where : {
-                title : {
-                   contains : req.body.keyword,
-                },
-            },
-        }
-    );
+  const listQuestions = await prisma.questions.findMany({
+    skip: req.params.offset * req.params.limit,
+    take: req.params.limit,
+    where: {
+      title: {
+        contains: req.body.keyword,
+      },
+    },
+  });
 
-    if (!listQuestions)
-    {
-        throw new ApiError (httpStatus.NOT_FOUND, "There is no questions related to keywords");  
-    }
-    return listQuestions;
+  if (!listQuestions) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'There is no questions related to keywords');
+  }
+  return listQuestions;
 };
 
 const getLatestFeed = async (page) => {
@@ -154,59 +148,57 @@ const getLatestFeed = async (page) => {
   return { count: quesCount, data: feed };
 };
 
-const getQuestionByID = async (req) =>
-{
-  const question = await prisma.questions.findUnique ({
-    where : {id: req.params.questionId,},
-  }); 
+const getQuestionByID = async (req) => {
+  const question = await prisma.questions.findUnique({
+    where: { id: req.params.questionId },
+  });
   return question;
-}
-const GetAnswersByQuestionIDPagination = async(req) => {
+};
+const GetAnswersByQuestionIDPagination = async (req) => {
   const answers = await prisma.answers.findMany({
     skip: req.params.page * req.params.limit,
     take: req.params.limit,
-    where : {qid: req.params.questionId,},
+    where: { qid: req.params.questionId },
   });
 
   return answers;
 };
 
 const GetAnswersAndVotings = async (answers) => {
-  answersAndvotings = []
-  for (let i = 0; i < answers.length; i++)
-  {
+  answersAndvotings = [];
+  for (let i = 0; i < answers.length; i++) {
     const upvotes = await prisma.voting.findMany({
-      where : {aid: answers[i].id, status : true }
+      where: { aid: answers[i].id, status: true },
     });
 
     const downvotes = await prisma.voting.findMany({
-      where : {aid: answers[i].id, status : false }
+      where: { aid: answers[i].id, status: false },
     });
 
     const user = await prisma.users.findUnique({
-      where : {id: answers[i].uid}
+      where: { id: answers[i].uid },
     });
 
     answersAndvotings.push({
-      answer: answers[i], 
+      answer: answers[i],
       count_upvotes: upvotes.length,
       count_downvotes: downvotes.length,
       minus_upvote_downvote: upvotes.length - downvotes.length,
       username: user.username,
-      profilepictureurl: user.profilepictureurl})
+      profilepictureurl: user.profilepictureurl,
+    });
   }
 
   return answersAndvotings;
 };
 
-const countAnswerByQuestionID = async (req) =>
-{
+const countAnswerByQuestionID = async (req) => {
   const answers = await prisma.answers.findMany({
-    where : {qid: req.params.questionId,},
+    where: { qid: req.params.questionId },
   });
 
   return answers.length;
-}
+};
 module.exports = {
   createQuestion,
   deleteQuestionById,

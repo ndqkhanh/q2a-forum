@@ -31,29 +31,23 @@ const disableUser = async (req) => {
   return user;
 };
 
-const setConfiguration = async (req) =>
-{
-
+const setConfiguration = async (req) => {
   const isConfigExist = await prisma.configuration.findUnique({
-    where : {slug: req.params.slug},
+    where: { slug: req.params.slug },
   });
 
-  if (!isConfigExist)
-  {
-    throw new ApiError(httpStatus.NOT_FOUND, "Configuration Not Found");
+  if (!isConfigExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Configuration Not Found');
   }
 
   const config = await prisma.configuration.update({
-    where : { slug: req.params.slug,},
-    data: 
-    {
-        value: req.body.value,
-    }
+    where: { slug: req.params.slug },
+    data: {
+      value: req.body.value,
+    },
   });
 
-    return config;
-  
-
+  return config;
 };
 
 const getPendingQuestions = async (page, limit) => {
@@ -72,6 +66,19 @@ const getPendingQuestions = async (page, limit) => {
       status: 0,
     },
   });
+
+  for (let i = 0; i < listPendingQuestions.length; i++) {
+    const question = listPendingQuestions[i];
+    question.userData = await prisma.users.findUnique({
+      where: {
+        id: question.uid,
+      },
+      select: {
+        name: true,
+        profilepictureurl: true,
+      },
+    });
+  }
   return { count: countPendingQuestions, data: listPendingQuestions };
 };
 

@@ -11,7 +11,16 @@ import { UserContext } from "~provider/UserProvider";
 import PendingQuestion from "~components/Common/PendingQuestionList";
 import User from "~components/Common/UserList";
 import { TextInput } from "react-native-gesture-handler";
-import { getMetrics } from "~services/admin";
+import { formatDistance } from "date-fns";
+import { getMetrics, getPendingQuestions } from "~services/admin";
+
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 20;
+  return (
+    layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom
+  );
+};
 
 const ManageForumScreen = () => {
   const [isPressed, setIsPressed] = useState([true, false, false]);
@@ -34,15 +43,48 @@ const ManageForumScreen = () => {
     setNumOfQuestions(metricsData.numOfQuestions);
     setNumOfUsers(metricsData.numOfUsers);
     setNumOfAnswers(metricsData.numOfAnswers);
-    console.log("data:", metricsData);
+    console.log("metricsData:", metricsData);
   };
   useEffect(() => {
     fetchMetricsInformation();
   }, []);
 
+  const [maxLength, setMaxLength] = useState(0);
+  const [page, setPage] = useState(0);
+  const [pendingQuestionsData, setPendingQuestionsData] = useState([]);
+  const fetchPendingQuestions = async (page, limit) => {
+    const data = await getPendingQuestions(page, limit);
+    var maxLength = 5;
+    try {
+      maxLength = parseInt(data.count);
+    } catch (e) {
+      console.log(e);
+    }
+    setMaxLength(maxLength);
+    setPendingQuestionsData([...pendingQuestionsData, ...data.data]);
+    setPage(page + 1);
+    console.log("data:", data);
+  };
+  useEffect(() => {
+    fetchPendingQuestions(0, 5);
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.body}
+        onScroll={({ nativeEvent }) => {
+          if (
+            isCloseToBottom(nativeEvent) &&
+            pendingQuestionsData.length < maxLength
+          ) {
+            console.log("scrolled to bottom");
+            fetchPendingQuestions(page, 5);
+          }
+        }}
+        scrollEventThrottle={400}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Manage Forum</Text>
           <Icon
@@ -108,33 +150,24 @@ const ManageForumScreen = () => {
           </View>
           {isPressed[0] ? (
             <View>
-              <PendingQuestion
-                dateText={"3 days ago"}
-                title={"Câu hỏi về game?"}
-                content={
-                  "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-                }
-                userData={{
-                  name: "Bảo Dragon",
-                  avatarUrl:
-                    "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-                }}
-              />
-              <PendingQuestion
-                dateText={"14 days ago"}
-                title={"Alo alo?"}
-                content={
-                  "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-                }
-                image={
-                  "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
-                }
-                userData={{
-                  name: "Chó Khánh",
-                  avatarUrl:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
-                }}
-              />
+              {pendingQuestionsData.map((record, index) => (
+                <PendingQuestion
+                  key={index}
+                  dateText={formatDistance(
+                    new Date(record.updated_at),
+                    Date.now(),
+                    {
+                      addSuffix: true,
+                    },
+                  )}
+                  title={record.title}
+                  content={record.content}
+                  userData={{
+                    name: record.userData.name,
+                    avatarUrl: record.userData.profilepictureurl,
+                  }}
+                />
+              ))}
             </View>
           ) : null}
           {isPressed[1] ? (
