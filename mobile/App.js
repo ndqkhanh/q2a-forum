@@ -30,14 +30,12 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }
-import { LoginScreen } from "~login/login";
 import { createStackNavigator } from "@react-navigation/stack";
 import { API_URL } from "@env";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 const BottomTab = createBottomTabNavigator();
 //const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
-  const csignup = <LoginScreen SignUp={true}></LoginScreen>;
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
