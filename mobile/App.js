@@ -110,7 +110,7 @@ const BottomTabNavigator = () => {
           ),
         }}
       /> */}
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Manage forum"
         component={ManageForumScreen}
         options={{
@@ -118,7 +118,7 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="person-circle-outline" color={color} />
           ),
         }}
-      /> */}
+      />
       <BottomTab.Screen
         name="Post a question"
         component={PostQuestionScreen}

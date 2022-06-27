@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, Avatar, Card, Colors } from "react-native-ui-lib";
 import {
   SafeAreaView,
@@ -11,6 +11,7 @@ import { UserContext } from "~provider/UserProvider";
 import PendingQuestion from "~components/Common/PendingQuestionList";
 import User from "~components/Common/UserList";
 import { TextInput } from "react-native-gesture-handler";
+import { getMetrics } from "~services/admin";
 
 const ManageForumScreen = () => {
   const [isPressed, setIsPressed] = useState([true, false, false]);
@@ -24,6 +25,21 @@ const ManageForumScreen = () => {
   const configPressed = () => {
     setIsPressed([false, false, true]);
   };
+  const [numOfQuestions, setNumOfQuestions] = useState(0);
+  const [numOfUsers, setNumOfUsers] = useState(0);
+  const [numOfAnswers, setNumOfAnswers] = useState(0);
+
+  const fetchMetricsInformation = async () => {
+    const metricsData = await getMetrics();
+    setNumOfQuestions(metricsData.numOfQuestions);
+    setNumOfUsers(metricsData.numOfUsers);
+    setNumOfAnswers(metricsData.numOfAnswers);
+    console.log("data:", metricsData);
+  };
+  useEffect(() => {
+    fetchMetricsInformation();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
@@ -41,7 +57,7 @@ const ManageForumScreen = () => {
           <View style={styles.infoSection}>
             <Card style={styles.QA_card}>
               <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
-                150
+                {numOfQuestions}
               </Text>
               <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
                 Questions
@@ -49,7 +65,7 @@ const ManageForumScreen = () => {
             </Card>
             <Card style={styles.QA_card}>
               <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
-                1500
+                {numOfUsers}
               </Text>
               <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
                 Users
@@ -57,7 +73,7 @@ const ManageForumScreen = () => {
             </Card>
             <Card style={styles.QA_card}>
               <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
-                15000
+                {numOfAnswers}
               </Text>
               <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
                 Answers
