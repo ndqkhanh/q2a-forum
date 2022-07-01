@@ -43,7 +43,7 @@ const ScreensSignInMain = ({ navigation }) => {
         navigation.navigate("Home");
       }
     } catch (error) {
-      console.log("error", error);
+      console.log("error", error.message);
     }
   };
 
