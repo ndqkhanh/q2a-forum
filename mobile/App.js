@@ -19,6 +19,7 @@ import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 import ProfileScreen from "~screens/Profile/UserProfile";
 import ManageForumScreen from "~screens/Profile/ManageForum";
 import PostQuestionScreen from "~screens/PostNewQuestion";
+import SearchScreen from "~screens/Search/Search";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -29,14 +30,12 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }
-import { LoginScreen } from "~login/login";
 import { createStackNavigator } from "@react-navigation/stack";
 import { API_URL } from "@env";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 const BottomTab = createBottomTabNavigator();
 //const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
-  const csignup = <LoginScreen SignUp={true}></LoginScreen>;
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -66,31 +65,22 @@ const BottomTabNavigator = () => {
         ],
       }}
     >
-      {/* <BottomTab.Screen
-        name="Log in"
-        component={LoginScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="log-in-outline" color={color} />
-          ),
-        }}
-      /> */}
-      {/* <BottomTab.Screen
-        name="Sign up"
-        component={LoginScreen}
-        initialParams={{ SignUp: true }}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-add-outline" color={color} />
-          ),
-        }}
-      /> */}
       <BottomTab.Screen
         name="Your Feed"
         component={ScreensHomeMain}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="search-circle-outline" color={color} />
+          ),
         }}
       />
       <BottomTab.Screen
@@ -159,7 +149,7 @@ const App = () => {
         >
           <Stack.Screen name="Login" component={SignupAndLogin} />
           <Stack.Screen name="Home" component={BottomTabNavigator} />
-          <Stack.Screen name="Q2A" component={ScreensQ2AMain} />
+          {/* <Stack.Screen name="Q2A" component={ScreensQ2AMain} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

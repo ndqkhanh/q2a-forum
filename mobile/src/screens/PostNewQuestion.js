@@ -49,14 +49,18 @@ const PostQuestionScreen = () => {
         </Card>
       </View>
       <View style={styles.button}>
-      <TouchableOpacity
+        <TouchableOpacity
           style={{ backgroundColor: Colors.red30, borderRadius: 20 }}
           activeOpacity={0.7}
         >
           <Text style={styles.submitText}>Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ backgroundColor: Colors.blue40, borderRadius: 20, leftMargin:20 }}
+          style={{
+            backgroundColor: Colors.blue40,
+            borderRadius: 20,
+            leftMargin: 20,
+          }}
           activeOpacity={0.7}
         >
           <Text style={styles.submitText}>Submit</Text>
@@ -114,8 +118,8 @@ const styles = StyleSheet.create({
   },
   button: {
     justifyContent: "flex-end",
-    flexDirection:'row',
-    justifyContent: 'space-evenly',
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
   submitText: {
     fontSize: 20,
