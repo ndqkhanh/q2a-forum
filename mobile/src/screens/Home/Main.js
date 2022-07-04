@@ -29,10 +29,8 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
 const ScreensHomeMain = ({navigation}) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
-  console.log("hello");
   const [feedData, setFeedData] = useState({});
   const fetchFeedInformation = async (page) => {
-    console.log("fasdfasdf");
     const token = await AsyncStorage.getItem("UserToken");
     console.log(API_URL);
     
@@ -59,7 +57,7 @@ const ScreensHomeMain = ({navigation}) => {
       //   addSuffix: true,
       // }));
     } catch (error) {
-      console.error("error---", error);
+      console.error("concak", error);
     }
   };
   useEffect(() => {
@@ -92,7 +90,7 @@ const ScreensHomeMain = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      {/* <ScrollView
+      { <ScrollView
         style={styles.body}
         onScroll={({nativeEvent}) => {
           if (isCloseToBottom(nativeEvent) && feedData.length < maxLength) {
@@ -119,7 +117,7 @@ const ScreensHomeMain = ({navigation}) => {
             correctAnswer={record.correctAnswerExists}
           />
         ))}
-      </ScrollView> */}
+      </ScrollView> }
     </SafeAreaView>
   );
 };

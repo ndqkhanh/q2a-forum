@@ -49,12 +49,13 @@ const ScreensSignInMain = ({ navigation }) => {
 
   const fetchSignin = async (username, password) => {
     try {
+      const token = await AsyncStorage.getItem("UserToken");
       let responseLogin = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: "Bearer ",
+          Authorization: "Bearer",
         },
         body: JSON.stringify({
           username: `${username}`,
