@@ -28,7 +28,7 @@ const ScreensSignInMain = ({ navigation }) => {
   }, []);
   const getStorageToken = async () => {
     try {
-      
+      console.log("storage token");
       storageToken = await AsyncStorage.getItem("UserToken");
       let responseCheckToken = await fetch(`${API_URL}/user`, {
         method: "GET",
@@ -73,9 +73,10 @@ const ScreensSignInMain = ({ navigation }) => {
       } else {
         Alert.alert("Invalid", mjson["message"]);
       }
+
     } catch (error) {
       console.log("error", error);
-      Alert.alert("error", error);
+      Alert.alert("error", error.message);
     }
   };
   return (

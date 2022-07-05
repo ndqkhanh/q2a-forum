@@ -61,7 +61,6 @@ const ScreensHomeMain = ({navigation}) => {
     }
   };
   useEffect(() => {
-    console.log("fsadfasdf");
     fetchFeedInformation(0);
   }, []);
 
