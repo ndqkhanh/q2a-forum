@@ -21,14 +21,13 @@ const ScreensSignInMain = ({ navigation }) => {
   const onSignUp = () => {
     navigation.navigate("signup_screen");
   };
-  const [username, setUsername] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   useEffect(() => {
     getStorageToken();
   }, []);
   const getStorageToken = async () => {
     try {
-      console.log("storage token");
       storageToken = await AsyncStorage.getItem("UserToken");
       let responseCheckToken = await fetch(`${API_URL}/user`, {
         method: "GET",
@@ -43,13 +42,13 @@ const ScreensSignInMain = ({ navigation }) => {
         navigation.navigate("Home");
       }
     } catch (error) {
-      console.log("error", error.message);
+      console.log("error--", error.message);
+      Alert.alert("error", error.message);
     }
   };
 
   const fetchSignin = async (username, password) => {
     try {
-      const token = await AsyncStorage.getItem("UserToken");
       let responseLogin = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
         headers: {
@@ -70,6 +69,7 @@ const ScreensSignInMain = ({ navigation }) => {
           mjson["tokens"]["access"]["token"],
         );
         navigation.navigate("Home");
+
       } else {
         Alert.alert("Invalid", mjson["message"]);
       }
@@ -79,6 +79,7 @@ const ScreensSignInMain = ({ navigation }) => {
       Alert.alert("error", error.message);
     }
   };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
       <ScrollView style = {{flex: 1}}>

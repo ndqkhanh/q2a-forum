@@ -19,6 +19,8 @@ import { formatDistance } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import { API_URL } from "@env";
+import { deleteAnswer, getAllAnswersAndVotings, pickACorrectAnswer } from "~services/answer";
+import { createNoSubstitutionTemplateLiteral } from "typescript";
 
 const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
   const paddingToBottom = 20;
@@ -29,12 +31,11 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
 const ScreensHomeMain = ({navigation}) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
-  const [feedData, setFeedData] = useState({});
+  const [limit, setLimit] = useState(0);
+  const [feedData, setFeedData] = useState([]);
+
   const fetchFeedInformation = async (page) => {
     const token = await AsyncStorage.getItem("UserToken");
-    console.log(API_URL);
-    
-    console.log(token);
     try {
       let data = await fetch(
         `${API_URL}/question/feed/${page}`,
@@ -52,17 +53,40 @@ const ScreensHomeMain = ({navigation}) => {
       setMaxLength(maxLength);
       setFeedData([...feedData, ...data.data]);
       setPage(page + 1);
-      console.log("data:", feedData);
+      console.log("data:", data.data);
       // console.log(formatDistance(new Date(feedData[0].updated_at), Date.now(), {
       //   addSuffix: true,
       // }));
     } catch (error) {
-      console.error("concak", error);
+      console.error("error", error);
     }
   };
-  useEffect(() => {
-    fetchFeedInformation(0);
-  }, []);
+  // useEffect(() => {
+  //   fetchFeedInformation(0);
+  // }, []);
+  
+  const fetchPickACorrectAnswer = async (answerId) =>
+  {
+    const data = await pickACorrectAnswer(answerId);
+    console.log ("data", data);
+    Alert.alert (data);
+  };
+
+  const fetchDeleteAnswer = async (answerId) =>
+  {
+    const data = await deleteAnswer (answerId);
+    console.log("data", data);
+    Alert.alert (data);
+  };
+
+  const fetchGetAllAnswersAndVotings = async(questionId,page,limit) =>
+  {
+    const data = await getAllAnswersAndVotings(questionId,page,limit);
+    console.log("data",data);
+
+    setPage(page);
+    setLimit(limit);
+  };
 
   return (
     <SafeAreaView
@@ -101,7 +125,58 @@ const ScreensHomeMain = ({navigation}) => {
         showsVerticalScrollIndicator={false}
       >
         <HomeMainPosting />
-        {feedData.map((record, index) => (
+
+        {[
+          {
+            voting: 30,
+            dateText: "3 days ago",
+            title: "Câu hỏi về game?",
+            content:
+              "feedData[0].content",
+            numOfAnswers: 100,
+            userData: {
+              name: "Bảo Dragon",
+              avatarUrl:
+                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            },
+          },
+          {
+            voting: 30,
+            dateText: "3 days ago",
+            title: "Câu hỏi về game?",
+            content:
+              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
+            numOfAnswers: 100,
+            userData: {
+              name: "Bảo Dragon",
+              avatarUrl:
+                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            },
+          },
+          {
+            voting: 30,
+            dateText: "3 days ago",
+            title: "Câu hỏi về game?",
+            content:
+              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
+            numOfAnswers: 100,
+            userData: {
+              name: "Bảo Dragon",
+              avatarUrl:
+                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            },
+          },
+        ].map((record, index) => (
+          <Post key={index}
+            voting={record.voting}
+            dateText={record.dateText}
+            title={record.title}
+            content={record.content}
+            numOfAnswers={record.numOfAnswers}
+            userData={record.userData}
+          />
+        ))}
+        {/* {feedData.map((record, index) => (
           <Post key={index}
             dateText={formatDistance(new Date(record.updated_at), Date.now(), {
               addSuffix: true,
@@ -115,7 +190,7 @@ const ScreensHomeMain = ({navigation}) => {
             }}
             correctAnswer={record.correctAnswerExists}
           />
-        ))}
+        ))} */}
       </ScrollView> }
     </SafeAreaView>
   );
