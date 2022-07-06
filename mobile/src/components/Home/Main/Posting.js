@@ -1,7 +1,8 @@
-import React from "react";
-import { Image, Text, View } from "react-native";
+import { prop } from "cheerio/lib/api/attributes";
+import React, { useState } from "react";
+import { Image, Text, View, TouchableOpacity } from "react-native";
 import { Colors } from "react-native-ui-lib";
-const HomeMainPosting = () => {
+const HomeMainPosting = (props) => {
   return (
     <View
       style={{
@@ -37,12 +38,17 @@ const HomeMainPosting = () => {
           }}
         >
           <Text
-            style={{
-              color: Colors.grey40,
-              fontSize: 15,
-            }}
+            onPress={props?.clickText}
+            style={[
+              {
+                fontSize: 15,
+              },
+              props.content
+                ? { color: Colors.black }
+                : { color: Colors.grey40 },
+            ]}
           >
-            Write something...
+            {props.content ? props.content : "Write something..."}
           </Text>
         </View>
       </View>
@@ -54,26 +60,28 @@ const HomeMainPosting = () => {
           marginTop: 10,
         }}
       >
-        <View
-          style={{
-            backgroundColor: Colors.blue30,
-            width: 70,
-            height: 30,
-            borderRadius: 5,
-            marginTop: 5,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text
+        <TouchableOpacity activeOpacity={0.7} onPress={props?.onPressPostToDB}>
+          <View
             style={{
-              color: Colors.white,
-              fontWeight: "bold",
+              backgroundColor: Colors.blue30,
+              width: 70,
+              height: 30,
+              borderRadius: 5,
+              marginTop: 5,
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            Post
-          </Text>
-        </View>
+            <Text
+              style={{
+                color: Colors.white,
+                fontWeight: "bold",
+              }}
+            >
+              Post
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

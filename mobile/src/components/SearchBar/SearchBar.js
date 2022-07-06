@@ -1,4 +1,3 @@
-import { prop } from "cheerio/lib/api/attributes";
 import * as React from "react";
 
 import {

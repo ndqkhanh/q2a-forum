@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { TextInput } from "react-native-gesture-handler";
@@ -13,9 +14,28 @@ import {
   RichEditor,
   RichToolbar,
 } from "react-native-pell-rich-editor";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const PostQuestionScreen = () => {
+const PostQuestionScreen = ({navigation}) => {
   const richText = React.useRef();
+  const [title, setTitle] = React.useState(null);
+  const [content, setContent] = React.useState(null);
+  const postQuestion = async (passTitle, passContent) => {
+    if (passTitle == null || passContent == null) {
+      Alert.alert('Require','Title and content must contain something!')
+    } else {
+      try {
+        var question = {
+          Title: passTitle,
+          Content: passContent
+        };
+        //await AsyncStorage.setItem("PostQuestion", JSON.stringify(question));
+        navigation.navigate("Your Feed",question)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -31,7 +51,7 @@ const PostQuestionScreen = () => {
       <View style={styles.body}>
         <Text style={styles.textTitle}>Title</Text>
         <Card style={styles.typingTitle}>
-          <TextInput />
+          <TextInput onChangeText={(tilteText) => setTitle(tilteText)} />
         </Card>
         <Text style={styles.textTitle}>Content</Text>
         <RichToolbar
@@ -43,6 +63,7 @@ const PostQuestionScreen = () => {
             useContainer={false}
             ref={richText}
             onChange={(descriptionText) => {
+              setContent(descriptionText);
               console.log("descriptionText:", descriptionText);
             }}
           />
@@ -52,6 +73,9 @@ const PostQuestionScreen = () => {
         <TouchableOpacity
           style={{ backgroundColor: Colors.red30, borderRadius: 20 }}
           activeOpacity={0.7}
+          onPress={() => {
+            navigation.navigate("Your Feed");
+          }}
         >
           <Text style={styles.submitText}>Cancel</Text>
         </TouchableOpacity>
@@ -62,6 +86,7 @@ const PostQuestionScreen = () => {
             leftMargin: 20,
           }}
           activeOpacity={0.7}
+          onPress={()=>postQuestion(title, content)}
         >
           <Text style={styles.submitText}>Submit</Text>
         </TouchableOpacity>

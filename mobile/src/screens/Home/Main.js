@@ -19,32 +19,32 @@ import { formatDistance } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import { API_URL } from "@env";
+import { controllPostQuestion } from "~controller/controllPostQuestion";
 
-const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 20;
-  return layoutMeasurement.height + contentOffset.y >=
-    contentSize.height - paddingToBottom;
+  return (
+    layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom
+  );
 };
 
-const ScreensHomeMain = ({navigation}) => {
+const ScreensHomeMain = ({ navigation, route }) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
-  const [feedData, setFeedData] = useState([]);
+  const [feedData, setFeedData] = useState([])
   const fetchFeedInformation = async (page) => {
-    const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDdiNzNjOC01ZGMzLTQ2ZWUtOGU0Yy1iZDlmYmFmN2RlN2YiLCJpYXQiOjE2NTYyNDg1NDAsImV4cCI6MTY1NjI1MDM0MCwidHlwZSI6ImFjY2VzcyJ9.okWLM3sxOQSnEaFpIx333L6t_NNU1jtrtp1dsyR5r-Y";
+    //const [myQuestion,setMyQuestion] = React.useState();
     try {
-      let data = await fetch(
-        `${API_URL}/question/feed/${page}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      const token = await AsyncStorage.getItem("UserToken");
+      let data = await fetch(`${API_URL}/question/feed/${page}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
       data = await data.json();
       var maxLength = parseInt(data.count);
       setMaxLength(maxLength);
@@ -59,7 +59,7 @@ const ScreensHomeMain = ({navigation}) => {
     }
   };
   useEffect(() => {
-    fetchFeedInformation(0);
+    //fetchFeedInformation(0);
   }, []);
 
   return (
@@ -70,7 +70,7 @@ const ScreensHomeMain = ({navigation}) => {
       }}
     >
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Q & A Forum</Text>
+        <Text style={styles.header}>Q & A forum</Text>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={async () => {
@@ -89,7 +89,7 @@ const ScreensHomeMain = ({navigation}) => {
       </View>
       <ScrollView
         style={styles.body}
-        onScroll={({nativeEvent}) => {
+        onScroll={({ nativeEvent }) => {
           if (isCloseToBottom(nativeEvent) && feedData.length < maxLength) {
             console.log("scrolled to bottom");
             fetchFeedInformation(page);
@@ -98,9 +98,14 @@ const ScreensHomeMain = ({navigation}) => {
         scrollEventThrottle={400}
         showsVerticalScrollIndicator={false}
       >
-        <HomeMainPosting />
+        <HomeMainPosting
+          onPressPostToDB = {()=>controllPostQuestion(route.params?.Title,route.params?.Content)}
+          content={route.params?.Title}
+          clickText={() => navigation.navigate("Post a question")}
+        />
         {feedData.map((record, index) => (
-          <Post key={index}
+          <Post
+            key={index}
             dateText={formatDistance(new Date(record.updated_at), Date.now(), {
               addSuffix: true,
             })}
@@ -183,7 +188,6 @@ const ScreensHomeMain = ({navigation}) => {
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
           }}
         /> */}
-
       </ScrollView>
     </SafeAreaView>
   );
