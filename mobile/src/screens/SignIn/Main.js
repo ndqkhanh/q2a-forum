@@ -54,7 +54,7 @@ const ScreensSignInMain = ({ navigation }) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          //Authorization: "Bearer ",
+          Authorization: "Bearer ",
         },
         body: JSON.stringify({
           username: `${username}`,

@@ -35,7 +35,7 @@ import { API_URL } from "@env";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 const BottomTab = createBottomTabNavigator();
 //const Stack = createNativeStackNavigator();
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({navigation}) => {
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -89,7 +89,7 @@ const BottomTabNavigator = () => {
         options={{
           tabBarButton: () => (
             <TouchableOpacity
-              onPress={() => console.log("test")}
+              onPress={() => navigation.navigate('Post a question')}
               style={{
                 justifyContent: "center",
                 alignItems: "center",

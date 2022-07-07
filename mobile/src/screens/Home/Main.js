@@ -99,7 +99,9 @@ const ScreensHomeMain = ({ navigation, route }) => {
         showsVerticalScrollIndicator={false}
       >
         <HomeMainPosting
-          onPressPostToDB = {()=>controllPostQuestion(route.params?.Title,route.params?.Content)}
+          onPressPostToDB = {()=>{controllPostQuestion(route.params?.Title,route.params?.Content);
+            navigation.setParams({Title: null, Content: null})
+          }}
           content={route.params?.Title}
           clickText={() => navigation.navigate("Post a question")}
         />
