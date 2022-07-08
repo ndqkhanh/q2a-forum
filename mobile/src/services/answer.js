@@ -4,9 +4,8 @@ import { data } from "cheerio/lib/api/attributes";
 import { Alert } from "react-native";
 
 
-const pickACorrectAnswer = async(answerId) =>
+const pickACorrectAnswer = async(token, answerId) =>
 {
-    const token = await AsyncStorage.getItem("UserToken");
     try 
     {
         let data = await fetch (
@@ -31,9 +30,8 @@ const pickACorrectAnswer = async(answerId) =>
     return null;
 }
 
-const deleteAnswer = async (answerId) =>
+const deleteAnswer = async (token, answerId) =>
 {
-    const token = await AsyncStorage.getItem("UserToken");
     try
     {
         let data = await fetch(
@@ -74,6 +72,8 @@ const getAllAnswersAndVotings = async (questionId,page,limit) =>
                 }
             },
         )
+        // console.log("duong dan");
+        console.log(`${API_URL}/question/${questionId}/${page}/${limit}`);
         data = data.json();
         return data;
     }

@@ -34,7 +34,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { API_URL } from "@env";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 const BottomTab = createBottomTabNavigator();
-//const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
   return (
     <BottomTab.Navigator
@@ -73,9 +73,19 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Search"
         component={SearchScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="search-circle-outline" color={color} />
+          ),
+        }}
+      /> */}
+      <BottomTab.Screen
+        name="Q2A"
+        component={ScreensQ2AMain}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (
@@ -112,7 +122,7 @@ const BottomTabNavigator = () => {
       /> */}
       {/* <BottomTab.Screen
         name="Manage forum"
-        component={ManageForumScreen}
+        component={ManageForumScreen} 
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="person-circle-outline" color={color} />
@@ -136,7 +146,6 @@ function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
-const Stack = createStackNavigator();
 
 const App = () => {
   return (

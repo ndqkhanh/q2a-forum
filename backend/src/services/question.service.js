@@ -156,10 +156,14 @@ const getLatestFeed = async (page) => {
 
 const getQuestionByID = async (req) =>
 {
-  const question = await prisma.questions.findUnique ({
+  const questionRecord = await prisma.questions.findUnique ({
     where : {id: req.params.questionId,},
   }); 
-  return question;
+  const userRecord = await prisma.users.findUnique ({
+    where : {id: questionRecord.uid,},
+  }
+  );
+  return {questionInfo: questionRecord, userName: userRecord.name, userAvatarUrl: userRecord.profilepictureurl};
 }
 const GetAnswersByQuestionIDPagination = async(req) => {
   const answers = await prisma.answers.findMany({

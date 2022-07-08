@@ -36,6 +36,7 @@ const ScreensHomeMain = ({navigation}) => {
 
   const fetchFeedInformation = async (page) => {
     const token = await AsyncStorage.getItem("UserToken");
+    console.log (token);
     try {
       let data = await fetch(
         `${API_URL}/question/feed/${page}`,
@@ -65,28 +66,6 @@ const ScreensHomeMain = ({navigation}) => {
   //   fetchFeedInformation(0);
   // }, []);
   
-  const fetchPickACorrectAnswer = async (answerId) =>
-  {
-    const data = await pickACorrectAnswer(answerId);
-    console.log ("data", data);
-    Alert.alert (data);
-  };
-
-  const fetchDeleteAnswer = async (answerId) =>
-  {
-    const data = await deleteAnswer (answerId);
-    console.log("data", data);
-    Alert.alert (data);
-  };
-
-  const fetchGetAllAnswersAndVotings = async(questionId,page,limit) =>
-  {
-    const data = await getAllAnswersAndVotings(questionId,page,limit);
-    console.log("data",data);
-
-    setPage(page);
-    setLimit(limit);
-  };
 
   return (
     <SafeAreaView
