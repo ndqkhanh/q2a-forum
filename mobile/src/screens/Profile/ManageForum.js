@@ -60,7 +60,8 @@ const ManageForumScreen = () => {
   const [pendingQuestionsPage, setPendingQuestionsPage] = useState(0);
   const [pendingQuestionsData, setPendingQuestionsData] = useState([]);
   const fetchPendingQuestions = async (page, limit) => {
-    const data = await getPendingQuestions(page, limit);
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await getPendingQuestions(token, page, limit);
     var maxLength = 5;
     try {
       maxLength = parseInt(data.count);
@@ -81,7 +82,8 @@ const ManageForumScreen = () => {
   const [usersPage, setUsersPage] = useState(0);
   const [usersData, setUsersData] = useState([]);
   const fetchUsers = async (page, limit) => {
-    const data = await getUsers(page, limit);
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await getUsers(token, page, limit);
     var maxLength = 5;
     try {
       maxLength = parseInt(data.count);

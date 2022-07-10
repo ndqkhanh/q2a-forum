@@ -1,10 +1,9 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
 
 const getMetrics = async (token) => {
   try {
     // let token = await AsyncStorage.getItem("UserToken");
-    // let token = "";
     let data = await fetch(`${API_URL}/admin/metrics`, {
       method: "GET",
       headers: {
@@ -21,9 +20,9 @@ const getMetrics = async (token) => {
   return null;
 };
 
-const getPendingQuestions = async (page, limit) => {
+const getPendingQuestions = async (token, page, limit) => {
   try {
-    let token = await AsyncStorage.getItem("UserToken");
+    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(
       `${API_URL}/admin/manage-questions/${page}/${limit}`,
       {
@@ -43,9 +42,9 @@ const getPendingQuestions = async (page, limit) => {
   return null;
 };
 
-const approveDeclineQuestion = async (questionId, status) => {
+const approveDeclineQuestion = async (token, questionId, status) => {
   try {
-    let token = await AsyncStorage.getItem("UserToken");
+    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(`${API_URL}/admin/manage-questions`, {
       method: "POST",
       headers: {
@@ -65,9 +64,9 @@ const approveDeclineQuestion = async (questionId, status) => {
   return null;
 };
 
-const getUsers = async (page, limit) => {
+const getUsers = async (token, page, limit) => {
   try {
-    let token = await AsyncStorage.getItem("UserToken");
+    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(`${API_URL}/admin/list-users/${page}/${limit}`, {
       method: "GET",
       headers: {
