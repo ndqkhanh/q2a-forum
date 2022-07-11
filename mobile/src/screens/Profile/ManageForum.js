@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "~provider/UserProvider";
@@ -12,7 +13,12 @@ import PendingQuestion from "~components/Common/PendingQuestionList";
 import User from "~components/Common/UserList";
 import { TextInput } from "react-native-gesture-handler";
 import { formatDistance } from "date-fns";
-import { getMetrics, getPendingQuestions, getUsers } from "~services/admin";
+import {
+  approveDeclineQuestion,
+  getMetrics,
+  getPendingQuestions,
+  getUsers,
+} from "~services/admin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -69,13 +75,23 @@ const ManageForumScreen = () => {
       console.log(e);
     }
     setMaxPendingQuestionsLength(maxLength);
-    setPendingQuestionsData((pendingQuestionsData) => [
-      ...pendingQuestionsData,
-      ...data.data,
-    ]);
+    let tmp = [...pendingQuestionsData, ...data.data];
+    function getUnique(arr, index) {
+      const unique = arr
+        .map((e) => e[index])
+        // store the keys of the unique objects
+        .map((e, i, final) => final.indexOf(e) === i && i)
+        // eliminate the dead keys & store unique objects
+        .filter((e) => arr[e])
+        .map((e) => arr[e]);
+      return unique;
+    }
+    let uniqueData = await getUnique(tmp, "id");
+    uniqueData = uniqueData.filter((item) => item.status == 0);
+    setPendingQuestionsData(uniqueData);
+    console.log("uniqueData:", uniqueData);
     setPendingQuestionsPage((pendingQuestionsPage) => pendingQuestionsPage + 1);
     setRefetch(false);
-    console.log("data:", pendingQuestionsData);
   };
 
   const [maxUsersLength, setMaxUsersLength] = useState(0);
@@ -96,6 +112,29 @@ const ManageForumScreen = () => {
     setRefetch(false);
     console.log("data:", usersData);
   };
+
+  const fetchApproveDeclineQuestions = async (questionId, status) => {
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await approveDeclineQuestion(token, questionId, status);
+    if (data.success === true) {
+      if (status === 0) {
+        Alert.alert("Question approved successfully");
+      }
+      if (status === 1) {
+        Alert.alert("Question declined successfully");
+      }
+    } else {
+      Alert.alert("Question already approved or declined");
+    }
+    if (pendingQuestionsData.length === 1) {
+      Alert.alert("No more pending questions");
+    }
+    if (maxPendingQuestionsLength > 4 && pendingQuestionsData.length <= 4) {
+      setPendingQuestionsPage(0);
+      fetchPendingQuestions(0, 5);
+    }
+  };
+
   useEffect(() => {
     fetchPendingQuestions(0, 5);
     fetchUsers(0, 10);
@@ -113,6 +152,8 @@ const ManageForumScreen = () => {
       setMaxUsersLength(0);
       setUsersPage(0);
       setUsersData([]);
+
+      // setCheckApprove(false);
 
       setIsPressed([true, false, false]);
       setRefetch(false);
@@ -210,6 +251,22 @@ const ManageForumScreen = () => {
             {pendingQuestionsData.map((record) => (
               <PendingQuestion
                 key={record.id}
+                onPressApprove={() => {
+                  fetchApproveDeclineQuestions(record.id, 0);
+                  setPendingQuestionsData(
+                    pendingQuestionsData.filter(
+                      (item) => item.id !== record.id,
+                    ),
+                  );
+                }}
+                onPressDisapprove={() => {
+                  fetchApproveDeclineQuestions(record.id, 1);
+                  setPendingQuestionsData(
+                    pendingQuestionsData.filter(
+                      (item) => item.id !== record.id,
+                    ),
+                  );
+                }}
                 dateText={formatDistance(
                   new Date(record.updated_at),
                   Date.now(),

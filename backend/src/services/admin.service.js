@@ -96,6 +96,7 @@ const approveDeclineQuestion = async (questionId, status) => {
     where: { id: questionId },
     data: {
       status: status === 0 ? 2 : 1,
+      updated_at: new Date(),
     },
   });
   return questionResult;

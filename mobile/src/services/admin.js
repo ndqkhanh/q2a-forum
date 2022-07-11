@@ -1,5 +1,6 @@
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
+import { Alert } from "react-native";
 
 const getMetrics = async (token) => {
   try {
@@ -17,7 +18,6 @@ const getMetrics = async (token) => {
   } catch (error) {
     console.error("error---", error);
   }
-  return null;
 };
 
 const getPendingQuestions = async (token, page, limit) => {
@@ -39,7 +39,6 @@ const getPendingQuestions = async (token, page, limit) => {
   } catch (error) {
     console.error("error---", error);
   }
-  return null;
 };
 
 const approveDeclineQuestion = async (token, questionId, status) => {
@@ -57,11 +56,11 @@ const approveDeclineQuestion = async (token, questionId, status) => {
         status,
       }),
     });
+    data = await data.json();
     return data;
   } catch (error) {
     console.error("error---", error);
   }
-  return null;
 };
 
 const getUsers = async (token, page, limit) => {
@@ -80,7 +79,6 @@ const getUsers = async (token, page, limit) => {
   } catch (error) {
     console.error("error---", error);
   }
-  return null;
 };
 
 export { getMetrics, getPendingQuestions, approveDeclineQuestion, getUsers };
