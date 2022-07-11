@@ -21,12 +21,14 @@ const PendingQuestion = ({
     <View style={styles.postContainer}>
       <View style={styles.postContentContainer}>
         <View style={styles.infoUserContainer}>
-          <Image
-            source={{
-              uri: userData.avatarUrl,
-            }}
-            style={styles.avatar}
-          ></Image>
+          {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
+            <Image
+              source={{
+                uri: userData.avatarUrl,
+              }}
+              style={styles.avatar}
+            ></Image>
+          )}
 
           <View style={styles.nameAndDate}>
             <Text style={styles.name}>{userData.name}</Text>

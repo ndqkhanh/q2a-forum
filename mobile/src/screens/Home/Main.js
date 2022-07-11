@@ -48,7 +48,6 @@ const ScreensHomeMain = ({ navigation }) => {
     setFeedData((feedData) => [...feedData, ...data.data]);
     setPage((page) => page + 1);
     setRefetch(false);
-    console.log("data:", feedData);
   };
   useEffect(() => {
     fetchFeedInformation(0);

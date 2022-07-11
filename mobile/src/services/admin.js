@@ -81,4 +81,50 @@ const getUsers = async (token, page, limit) => {
   }
 };
 
-export { getMetrics, getPendingQuestions, approveDeclineQuestion, getUsers };
+const getListConfigurations = async (token) => {
+  try {
+    // let token = await AsyncStorage.getItem("UserToken");
+    let data = await fetch(`${API_URL}/admin/list-configuration`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    data = await data.json();
+    return data;
+  } catch (error) {
+    console.error("error---", error);
+  }
+};
+
+const updateConfiguration = async (token, slug, value) => {
+  try {
+    // let token = await AsyncStorage.getItem("UserToken");
+    let data = await fetch(`${API_URL}/admin/set-configuration/${slug}`, {
+      method: "POST",
+      body: JSON.stringify({
+        value,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    data = await data.json();
+    return data;
+  } catch (error) {
+    console.error("error---", error);
+  }
+};
+
+export {
+  getMetrics,
+  getPendingQuestions,
+  approveDeclineQuestion,
+  getUsers,
+  getListConfigurations,
+  updateConfiguration,
+};
