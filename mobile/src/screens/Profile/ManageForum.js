@@ -29,6 +29,17 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   );
 };
 
+const getUnique = (arr, index) => {
+  const unique = arr
+    .map((e) => e[index])
+    // store the keys of the unique objects
+    .map((e, i, final) => final.indexOf(e) === i && i)
+    // eliminate the dead keys & store unique objects
+    .filter((e) => arr[e])
+    .map((e) => arr[e]);
+  return unique;
+};
+
 const ManageForumScreen = () => {
   const [isPressed, setIsPressed] = useState([true, false, false]);
   const questionsPressed = () => {
@@ -67,20 +78,11 @@ const ManageForumScreen = () => {
     }
     setMaxPendingQuestionsLength(maxLength);
     let tmp = [...pendingQuestionsData, ...data.data];
-    function getUnique(arr, index) {
-      const unique = arr
-        .map((e) => e[index])
-        // store the keys of the unique objects
-        .map((e, i, final) => final.indexOf(e) === i && i)
-        // eliminate the dead keys & store unique objects
-        .filter((e) => arr[e])
-        .map((e) => arr[e]);
-      return unique;
-    }
-    let uniqueData = await getUnique(tmp, "id");
-    uniqueData = uniqueData.filter((item) => item.status == 0);
+    let uniqueData = await getUnique(tmp, "id").filter(
+      (item) => item.status == 0,
+    );
     setPendingQuestionsData(uniqueData);
-    console.log("uniqueData:", uniqueData);
+    // console.log("uniqueData:", uniqueData);
     setPendingQuestionsPage((pendingQuestionsPage) => pendingQuestionsPage + 1);
     setRefetch(false);
   };
