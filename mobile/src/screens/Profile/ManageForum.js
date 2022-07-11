@@ -6,18 +6,21 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  TextInput,
+  Touchable,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "~provider/UserProvider";
 import PendingQuestion from "~components/Common/PendingQuestionList";
 import User from "~components/Common/UserList";
-import { TextInput } from "react-native-gesture-handler";
 import { formatDistance } from "date-fns";
 import {
   approveDeclineQuestion,
+  getListConfigurations,
   getMetrics,
   getPendingQuestions,
   getUsers,
+  updateConfiguration,
 } from "~services/admin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -54,6 +57,8 @@ const ManageForumScreen = () => {
   const [numOfQuestions, setNumOfQuestions] = useState(0);
   const [numOfUsers, setNumOfUsers] = useState(0);
   const [numOfAnswers, setNumOfAnswers] = useState(0);
+  const [configNumOfQuestionInFeed, setConfigNumOfQuestionInFeed] = useState(0);
+  const [configForumName, setConfigForumName] = useState("");
 
   const fetchMetricsInformation = async () => {
     let token = await AsyncStorage.getItem("UserToken");
@@ -61,12 +66,23 @@ const ManageForumScreen = () => {
     setNumOfQuestions(metricsData.numOfQuestions);
     setNumOfUsers(metricsData.numOfUsers);
     setNumOfAnswers(metricsData.numOfAnswers);
-    console.log("metricsData:", metricsData);
   };
 
   const [maxPendingQuestionsLength, setMaxPendingQuestionsLength] = useState(0);
   const [pendingQuestionsPage, setPendingQuestionsPage] = useState(0);
   const [pendingQuestionsData, setPendingQuestionsData] = useState([]);
+  const [configuration, setConfiguration] = useState({});
+  const fetchConfigurations = async () => {
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await getListConfigurations(token);
+    let obj = {};
+    data.forEach((config) => {
+      obj[config.slug] = config.value;
+    });
+    setConfigNumOfQuestionInFeed(obj.NUM_OF_QUESTIONS_IN_FEED);
+    setConfigForumName(obj.FORUM_NAME);
+    setConfiguration(obj);
+  };
   const fetchPendingQuestions = async (page, limit) => {
     let token = await AsyncStorage.getItem("UserToken");
     const data = await getPendingQuestions(token, page, limit);
@@ -103,7 +119,29 @@ const ManageForumScreen = () => {
     setUsersData((usersData) => [...usersData, ...data.data]);
     setUsersPage((usersPage) => usersPage + 1);
     setRefetch(false);
-    console.log("data:", usersData);
+  };
+
+  const onUpdateConfiguration = async () => {
+    let token = await AsyncStorage.getItem("UserToken");
+    let data;
+    if (configuration.FORUM_NAME != configForumName) {
+      data = await updateConfiguration(token, "FORUM_NAME", configForumName);
+    }
+    if (!data.success) {
+      Alert.alert("Update number of questions in feed failure");
+    }
+    if (configuration.NUM_OF_QUESTIONS_IN_FEED != configNumOfQuestionInFeed) {
+      data = await updateConfiguration(
+        token,
+        "NUM_OF_QUESTIONS_IN_FEED",
+        configNumOfQuestionInFeed,
+      );
+    }
+    if (!data.success) {
+      Alert.alert("Update number of questions in feed failure");
+    } else {
+      Alert.alert("Update configuration successfully");
+    }
   };
 
   const fetchApproveDeclineQuestions = async (questionId, status) => {
@@ -132,6 +170,7 @@ const ManageForumScreen = () => {
     fetchPendingQuestions(0, 5);
     fetchUsers(0, 10);
     fetchMetricsInformation();
+    fetchConfigurations();
 
     return () => {
       setNumOfQuestions(0);
@@ -148,7 +187,7 @@ const ManageForumScreen = () => {
 
       // setCheckApprove(false);
 
-      setIsPressed([true, false, false]);
+      // setIsPressed([true, false, false]);
       setRefetch(false);
     };
   }, []);
@@ -308,24 +347,59 @@ const ManageForumScreen = () => {
           </ScrollView>
         ) : (
           isPressed[2] && (
-            <View>
+            <View
+              style={{
+                paddingTop: 10,
+              }}
+            >
               <View style={styles.config}>
                 <Text style={styles.configText}>
                   Number of questions in feed:
                 </Text>
-                <Card style={styles.inputCard} paddingRight={50}>
-                  <TextInput maxLength={2} style={styles.inputText}></TextInput>
+                <Card style={styles.inputCard}>
+                  <TextInput
+                    maxLength={2}
+                    style={styles.inputText}
+                    keyboardType="number-pad"
+                    value={configNumOfQuestionInFeed}
+                    onChangeText={setConfigNumOfQuestionInFeed}
+                  ></TextInput>
                 </Card>
               </View>
               <View style={styles.config}>
                 <Text style={styles.configText}>Forum name:</Text>
-                <Card style={styles.inputCard} paddingRight={95}>
+                <Card style={styles.inputCard}>
                   <TextInput
                     placeholder="Max 20 letters"
                     maxLength={20}
+                    style={styles.inputText}
+                    value={configForumName}
+                    onChangeText={setConfigForumName}
                   ></TextInput>
                 </Card>
               </View>
+              <TouchableOpacity
+                onPress={onUpdateConfiguration}
+                style={{
+                  width: 130,
+                  height: 40,
+                  backgroundColor: Colors.blue30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 5,
+                  alignSelf: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontWeight: "bold",
+                    fontSize: 16,
+                  }}
+                >
+                  UPDATE
+                </Text>
+              </TouchableOpacity>
             </View>
           )
         )}
@@ -384,10 +458,11 @@ const styles = StyleSheet.create({
   },
   config: {
     backgroundColor: "white",
-    borderRadius: 40,
+    borderRadius: 10,
     borderWidth: 2,
-    borderColor: Colors.blue20,
-    margin: 20,
+    borderColor: Colors.grey50,
+    marginHorizontal: 10,
+    marginBottom: 20,
     padding: 10,
     alignItems: "center",
     flexDirection: "row",
@@ -399,10 +474,16 @@ const styles = StyleSheet.create({
   },
   inputCard: {
     marginLeft: 10,
-    backgroundColor: Colors.grey60,
-    height: "80%",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   inputText: {
-    textAlign: "center",
+    height: 40,
+    padding: 4,
+    fontSize: 17,
+    width: "100%",
+    borderRadius: 10,
+    backgroundColor: Colors.grey60,
   },
 });
