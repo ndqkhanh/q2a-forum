@@ -23,15 +23,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 280;
-  // console.log(
-  //   layoutMeasurement,
-  //   contentOffset,
-  //   contentSize,
-  //   layoutMeasurement.height + contentOffset.y,
-  //   contentSize.height - paddingToBottom,
-  //   layoutMeasurement.height + contentOffset.y >=
-  //     contentSize.height - paddingToBottom,
-  // );
   return (
     layoutMeasurement.height + contentOffset.y >=
     contentSize.height - paddingToBottom
