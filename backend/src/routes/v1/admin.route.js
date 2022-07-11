@@ -12,10 +12,10 @@ router.route('/metrics').get(auth('getMetrics'), adminController.getMetrics);
 router.route('/ban-user/:userId').post(auth('banUser'), validate(adminValidation.banUser), adminController.banUser);
 
 router
-    .route ('/set-configuration/:slug')
-    .post (auth('setConfiguration'),validate(adminValidation.setConfiguration), adminController.setConfiguration);
+  .route('/set-configuration/:slug')
+  .post(auth('setConfiguration'), validate(adminValidation.setConfiguration), adminController.setConfiguration);
 
-router  
+router
   .route('/manage-questions')
   .post(
     auth('approveDeclineQuestion'),

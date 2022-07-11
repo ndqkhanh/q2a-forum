@@ -1,20 +1,47 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Text, Avatar, Card, Colors } from "react-native-ui-lib";
 import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "~provider/UserProvider";
 import PendingQuestion from "~components/Common/PendingQuestionList";
 import User from "~components/Common/UserList";
 import { TextInput } from "react-native-gesture-handler";
+import { formatDistance } from "date-fns";
+import {
+  approveDeclineQuestion,
+  getMetrics,
+  getPendingQuestions,
+  getUsers,
+} from "~services/admin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 280;
+  return (
+    layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom
+  );
+};
+
+const getUnique = (arr, index) => {
+  const unique = arr
+    .map((e) => e[index])
+    // store the keys of the unique objects
+    .map((e, i, final) => final.indexOf(e) === i && i)
+    // eliminate the dead keys & store unique objects
+    .filter((e) => arr[e])
+    .map((e) => arr[e]);
+  return unique;
+};
 
 const ManageForumScreen = () => {
   const [isPressed, setIsPressed] = useState([true, false, false]);
-  const { userData } = useContext(UserContext);
   const questionsPressed = () => {
     setIsPressed([true, false, false]);
   };
@@ -24,125 +51,263 @@ const ManageForumScreen = () => {
   const configPressed = () => {
     setIsPressed([false, false, true]);
   };
+  const [numOfQuestions, setNumOfQuestions] = useState(0);
+  const [numOfUsers, setNumOfUsers] = useState(0);
+  const [numOfAnswers, setNumOfAnswers] = useState(0);
+
+  const fetchMetricsInformation = async () => {
+    let token = await AsyncStorage.getItem("UserToken");
+    const metricsData = await getMetrics(token);
+    setNumOfQuestions(metricsData.numOfQuestions);
+    setNumOfUsers(metricsData.numOfUsers);
+    setNumOfAnswers(metricsData.numOfAnswers);
+    console.log("metricsData:", metricsData);
+  };
+
+  const [maxPendingQuestionsLength, setMaxPendingQuestionsLength] = useState(0);
+  const [pendingQuestionsPage, setPendingQuestionsPage] = useState(0);
+  const [pendingQuestionsData, setPendingQuestionsData] = useState([]);
+  const fetchPendingQuestions = async (page, limit) => {
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await getPendingQuestions(token, page, limit);
+    var maxLength = 5;
+    try {
+      maxLength = parseInt(data.count);
+    } catch (e) {
+      console.log(e);
+    }
+    setMaxPendingQuestionsLength(maxLength);
+    let tmp = [...pendingQuestionsData, ...data.data];
+    let uniqueData = await getUnique(tmp, "id").filter(
+      (item) => item.status == 0,
+    );
+    setPendingQuestionsData(uniqueData);
+    // console.log("uniqueData:", uniqueData);
+    setPendingQuestionsPage((pendingQuestionsPage) => pendingQuestionsPage + 1);
+    setRefetch(false);
+  };
+
+  const [maxUsersLength, setMaxUsersLength] = useState(0);
+  const [usersPage, setUsersPage] = useState(0);
+  const [usersData, setUsersData] = useState([]);
+  const fetchUsers = async (page, limit) => {
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await getUsers(token, page, limit);
+    var maxLength = 5;
+    try {
+      maxLength = parseInt(data.count);
+    } catch (e) {
+      console.log(e);
+    }
+    setMaxUsersLength(maxLength);
+    setUsersData((usersData) => [...usersData, ...data.data]);
+    setUsersPage((usersPage) => usersPage + 1);
+    setRefetch(false);
+    console.log("data:", usersData);
+  };
+
+  const fetchApproveDeclineQuestions = async (questionId, status) => {
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await approveDeclineQuestion(token, questionId, status);
+    if (data.success === true) {
+      if (status === 0) {
+        Alert.alert("Question approved successfully");
+      }
+      if (status === 1) {
+        Alert.alert("Question declined successfully");
+      }
+    } else {
+      Alert.alert("Question already approved or declined");
+    }
+    if (pendingQuestionsData.length === 1) {
+      Alert.alert("No more pending questions");
+    }
+    if (maxPendingQuestionsLength > 4 && pendingQuestionsData.length <= 4) {
+      setPendingQuestionsPage(0);
+      fetchPendingQuestions(0, 5);
+    }
+  };
+
+  useEffect(() => {
+    fetchPendingQuestions(0, 5);
+    fetchUsers(0, 10);
+    fetchMetricsInformation();
+
+    return () => {
+      setNumOfQuestions(0);
+      setNumOfAnswers(0);
+      setNumOfUsers(0);
+
+      setMaxPendingQuestionsLength(0);
+      setPendingQuestionsPage(0);
+      setPendingQuestionsData([]);
+
+      setMaxUsersLength(0);
+      setUsersPage(0);
+      setUsersData([]);
+
+      // setCheckApprove(false);
+
+      setIsPressed([true, false, false]);
+      setRefetch(false);
+    };
+  }, []);
+
+  const [refetch, setRefetch] = useState(false);
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.header}>Manage Forum</Text>
-          <Icon
-            name="log-out-outline"
-            style={{
-              fontSize: 30,
-              color: Colors.cyan10,
-            }}
-          />
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Manage Forum</Text>
+        <Icon
+          name="log-out-outline"
+          style={{
+            fontSize: 30,
+            color: Colors.cyan10,
+          }}
+        />
+      </View>
+      <View style={styles.body}>
+        <View style={styles.infoSection}>
+          <Card style={styles.QA_card}>
+            <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
+              {numOfQuestions}
+            </Text>
+            <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
+              Questions
+            </Text>
+          </Card>
+          <Card style={styles.QA_card}>
+            <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
+              {numOfUsers}
+            </Text>
+            <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
+              Users
+            </Text>
+          </Card>
+          <Card style={styles.QA_card}>
+            <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
+              {numOfAnswers}
+            </Text>
+            <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
+              Answers
+            </Text>
+          </Card>
         </View>
-        <View style={styles.body}>
-          <View style={styles.infoSection}>
-            <Card style={styles.QA_card}>
-              <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
-                150
-              </Text>
-              <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
-                Questions
-              </Text>
-            </Card>
-            <Card style={styles.QA_card}>
-              <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
-                1500
-              </Text>
-              <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
-                Users
-              </Text>
-            </Card>
-            <Card style={styles.QA_card}>
-              <Text style={{ fontWeight: "bold", fontSize: 30 }} center black>
-                15000
-              </Text>
-              <Text style={{ fontWeight: "bold", fontSize: 12 }} center black>
-                Answers
-              </Text>
-            </Card>
-          </View>
-          <View style={styles.infoSection}>
-            <TouchableOpacity onPress={questionsPressed}>
-              <Card
-                style={styles.menu}
-                {...(isPressed[0] ? { backgroundColor: Colors.blue60 } : {})}
-              >
-                <Text black>Pending questions</Text>
-              </Card>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={usersPressed}>
-              <Card
-                style={styles.menu}
-                {...(isPressed[1] ? { backgroundColor: Colors.blue60 } : {})}
-              >
-                <Text black>Users</Text>
-              </Card>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={configPressed}>
-              <Card
-                style={styles.menu}
-                {...(isPressed[2] ? { backgroundColor: Colors.blue60 } : {})}
-              >
-                <Text black>Config</Text>
-              </Card>
-            </TouchableOpacity>
-          </View>
-          {isPressed[0] ? (
-            <View>
-              <PendingQuestion
-                dateText={"3 days ago"}
-                title={"Câu hỏi về game?"}
-                content={
-                  "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-                }
-                userData={{
-                  name: "Bảo Dragon",
-                  avatarUrl:
-                    "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-                }}
-              />
-              <PendingQuestion
-                dateText={"14 days ago"}
-                title={"Alo alo?"}
-                content={
-                  "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-                }
-                image={
-                  "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
-                }
-                userData={{
-                  name: "Chó Khánh",
-                  avatarUrl:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
-                }}
-              />
-            </View>
-          ) : null}
-          {isPressed[1] ? (
-            <ScrollView
-              style={styles.body}
-              showsVerticalScrollIndicator={false}
+        <View style={styles.infoSection}>
+          <TouchableOpacity onPress={questionsPressed}>
+            <Card
+              style={styles.menu}
+              {...(isPressed[0] ? { backgroundColor: Colors.blue60 } : {})}
             >
-              <User
+              <Text black>Pending questions</Text>
+            </Card>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={usersPressed}>
+            <Card
+              style={styles.menu}
+              {...(isPressed[1] ? { backgroundColor: Colors.blue60 } : {})}
+            >
+              <Text black>Users</Text>
+            </Card>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={configPressed}>
+            <Card
+              style={styles.menu}
+              {...(isPressed[2] ? { backgroundColor: Colors.blue60 } : {})}
+            >
+              <Text black>Config</Text>
+            </Card>
+          </TouchableOpacity>
+        </View>
+        {isPressed[0] ? (
+          <ScrollView
+            key={1}
+            style={styles.body}
+            onScroll={({ nativeEvent }) => {
+              if (
+                !refetch &&
+                isCloseToBottom(nativeEvent) &&
+                pendingQuestionsData.length < maxPendingQuestionsLength
+              ) {
+                console.log("scrolled to bottom of pending questions");
+                setRefetch(true);
+
+                fetchPendingQuestions(pendingQuestionsPage, 5);
+              }
+            }}
+            contentContainerStyle={{
+              paddingBottom: 280,
+            }}
+            showsVerticalScrollIndicator={false}
+          >
+            {pendingQuestionsData.map((record) => (
+              <PendingQuestion
+                key={record.id}
+                onPressApprove={() => {
+                  fetchApproveDeclineQuestions(record.id, 0);
+                  setPendingQuestionsData(
+                    pendingQuestionsData.filter(
+                      (item) => item.id !== record.id,
+                    ),
+                  );
+                }}
+                onPressDisapprove={() => {
+                  fetchApproveDeclineQuestions(record.id, 1);
+                  setPendingQuestionsData(
+                    pendingQuestionsData.filter(
+                      (item) => item.id !== record.id,
+                    ),
+                  );
+                }}
+                dateText={formatDistance(
+                  new Date(record.updated_at),
+                  Date.now(),
+                  {
+                    addSuffix: true,
+                  },
+                )}
+                title={record.title}
+                content={record.content}
                 userData={{
-                  name: "Bảo Dragon",
-                  avatarUrl:
-                    "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+                  name: record.userData.name,
+                  avatarUrl: record.userData.profilepictureurl,
                 }}
               />
+            ))}
+          </ScrollView>
+        ) : isPressed[1] ? (
+          <ScrollView
+            key={2}
+            style={styles.body}
+            onScroll={({ nativeEvent: event2 }) => {
+              if (
+                !refetch &&
+                isCloseToBottom(event2) &&
+                usersData.length < maxUsersLength
+              ) {
+                console.log("scrolled to bottom users");
+                setRefetch(true);
+                fetchUsers(usersPage, 10);
+              }
+            }}
+            contentContainerStyle={{
+              paddingBottom: 280,
+            }}
+            showsVerticalScrollIndicator={false}
+          >
+            {usersData.map((record) => (
               <User
+                key={record.id}
                 userData={{
-                  name: "Chó Khánh",
-                  avatarUrl:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
+                  name: record.name,
+                  avatarUrl: record.profilepictureurl,
                 }}
               />
-            </ScrollView>
-          ) : null}
-          {isPressed[2] ? (
+            ))}
+          </ScrollView>
+        ) : (
+          isPressed[2] && (
             <View>
               <View style={styles.config}>
                 <Text style={styles.configText}>
@@ -162,9 +327,9 @@ const ManageForumScreen = () => {
                 </Card>
               </View>
             </View>
-          ) : null}
-        </View>
-      </ScrollView>
+          )
+        )}
+      </View>
     </SafeAreaView>
   );
 };
