@@ -49,6 +49,7 @@ const ScreensSignInMain = ({ navigation }) => {
 
   const fetchSignin = async (username, password) => {
     try {
+      console.log(`${API_URL}`);
       let responseLogin = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
         headers: {

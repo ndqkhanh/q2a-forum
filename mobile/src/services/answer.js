@@ -4,8 +4,9 @@ import { data } from "cheerio/lib/api/attributes";
 import { Alert } from "react-native";
 
 
-const pickACorrectAnswer = async(token, answerId) =>
+const pickACorrectAnswer = async(answerId, status) =>
 {
+    const token = await AsyncStorage.getItem("UserToken");
     try 
     {
         let data = await fetch (
@@ -16,7 +17,10 @@ const pickACorrectAnswer = async(token, answerId) =>
                     Accept: "application/json",
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
-                }
+                },
+                body : JSON.stringify({
+                    correct: status,
+                })
             },
         );
         data = await data.json();
@@ -30,8 +34,9 @@ const pickACorrectAnswer = async(token, answerId) =>
     return null;
 }
 
-const deleteAnswer = async (token, answerId) =>
+const deleteAnswer = async (answerId) =>
 {
+    const token = await AsyncStorage.getItem("UserToken");
     try
     {
         let data = await fetch(
@@ -62,7 +67,7 @@ const getAllAnswersAndVotings = async (questionId,page,limit) =>
     try 
     {
         let data = await fetch (
-            `${API_URL}/question/${questionId}/${page}/${limit}`,
+            `${API_URL}/v1/question/${questionId}/${page}/${limit}`,
             {
                 method: "GET",
                 headers: {
@@ -72,9 +77,7 @@ const getAllAnswersAndVotings = async (questionId,page,limit) =>
                 }
             },
         )
-        // console.log("duong dan");
-        console.log(`${API_URL}/question/${questionId}/${page}/${limit}`);
-        data = data.json();
+        data = await data.json();
         return data;
     }
     catch (error)

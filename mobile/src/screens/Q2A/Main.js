@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { formatDistance } from "date-fns";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Colors } from "react-native-ui-lib";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, TextInput } from "react-native";
+import { Button, Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import Post from "~components/Common/Post";
 import Q2APagination from "~components/Q2A/Pagination";
@@ -9,37 +10,64 @@ import { deleteAnswer, getAllAnswersAndVotings, pickACorrectAnswer } from "~serv
 
 const ScreensQ2AMain = () => {
   const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(5);
-  const [questionId, setQuestionId] = useState ("db0e22f6-e058-4ae3-a08f-9964289d4575");
-  const [answersAndVotes, setAnswersAndVotes] = useState({})
+  const [limit, setLimit] = useState(0);
+  const [indexCorrectAns, setIndexCorrectAns] = useState(0);
+  // const [questionId, setQuestionId] = useState ("db0e22f6-e058-4ae3-a08f-9964289d4575");
+  const [question, setQuestion] = useState({
+    questionInfo: {},
+    userName: "",
+    userAvatarUrl: ""
+  });
+  const [countAnswer, setCountAnswer] = useState(0);
+  const [answersAndVotes, setAnswersAndVotes] = useState([]);
+  const [answerId, setAnswerId] = useState("");
 
-  token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YzY5MTQ4YS01OGNjLTQxYmUtYjgyNS02MWM5NzFhNzdjYjEiLCJpYXQiOjE2NTcyMDMzNzAsImV4cCI6MTY1NzIwNTE3MCwidHlwZSI6ImFjY2VzcyJ9.qjDy4k0A-Ysd7e1usHcN1O0HTaeQXK0l9KLAUDNmO4E";
-  // const fetchPickACorrectAnswer = async (token,answerId) =>
-  // {
-  //   const data = await pickACorrectAnswer(token, answerId);
-  //   console.log ("data", data);
-  //   Alert.alert (data);
-  // };
 
-  // const fetchDeleteAnswer = async (token,answerId) =>
-  // {
-  //   const data = await deleteAnswer (token, answerId);
-  //   console.log("data", data);
-  //   Alert.alert (data);
-  // };
+  const fetchPickACorrectAnswer = async (answerId, status) =>
+  {
+    const res = await pickACorrectAnswer(answerId, status);
+    if (res.success == true )
+    {
+      for (let i = 0 ; i < answersAndVotes.length ; i++)
+      {
+        if (answersAndVotes[i].answer.id == answerId)
+        {
+          setIndexCorrectAns(i);
+        }
+      } 
+    }
+
+    console.log ("response: ", res);
+  };
+
+  const fetchDeleteAnswer = async (answerId) =>
+  {
+    const response = await deleteAnswer (answerId);
+    console.log("response: ", response);
+  };
 
   const fetchGetAllAnswersAndVotings = async(questionId,page,limit) =>
   {
     const data = await getAllAnswersAndVotings(questionId,page,limit);
 
-    setAnswersAndVotes(data);
+    setQuestion(data.question);
+    setCountAnswer(data.answers.count);
+    setAnswersAndVotes(data.answers.data);
     setPage(page);
     setLimit(limit);
-    console.log(answersAndVotes);
+    
+    for (let i = 0 ; i < answersAndVotes.length ; i++)
+    {
+      if (answersAndVotes[i].answer.correct == true)
+      {
+        setIndexCorrectAns(i);
+      }
+    } 
   };
 
-  useEffect (() => {
-    fetchGetAllAnswersAndVotings("db0e22f6-e058-4ae3-a08f-9964289d4575",0,5);
+  useEffect (() => { 
+    fetchGetAllAnswersAndVotings("db0e22f6-e058-4ae3-a08f-9964289d4575",0,6);
+    setAnswerId("39de0b82-dac7-4f97-9f63-828391f054ba");
   },[]);
 
   return (
@@ -51,7 +79,7 @@ const ScreensQ2AMain = () => {
     >
       <View style={styles.headerContainer}>
         <Icon name="arrow-back-outline" style={styles.back} />
-        <Text style={styles.header}>{answersAndVotes.question.title}</Text>
+        <Text style={styles.header}>{question.questionInfo.title}</Text>
       </View>
       <ScrollView
         contentContainerStyle={{
@@ -61,38 +89,50 @@ const ScreensQ2AMain = () => {
         showsVerticalScrollIndicator={false}
       >
         <Post
-          dateText={"3 days ago"}
-          // title={"Câu hỏi về game?"}
-          // content={
-          //   "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-          // }
-          content = {answersAndVotes.question.content}
+          dateText= "3 days ago"
+          // dateText={formatDistance(new Date(question.questionInfo.updated_at), Date.now(),
+          //   {addSuffix: true,})}
+          content = {question.questionInfo.content}
           userData={{
-            name: "Bảo Dragon",
-            avatarUrl:
-              "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            name: question.name,
+            avatarUrl: question.avatarUrl,
           }}
         />
 
         <View style={styles.answerContainer}>
-          <Text style={styles.numOfAnswers}>{answersAndVotes.answers.count} answers</Text>
+          <Text style={styles.numOfAnswers}>{countAnswer} answers</Text>
         </View>
+
+        <View>
+          <Button
+            title = {"correct"} 
+            onPress = {() => { fetchPickACorrectAnswer(answerId, true)}}
+          />
+        </View>
+
+        <View>
+          <Button
+            title = {"delete"}
+            onPress = {() => { fetchDeleteAnswer(answerId)}}
+          />
+        </View>
+        
         <Q2APagination page={page + 1} />
-        {[1,2,3,4,5,6].map((item) => (
+
+        {answersAndVotes.map((item, index) => (
           <Post
-            voting={30}
-            key={item}
-            correctAnswer={item == 1}
-            dateText={"2 days ago"}
-            content={"Em xin trả lời bác như này."}
+            voting={item.minus_upvote_downvote}
+            key={index}
+            correctAnswer={index == indexCorrectAns}
+            dateText={formatDistance(new Date(item.answer.updated_at), Date.now(),
+              {addSuffix: true,})}
+            content={item.answer.content}
             userData={{
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+              name: item.name,
+              avatarUrl: item.profilepictureurl,
             }}
           />
         ))}
-
         <Q2APagination page={3} />
       </ScrollView>
     </SafeAreaView>
