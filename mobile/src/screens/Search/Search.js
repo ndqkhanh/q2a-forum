@@ -16,8 +16,11 @@ import { Colors } from "react-native-ui-lib";
 import SearchBar from "~components/SearchBar/SearchBar";
 import Post from "~components/Common/Post";
 import Icon from "react-native-vector-icons/Ionicons";
+import { controllsSearchQuestion } from "~controller/controllQuestion";
+import Q2APagination from "~components/Q2A/Pagination";
 const SearchScreen = ({ navigation }) => {
   const [titleSearch, setTitleSearch] = React.useState("");
+  const [feedData, setFeedData] = React.useState([{title:'aa', content:'bb'}])
   return (
     <SafeAreaView style={styles.backgroundView}>
       {/* <Text style={{ fontSize: 30, alignSelf: 'center', color: Colors.blue40 }}>Find question</Text> */}
@@ -43,17 +46,34 @@ const SearchScreen = ({ navigation }) => {
       </View>
       <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
         <SearchBar textChange={setTitleSearch}
-        onPressSearch = {()=>console.log('pressed')}
+        onPressSearch = {()=>controllsSearchQuestion(titleSearch,0,1)}
         >
-          
         </SearchBar>
+        <Q2APagination page={3} />
       </View>
-      <View style={{ flex: 1 }}>
+      
+      <ScrollView
+        style={styles.body}>
+      {feedData.map((record, index) => (
+          <Post
+            key = {index}
+            title={record.title}
+            content={record.content}
+            numOfAnswers={'record.numOfAnswers'}
+            userData={{
+              name: 'record.userData.name',
+              avatarUrl: 'record.userData.profilepictureurl',
+            }}
+            correctAnswer={'record.correctAnswerExists'}
+          />
+        ))}
+        </ScrollView>
+      {/* <View style={{ flex: 1 }}>
       <Image
           source={require("~assets/img/bloodbros-search.gif")}
           style={styles.imgIntro}
         />
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };

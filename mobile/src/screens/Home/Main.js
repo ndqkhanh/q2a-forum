@@ -19,7 +19,7 @@ import { formatDistance } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import { API_URL } from "@env";
-import { controllPostQuestion } from "~controller/controllPostQuestion";
+import { controllPostQuestion } from "~controller/controllQuestion";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 20;
@@ -59,7 +59,7 @@ const ScreensHomeMain = ({ navigation, route }) => {
     }
   };
   useEffect(() => {
-    //fetchFeedInformation(0);
+    fetchFeedInformation(0);
   }, []);
 
   return (

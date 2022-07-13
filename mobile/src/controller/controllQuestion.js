@@ -1,0 +1,32 @@
+import React from "react";
+import { Alert } from "react-native";
+import { postQuestion, searchQuestion } from "~service/Question";
+const controllPostQuestion = async (passTitle, passContent) => {
+  try {
+    let message = await postQuestion(passTitle, passContent);
+    Alert.alert(message.header, JSON.stringify(message.content));
+  } catch (error) {
+    return null;
+    // console.log(error);
+    // Alert.alert("error", error);
+  }
+};
+const controllsSearchQuestion = async (keyword,page,limit) => {
+  try {
+    let res = await searchQuestion(keyword,page,limit);
+    if (res.hasOwnProperty("questions")) 
+    { Alert.alert(message.header, JSON.stringify(message.content));
+      return null;
+    }else{
+      alert(JSON.stringify(res));
+      return res;
+    }
+
+  } catch (error) {
+    return null;
+    // console.log(error);
+    // Alert.alert("error", error);
+  }
+};
+
+export { controllPostQuestion, controllsSearchQuestion };
