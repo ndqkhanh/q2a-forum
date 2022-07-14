@@ -18,7 +18,6 @@ const UserProvider = ({ children }) => {
       });
       data = await data.json();
       setUserData(data);
-      console.log("data", data);
     } catch (error) {
       console.error("error---", error);
     }

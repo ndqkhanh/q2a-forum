@@ -1,18 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors, Card } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-const PendingQuestion = ({ content, title, userData, dateText, image }) => {
+import { Alert } from "react-native";
+
+const PendingQuestion = ({
+  onPressApprove,
+  onPressDisapprove,
+  content,
+  title,
+  userData,
+  dateText,
+  image,
+}) => {
+  // const [test, setTest] = useState([1, 2, 3, 4, 5]);
+  // const onPressApprove = (test) => setTest(test.filter((item) => item !== 1));
+  // const onPressDisapprove = () => console.log(test);
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.postContentContainer}>
         <View style={styles.infoUserContainer}>
-          <Image
-            source={{
-              uri: userData.avatarUrl,
-            }}
-            style={styles.avatar}
-          ></Image>
+          {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
+            <Image
+              source={{
+                uri: userData.avatarUrl,
+              }}
+              style={styles.avatar}
+            ></Image>
+          )}
 
           <View style={styles.nameAndDate}>
             <Text style={styles.name}>{userData.name}</Text>
@@ -45,7 +61,7 @@ const PendingQuestion = ({ content, title, userData, dateText, image }) => {
       </View>
       <View style={styles.questionFooterContainer}>
         <Card style={styles.verifyCard}>
-          <TouchableOpacity flexDirection={"row"}>
+          <TouchableOpacity flexDirection={"row"} onPress={onPressApprove}>
             <View flexDirection={"row"} alignItems={"center"}>
               <Icon
                 name="checkmark-outline"
@@ -57,7 +73,7 @@ const PendingQuestion = ({ content, title, userData, dateText, image }) => {
           </TouchableOpacity>
         </Card>
         <Card style={styles.verifyCard}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onPressDisapprove}>
             <View flexDirection={"row"} alignItems={"center"}>
               <Icon
                 name="close-outline"
