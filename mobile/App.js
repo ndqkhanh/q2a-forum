@@ -110,6 +110,16 @@ const BottomTabNavigator = () => {
           ),
         }}
       />
+      {/* <BottomTab.Screen
+
+        name="Manage forum"
+        component={ManageForumScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="person-circle-outline" color={color} />
+          ),
+        }}
+      /> */}
     </BottomTab.Navigator>
   );
 };
