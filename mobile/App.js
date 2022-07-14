@@ -109,7 +109,7 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="person-circle-outline" color={color} />
           ),
         }}
-
+      />
       {/* <BottomTab.Screen
 
         name="Manage forum"
