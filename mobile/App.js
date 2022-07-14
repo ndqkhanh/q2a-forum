@@ -120,8 +120,8 @@ const BottomTabNavigator = () => {
         }}
       />
       <BottomTab.Screen
-        name="Post a question"
-        component={PostQuestionScreen}
+        name="ProfileScreen"
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="person-circle-outline" color={color} />
