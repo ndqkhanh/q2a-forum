@@ -17,9 +17,6 @@ const getUser = {
 };
 
 const updateUser = {
-  params: Joi.object().keys({
-    userId: Joi.string().uuid().required(),
-  }),
   body: Joi.object().keys({
     name: Joi.string().required(),
     profilepictureurl: Joi.string().required(),
