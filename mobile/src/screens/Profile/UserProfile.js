@@ -1,36 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Avatar, Card, Colors } from "react-native-ui-lib";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { getUserProfile, getMyProfile } from "~services/getProfile";
+import MyQuestions from "~components/Profile/myQuestions";
+import PersonalInfo from "~components/Profile/personalInfo";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ route }) => {
+  // const {userIdParam} = route.params;
+  // const userId = JSON.stringify(userIdParam);
   const [userData, setUserData] = useState({});
-  const fetchUserInformation = async (userId) => {
-    const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NjdkMGJiMC02ODY0LTQ2ODEtYjg5Yi0zMTE4MjAxMmRmNTgiLCJpYXQiOjE2NTYwMzkzMDcsImV4cCI6MTY1NjA0MTEwNywidHlwZSI6ImFjY2VzcyJ9.58R40P2E0BMOIS4VrhN32xsMWA44rhQz2h3HxOBetM0";
-    try {
-      let data = await fetch(`http://${API_URL}:3000/v1/user`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-      data = await data.json();
-      setUserData(data);
-      console.log("data", data);
-    } catch (error) {
-      console.error("error", error);
+  const fetchUserProfile = async (userId) => {
+    if (userId != null) {
+      let data = await getUserProfile(userId);
+    } else {
+      let data = await getMyProfile();
     }
+    setUserData(data);
   };
   useEffect(() => {
-    fetchUserInformation(userData.id);
+    fetchUserProfile(userData.id);
   }, []);
+  const [tab, setTab] = useState("Personal info");
+  const personalInfoTab = () => {
+    setTab("Personal info");
+  };
+  const myQuestionsTab = () => {
+    setTab("My questions");
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -54,7 +51,11 @@ const ProfileScreen = () => {
             <Text style={styles.title}>{userData.username}</Text>
             <Text>
               <Icon size={10} name="ellipse" color="blue" />
-              {userData.role == 0 ? "Admin" : (userData.role == 1 ? "Moderator" : "User")}
+              {userData.role == 0
+                ? "Admin"
+                : userData.role == 1
+                ? "Moderator"
+                : "User"}
             </Text>
           </View>
         </View>
@@ -69,33 +70,57 @@ const ProfileScreen = () => {
           </Card>
           <Card style={styles.QA_card}>
             <Text text10 center black>
-            {userData.numOfAnswers}
+              {userData.numOfAnswers}
             </Text>
             <Text text60 center black>
               Answers
             </Text>
           </Card>
         </View>
-        <Text style={styles.title}>Personal information</Text>
-        <Card style={styles.infoCard}>
-          <Text text60>
-            <Text black>Full Name:{"  "}</Text>
-            {userData.name}
-          </Text>
-        </Card>
-        <TouchableOpacity activeOpacity={0.7}>
-          <Text
-            style={{
-              lineHeight: 50,
-              fontSize: 20,
-              textDecorationLine: "underline",
-              color: "#1e90ff",
-            }}
-          >
-            <Icon size={20} name="eye" /> My questions
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7}>
+        <View style={styles.infoSection}>
+          <TouchableOpacity onPress={personalInfoTab}>
+            <Card
+              style={styles.menu}
+              {...(tab == "Personal info"
+                ? { backgroundColor: Colors.blue60 }
+                : {})}
+            >
+              <Text black>Personal info</Text>
+            </Card>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={myQuestionsTab}>
+            <Card
+              style={styles.menu}
+              {...(tab == "My questions"
+                ? { backgroundColor: Colors.blue60 }
+                : {})}
+            >
+              <Text black>My questions</Text>
+            </Card>
+          </TouchableOpacity>
+        </View>
+        {tab == "Personal info" ? (
+          <View>
+            <PersonalInfo userData />
+          </View>
+        ) : null}
+        {tab == "My questions" ? (
+          <View>
+            <MyQuestions
+              dateText={"3 days ago"}
+              title={"Câu hỏi về game?"}
+              content={
+                "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
+              }
+              userData={{
+                name: "Bảo Dragon",
+                avatarUrl:
+                  "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+              }}
+            />
+          </View>
+        ) : null}
+        {/* <TouchableOpacity activeOpacity={0.7}>
           <Text
             style={{
               lineHeight: 50,
@@ -106,15 +131,15 @@ const ProfileScreen = () => {
           >
             <Icon size={20} name="create-outline" /> Edit Profile
           </Text>
-        </TouchableOpacity>            
-        <View style={styles.logOutButton}>
+        </TouchableOpacity>             */}
+        {/* <View style={styles.logOutButton}>
           <TouchableOpacity
             style={{ backgroundColor: "red", borderRadius: 20 }}
             activeOpacity={0.7}
           >
             <Text style={styles.logOutText}>Log out</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </SafeAreaView>
   );
@@ -160,12 +185,6 @@ const styles = StyleSheet.create({
     padding: 5,
     marginLeft: 10,
   },
-  infoCard: {
-    height: 100,
-    width: "100%",
-    padding: 10,
-    justifyContent: "space-around",
-  },
   logOutButton: {
     justifyContent: "flex-end",
     alignItems: "flex-end",
@@ -175,5 +194,11 @@ const styles = StyleSheet.create({
     margin: 7,
     color: "white",
     fontWeight: "bold",
+  },
+  menu: {
+    borderRadius: 0,
+    paddingLeft: 20,
+    paddingRight: 30,
+    marginRight: 2,
   },
 });
