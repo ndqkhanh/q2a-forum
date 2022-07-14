@@ -73,7 +73,7 @@ const ScreensSignInMain = ({ navigation }) => {
       }
     } catch (error) {
       console.log("error", error);
-      Alert.alert("error", error);
+      Alert.alert("error", error.message);
     }
   };
   return (
