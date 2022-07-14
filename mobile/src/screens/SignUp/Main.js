@@ -67,93 +67,93 @@ const ScreensSignUpMain = ({ navigation }) => {
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-      <ScrollView style = {{flex: 1}}>
-      <View style={styles.mainIntro}>
-        <Image
-          source={require("~assets/img/signUp.gif")}
-          style={styles.imgIntro}
-        />
-        <Text style={styles.title}>Create better together.</Text>
-        <Text style={styles.subTitle}>Join our community</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.signInText}>Sign up</Text>
-
-        <View style={styles.fieldContainer}>
-          <Icon name="person-circle-outline" style={styles.fieldIcon} />
-
-          <TextInput
-            style={styles.fieldInput}
-            placeholder="Username"
-            onChangeText={setUsername}
+      <ScrollView style={{ flex: 1 }}>
+        <View style={styles.mainIntro}>
+          <Image
+            source={require("~assets/img/signUp.gif")}
+            style={styles.imgIntro}
           />
+          <Text style={styles.title}>Create better together.</Text>
+          <Text style={styles.subTitle}>Join our community</Text>
         </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.signInText}>Sign up</Text>
 
-        <View style={styles.fieldContainer}>
-          <Icon name="person-outline" style={styles.fieldIcon} />
+          <View style={styles.fieldContainer}>
+            <Icon name="person-circle-outline" style={styles.fieldIcon} />
 
-          <TextInput
-            style={styles.fieldInput}
-            placeholder="Name"
-            onChangeText={setName}
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
-
-          <TextInput
-            style={styles.fieldInput}
-            placeholder="Password"
-            onChangeText={setPassword}
-            secureTextEntry={true}
-          />
-        </View>
-        <View style={styles.fieldContainer}>
-          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
-
-          <TextInput
-            style={styles.fieldInput}
-            placeholder="Re-enter Password"
-            onChangeText={setRepassword}
-            secureTextEntry={true}
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Icon name="image-outline" style={styles.fieldIcon} />
-
-          <TextInput
-            style={styles.fieldInput}
-            placeholder="Picture"
-            onChangeText={setPicurl}
-          />
-        </View>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() =>
-            fetchSignup(username, name, password, repassword, picurl)
-          }
-        >
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Register</Text>
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Username"
+              onChangeText={setUsername}
+            />
           </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.signUpText}>
-        <Text style={styles.newForum}>
-          Joined us before?{" "}
-          <Text
-            style={{
-              color: Colors.blue40,
-              fontWeight: "bold",
-            }}
-            onPress={onSignIn}
+
+          <View style={styles.fieldContainer}>
+            <Icon name="person-outline" style={styles.fieldIcon} />
+
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Name"
+              onChangeText={setName}
+            />
+          </View>
+
+          <View style={styles.fieldContainer}>
+            <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Password"
+              onChangeText={setPassword}
+              secureTextEntry={true}
+            />
+          </View>
+          <View style={styles.fieldContainer}>
+            <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Re-enter Password"
+              onChangeText={setRepassword}
+              secureTextEntry={true}
+            />
+          </View>
+
+          <View style={styles.fieldContainer}>
+            <Icon name="image-outline" style={styles.fieldIcon} />
+
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Picture"
+              onChangeText={setPicurl}
+            />
+          </View>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              fetchSignup(username, name, password, repassword, picurl)
+            }
           >
-            Login
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Register</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.signUpText}>
+          <Text style={styles.newForum}>
+            Joined us before?{" "}
+            <Text
+              style={{
+                color: Colors.blue40,
+                fontWeight: "bold",
+              }}
+              onPress={onSignIn}
+            >
+              Login
+            </Text>
           </Text>
-        </Text>
-      </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flexDirection: "row",
     marginTop: 20,
-    alignItems:'center',
+    alignItems: "center",
   },
   fieldIcon: {
     fontSize: 28,

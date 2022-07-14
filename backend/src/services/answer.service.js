@@ -42,6 +42,7 @@ const changeAnswer = async (req) => {
     },
     data: {
       content: req.body.content,
+      updated_at: new Date(),
     },
   });
   return answer;
@@ -63,13 +64,14 @@ const pickCorrectAnswerById = async (req) => {
   });
   if (checkOwnQuestion.uid !== req.user.id) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'You are not the owner of this question');
-  };
+  }
   const answer = prisma.answers.update({
     where: {
       id: req.params.answerId,
     },
     data: {
       correct: req.body.correct === true ? true : null,
+      updated_at: new Date(),
     },
   });
   return answer;
