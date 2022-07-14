@@ -127,7 +127,7 @@ const ManageForumScreen = () => {
     if (configuration.FORUM_NAME != configForumName) {
       data = await updateConfiguration(token, "FORUM_NAME", configForumName);
     }
-    if (!data.success) {
+    if (data && !data.success) {
       Alert.alert("Update number of questions in feed failure");
     }
     if (configuration.NUM_OF_QUESTIONS_IN_FEED != configNumOfQuestionInFeed) {
@@ -137,7 +137,7 @@ const ManageForumScreen = () => {
         configNumOfQuestionInFeed,
       );
     }
-    if (!data.success) {
+    if (data && !data.success) {
       Alert.alert("Update number of questions in feed failure");
     } else {
       Alert.alert("Update configuration successfully");
