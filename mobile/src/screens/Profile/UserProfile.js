@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,15 +13,6 @@ import MyQuestions from "~components/Profile/myQuestions";
 import PersonalInfo from "~components/Profile/personalInfo";
 import { getMyProfile, getUserProfile } from "~services/getProfile";
 import { updateUserInformation } from "~services/user";
-=======
-import React, { useState, useEffect } from "react";
-import { View, Text, Avatar, Card, Colors } from "react-native-ui-lib";
-import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
-import { getUserProfile, getMyProfile } from "~services/getProfile";
-import MyQuestions from "~components/Profile/myQuestions";
-import PersonalInfo from "~components/Profile/personalInfo";
->>>>>>> 562a509989345afea030abc8f9ccbd930af0b4f3
 
 const ProfileScreen = ({ route }) => {
   // const {userIdParam} = route.params;
