@@ -1,3 +1,20 @@
+<<<<<<< HEAD
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { Avatar, Card, Colors, Text, View } from "react-native-ui-lib";
+import Icon from "react-native-vector-icons/Ionicons";
+import MyQuestions from "~components/Profile/myQuestions";
+import PersonalInfo from "~components/Profile/personalInfo";
+import { getMyProfile, getUserProfile } from "~services/getProfile";
+import { updateUserInformation } from "~services/user";
+=======
 import React, { useState, useEffect } from "react";
 import { View, Text, Avatar, Card, Colors } from "react-native-ui-lib";
 import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
@@ -5,16 +22,31 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { getUserProfile, getMyProfile } from "~services/getProfile";
 import MyQuestions from "~components/Profile/myQuestions";
 import PersonalInfo from "~components/Profile/personalInfo";
+>>>>>>> 562a509989345afea030abc8f9ccbd930af0b4f3
 
 const ProfileScreen = ({ route }) => {
   // const {userIdParam} = route.params;
   // const userId = JSON.stringify(userIdParam);
   const [userData, setUserData] = useState({});
   const fetchUserProfile = async (userId) => {
+    let data;
     if (userId != null) {
-      let data = await getUserProfile(userId);
+      data = await getUserProfile(userId);
     } else {
-      let data = await getMyProfile();
+      data = await getMyProfile();
+    }
+    if (data) setUserData(data);
+  };
+  const saveInformation = async () => {
+    let token = await AsyncStorage.getItem("UserToken");
+    let data = await updateUserInformation(token, {
+      name: userData.name,
+      profilepictureurl: userData.profilepictureurl,
+    });
+    if (data.username) {
+      Alert.alert("Update account successfully.");
+    } else {
+      Alert.alert("Update account failure.");
     }
     setUserData(data);
   };
@@ -27,6 +59,9 @@ const ProfileScreen = ({ route }) => {
   };
   const myQuestionsTab = () => {
     setTab("My questions");
+  };
+  const editProfile = () => {
+    setTab("Edit Profile");
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -77,35 +112,77 @@ const ProfileScreen = ({ route }) => {
             </Text>
           </Card>
         </View>
+
         <View style={styles.infoSection}>
-          <TouchableOpacity onPress={personalInfoTab}>
+          <TouchableOpacity style={{ flex: 1 }} onPress={personalInfoTab}>
             <Card
               style={styles.menu}
               {...(tab == "Personal info"
                 ? { backgroundColor: Colors.blue60 }
                 : {})}
             >
-              <Text black>Personal info</Text>
+              <Text
+                black
+                style={{
+                  textAlign: "center",
+                  fontSize: 15,
+                }}
+              >
+                Personal info
+              </Text>
             </Card>
           </TouchableOpacity>
-          <TouchableOpacity onPress={myQuestionsTab}>
+          <TouchableOpacity style={{ flex: 1 }} onPress={myQuestionsTab}>
             <Card
               style={styles.menu}
               {...(tab == "My questions"
                 ? { backgroundColor: Colors.blue60 }
                 : {})}
             >
-              <Text black>My questions</Text>
+              <Text
+                black
+                style={{
+                  textAlign: "center",
+                  fontSize: 15,
+                }}
+              >
+                My questions
+              </Text>
+            </Card>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1 }} onPress={editProfile}>
+            <Card
+              style={styles.menu}
+              {...(tab == "Edit Profile"
+                ? { backgroundColor: Colors.blue60 }
+                : {})}
+            >
+              <Text
+                black
+                style={{
+                  textAlign: "center",
+                  fontSize: 15,
+                }}
+              >
+                Edit Profile
+              </Text>
             </Card>
           </TouchableOpacity>
         </View>
         {tab == "Personal info" ? (
-          <View>
-            <PersonalInfo userData />
+          <View
+            style={{
+              margin: 10,
+            }}
+          >
+            <PersonalInfo userData={userData} />
           </View>
-        ) : null}
-        {tab == "My questions" ? (
-          <View>
+        ) : tab == "My questions" ? (
+          <View
+            style={{
+              margin: 10,
+            }}
+          >
             <MyQuestions
               dateText={"3 days ago"}
               title={"Câu hỏi về game?"}
@@ -119,7 +196,107 @@ const ProfileScreen = ({ route }) => {
               }}
             />
           </View>
-        ) : null}
+        ) : (
+          tab == "Edit Profile" && (
+            <View
+              style={{
+                backgroundColor: Colors.white,
+                padding: 10,
+                borderRadius: 5,
+                margin: 10,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "500",
+                    fontSize: 16,
+                  }}
+                >
+                  Full Name:
+                </Text>
+                <TextInput
+                  value={userData.name}
+                  onChangeText={(value) => {
+                    userData.name = value;
+                    setUserData({ ...userData });
+                  }}
+                  style={{
+                    flex: 1,
+                    height: 40,
+                    marginLeft: 5,
+                    borderRadius: 5,
+                    backgroundColor: Colors.cyan80,
+                    paddingHorizontal: 5,
+                    fontSize: 16,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "500",
+                    fontSize: 16,
+                  }}
+                >
+                  Profile Picturl URL:
+                </Text>
+                <TextInput
+                  value={userData.profilepictureurl}
+                  onChangeText={(value) => {
+                    userData.profilepictureurl = value;
+                    setUserData({ ...userData });
+                  }}
+                  style={{
+                    flex: 1,
+                    height: 40,
+                    marginLeft: 5,
+                    borderRadius: 5,
+                    backgroundColor: Colors.cyan80,
+                    paddingHorizontal: 5,
+                    fontSize: 16,
+                  }}
+                />
+              </View>
+
+              <TouchableOpacity
+                style={{
+                  alignSelf: "center",
+                  width: 100,
+                  height: 35,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: Colors.red30,
+                  borderRadius: 5,
+                  marginTop: 15,
+                }}
+                onPress={saveInformation}
+              >
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontWeight: "bold",
+                    fontSize: 16,
+                  }}
+                >
+                  Save
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )
+        )}
+
         {/* <TouchableOpacity activeOpacity={0.7}>
           <Text
             style={{
@@ -131,6 +308,8 @@ const ProfileScreen = ({ route }) => {
           >
             <Icon size={20} name="create-outline" /> Edit Profile
           </Text>
+        </TouchableOpacity>
+        <View style={styles.logOutButton}>
         </TouchableOpacity>             */}
         {/* <View style={styles.logOutButton}>
           <TouchableOpacity
@@ -185,6 +364,12 @@ const styles = StyleSheet.create({
     padding: 5,
     marginLeft: 10,
   },
+  infoCard: {
+    width: "100%",
+    padding: 10,
+    marginTop: 10,
+    justifyContent: "space-around",
+  },
   logOutButton: {
     justifyContent: "flex-end",
     alignItems: "flex-end",
@@ -197,8 +382,5 @@ const styles = StyleSheet.create({
   },
   menu: {
     borderRadius: 0,
-    paddingLeft: 20,
-    paddingRight: 30,
-    marginRight: 2,
   },
 });

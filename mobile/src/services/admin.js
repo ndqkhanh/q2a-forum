@@ -1,6 +1,5 @@
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
-import { Alert } from "react-native";
 
 const getMetrics = async (token) => {
   try {
