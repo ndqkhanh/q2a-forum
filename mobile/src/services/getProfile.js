@@ -13,7 +13,6 @@ const getUserProfile = async (userId) => {
       },
     });
     data = await data.json();
-    console.log("data", data);
     return data;
   } catch (error) {
     console.error("error: ", error);
@@ -32,7 +31,6 @@ const getMyProfile = async () => {
       },
     });
     data = await data.json();
-    console.log("data", data);
     return data;
   } catch (error) {
     console.error("error: ", error);
