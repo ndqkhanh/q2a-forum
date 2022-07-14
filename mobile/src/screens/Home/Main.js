@@ -32,7 +32,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 const ScreensHomeMain = ({ navigation, route }) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
-  const [feedData, setFeedData] = useState([])
+  const [feedData, setFeedData] = useState([]);
   const fetchFeedInformation = async (page) => {
     //const [myQuestion,setMyQuestion] = React.useState();
     try {
@@ -43,7 +43,7 @@ const ScreensHomeMain = ({ navigation, route }) => {
           Accept: "application/json",
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-        }
+        },
       });
       data = await data.json();
       var maxLength = parseInt(data.count);
@@ -59,7 +59,17 @@ const ScreensHomeMain = ({ navigation, route }) => {
     }
   };
   useEffect(() => {
-    fetchFeedInformation(0);
+    // fetchFeedInformation(0);
+
+    // // Reload
+    // return () => {
+    //   setPage(0);
+    //   setRefetch(false);
+    //   setFeedData([]);
+    //   setMaxLength(0);
+
+    //   setRefetch(false);
+    // };
   }, []);
 
   return (
@@ -99,8 +109,9 @@ const ScreensHomeMain = ({ navigation, route }) => {
         showsVerticalScrollIndicator={false}
       >
         <HomeMainPosting
-          onPressPostToDB = {()=>{controllPostQuestion(route.params?.Title,route.params?.Content);
-            navigation.setParams({Title: null, Content: null})
+          onPressPostToDB={() => {
+            controllPostQuestion(route.params?.Title, route.params?.Content);
+            navigation.setParams({ Title: null, Content: null });
           }}
           content={route.params?.Title}
           clickText={() => navigation.navigate("Post a question")}

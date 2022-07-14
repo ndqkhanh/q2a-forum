@@ -16,7 +16,7 @@ import {
 } from "react-native-pell-rich-editor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const PostQuestionScreen = ({navigation}) => {
+const PostAnswerScreen = ({navigation}) => {
   const richText = React.useRef();
   const [title, setTitle] = React.useState(null);
   const [content, setContent] = React.useState(null);
@@ -34,20 +34,9 @@ const PostQuestionScreen = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Post a question</Text>
-        <Icon
-          name="log-out-outline"
-          style={{
-            fontSize: 30,
-            color: Colors.cyan10,
-          }}
-        />
+        <Text style={styles.header}>Your answer</Text>
       </View>
       <View style={styles.body}>
-        <Text style={styles.textTitle}>Title</Text>
-        <Card style={styles.typingTitle}>
-          <TextInput onChangeText={(tilteText) => setTitle(tilteText)} />
-        </Card>
         <Text style={styles.textTitle}>Content</Text>
         <RichToolbar
           editor={richText}
@@ -66,13 +55,13 @@ const PostQuestionScreen = ({navigation}) => {
       </View>
       <View style={styles.button}>
         <TouchableOpacity
-          style={{ backgroundColor: Colors.red30, borderRadius: 20 }}
+          style={{ backgroundColor: Colors.red30, borderRadius: 20, width:85 }}
           activeOpacity={0.7}
           onPress={() => {
-            navigation.navigate("Your Feed");
+            navigation.goBack();
           }}
         >
-          <Text style={styles.submitText}>Cancel</Text>
+          <Text style={styles.submitText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
@@ -81,16 +70,16 @@ const PostQuestionScreen = ({navigation}) => {
             leftMargin: 20,
           }}
           activeOpacity={0.7}
-          onPress={()=>postQuestion(title, content)}
+          onPress={()=>{navigation.goBack();}}
         >
-          <Text style={styles.submitText}>Submit</Text>
+          <Text style={styles.submitText}>Answer</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-export default PostQuestionScreen;
+export default PostAnswerScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -146,5 +135,6 @@ const styles = StyleSheet.create({
     margin: 7,
     color: "white",
     fontWeight: "bold",
+    alignSelf: 'center',
   },
 });

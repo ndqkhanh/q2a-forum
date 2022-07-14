@@ -60,7 +60,7 @@ const searchQuestion = async(keyword,page,limit) =>{
 
       const mjson = await responseSearchQuestion.json();
       if (mjson.hasOwnProperty("questions")) {
-        alert(JSON.stringify(mjson))
+        //alert(JSON.stringify(mjson))
         return mjson;
       }else if(mjson.hasOwnProperty("message"))
         message = { header: "Error", content: mjson.message };

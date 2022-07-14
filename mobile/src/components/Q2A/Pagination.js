@@ -1,19 +1,23 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors } from "react-native-ui-lib";
 
-const Q2APagination = ({ page }) => {
+const Q2APagination = ({ page, pressPrev, pressNext }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.btnPage}>
-        <Text style={styles.btnTextPage}>Previous</Text>
-      </View>
+      <TouchableOpacity activeOpacity={0.8} onPress={pressPrev}>
+        <View style={styles.btnPage}>
+          <Text style={styles.btnTextPage}>Previous</Text>
+        </View>
+      </TouchableOpacity>
       <View style={styles.pageContainer}>
         <Text style={styles.pageNumber}>{page}</Text>
       </View>
-      <View style={styles.btnPage}>
-        <Text style={styles.btnTextPage}>Next</Text>
-      </View>
+      <TouchableOpacity activeOpacity={0.8} onPress={pressNext}>
+        <View style={styles.btnPage}>
+          <Text style={styles.btnTextPage}>Next</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

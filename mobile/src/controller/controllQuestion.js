@@ -1,6 +1,6 @@
 import React from "react";
 import { Alert } from "react-native";
-import { postQuestion, searchQuestion } from "~service/Question";
+import { postQuestion, searchQuestion } from "~services/Question";
 const controllPostQuestion = async (passTitle, passContent) => {
   try {
     let message = await postQuestion(passTitle, passContent);
@@ -14,12 +14,15 @@ const controllPostQuestion = async (passTitle, passContent) => {
 const controllsSearchQuestion = async (keyword,page,limit) => {
   try {
     let res = await searchQuestion(keyword,page,limit);
+    
     if (res.hasOwnProperty("questions")) 
-    { Alert.alert(message.header, JSON.stringify(message.content));
-      return null;
-    }else{
-      alert(JSON.stringify(res));
+    { 
+      //alert(JSON.stringify(res));
+      //console.log(res)
       return res;
+    }else{
+      Alert.alert(message.header, JSON.stringify(message.content));
+      return null;
     }
 
   } catch (error) {

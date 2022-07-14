@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 const Post = ({
@@ -11,6 +11,7 @@ const Post = ({
   image,
   numOfAnswers,
   correctAnswer = false,
+  onPressAnswer,
 }) => {
   return (
     <View style={styles.postContainer}>
@@ -93,7 +94,9 @@ const Post = ({
 
       {typeof numOfAnswers == "number" && (
         <View style={styles.questionFooterContainer}>
+          <TouchableOpacity activeOpacity={0.8} onPress={onPressAnswer}>
           <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
+          </TouchableOpacity>
           <Text style={styles.numOfAnswers}>{numOfAnswers}</Text>
         </View>
       )}

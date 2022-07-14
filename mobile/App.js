@@ -20,6 +20,7 @@ import ProfileScreen from "~screens/Profile/UserProfile";
 import ManageForumScreen from "~screens/Profile/ManageForum";
 import PostQuestionScreen from "~screens/PostNewQuestion";
 import SearchScreen from "~screens/Search/Search";
+import PostAnswerScreen from "~screens/PostAnswer/PostAnswer";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -150,6 +151,7 @@ const App = () => {
           <Stack.Screen name="Login" component={SignupAndLogin} />
           <Stack.Screen name="Home" component={BottomTabNavigator} />
           {/* <Stack.Screen name="Q2A" component={ScreensQ2AMain} /> */}
+          <Stack.Screen name="Post answer" component={PostAnswerScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
