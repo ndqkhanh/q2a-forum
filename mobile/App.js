@@ -101,26 +101,8 @@ const BottomTabNavigator = () => {
         }}
       />
 
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-circle-outline" color={color} />
-          ),
-        }}
-      /> */}
-      <BottomTab.Screen
-        name="Manage forum"
-        component={ManageForumScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-circle-outline" color={color} />
-          ),
-        }}
-      />
-      <BottomTab.Screen
-        name="ProfileScreen"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color }) => (
