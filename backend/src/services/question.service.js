@@ -163,7 +163,7 @@ const getQuestionByID = async (req) =>
     where : {id: questionRecord.uid,},
   }
   );
-  return {questionInfo: questionRecord, userName: userRecord.name, userAvatarUrl: userRecord.profilepictureurl};
+  return {questionInfo: questionRecord, uid: userRecord.id, name: userRecord.name, avatarUrl: userRecord.profilepictureurl};
 }
 const GetAnswersByQuestionIDPagination = async(req) => {
   const answers = await prisma.answers.findMany({
@@ -196,7 +196,7 @@ const GetAnswersAndVotings = async (answers) => {
       count_upvotes: upvotes.length,
       count_downvotes: downvotes.length,
       minus_upvote_downvote: upvotes.length - downvotes.length,
-      username: user.username,
+      name: user.name,
       profilepictureurl: user.profilepictureurl})
   }
 
