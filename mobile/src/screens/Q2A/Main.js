@@ -1,74 +1,77 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { text } from "cheerio/lib/api/manipulation";
 import { formatDistance } from "date-fns";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, TextInput } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+} from "react-native";
 import { Button, Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import Post from "~components/Common/Post";
 import Q2APagination from "~components/Q2A/Pagination";
-import { deleteAnswer, getAllAnswersAndVotings, pickACorrectAnswer } from "~services/answer";
+import {
+  deleteAnswer,
+  getAllAnswersAndVotings,
+  pickACorrectAnswer,
+} from "~services/answer";
 
 const ScreensQ2AMain = () => {
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(0);
   const [indexCorrectAns, setIndexCorrectAns] = useState(0);
-  // const [questionId, setQuestionId] = useState ("db0e22f6-e058-4ae3-a08f-9964289d4575");
-  const [question, setQuestion] = useState({
-    questionInfo: {},
-    userName: "",
-    userAvatarUrl: ""
-  });
+  const [questionId, setQuestionId] = useState(
+    "db0e22f6-e058-4ae3-a08f-9964289d4575",
+  );
+  const [question, setQuestion] = useState(null);
   const [countAnswer, setCountAnswer] = useState(0);
   const [answersAndVotes, setAnswersAndVotes] = useState([]);
   const [answerId, setAnswerId] = useState("");
+  const [isRefresh, setIsRefresh] = useState(false);
 
-
-  const fetchPickACorrectAnswer = async (answerId, status) =>
-  {
+  const fetchPickACorrectAnswer = async (answerId, status) => {
     const res = await pickACorrectAnswer(answerId, status);
-    if (res.success == true )
-    {
-      for (let i = 0 ; i < answersAndVotes.length ; i++)
-      {
-        if (answersAndVotes[i].answer.id == answerId)
-        {
+    if (res.success == true) {
+      for (let i = 0; i < answersAndVotes.length; i++) {
+        if (answersAndVotes[i].answer.id == answerId) {
           setIndexCorrectAns(i);
         }
-      } 
+      }
     }
 
-    console.log ("response: ", res);
+    console.log("response: ", res);
   };
 
-  const fetchDeleteAnswer = async (answerId) =>
-  {
-    const response = await deleteAnswer (answerId);
+  const fetchDeleteAnswer = async (answerId) => {
+    const response = await deleteAnswer(answerId);
     console.log("response: ", response);
   };
 
-  const fetchGetAllAnswersAndVotings = async(questionId,page,limit) =>
-  {
-    const data = await getAllAnswersAndVotings(questionId,page,limit);
-
+  const fetchGetAllAnswersAndVotings = async (questionId, page, limit) => {
+    console.log("fetch data trigger");
+    const data = await getAllAnswersAndVotings(questionId, page, limit);
+    console.log(data);
     setQuestion(data.question);
     setCountAnswer(data.answers.count);
     setAnswersAndVotes(data.answers.data);
     setPage(page);
     setLimit(limit);
-    
-    for (let i = 0 ; i < answersAndVotes.length ; i++)
-    {
-      if (answersAndVotes[i].answer.correct == true)
-      {
-        setIndexCorrectAns(i);
-      }
-    } 
   };
 
-  useEffect (() => { 
-    fetchGetAllAnswersAndVotings("db0e22f6-e058-4ae3-a08f-9964289d4575",0,6);
-    setAnswerId("39de0b82-dac7-4f97-9f63-828391f054ba");
-  },[]);
+  useEffect(() => {
+    fetchGetAllAnswersAndVotings("db0e22f6-e058-4ae3-a08f-9964289d4575", 0, 5);
+    for (let i = 0; i < answersAndVotes.length; i++) {
+      if (answersAndVotes[i].answer.correct == true) {
+        setIndexCorrectAns(i);
+      }
+    }
+  }, []);
+
+  if (!question) return null;
 
   return (
     <SafeAreaView
@@ -89,48 +92,53 @@ const ScreensQ2AMain = () => {
         showsVerticalScrollIndicator={false}
       >
         <Post
-          dateText= "3 days ago"
-          // dateText={formatDistance(new Date(question.questionInfo.updated_at), Date.now(),
-          //   {addSuffix: true,})}
-          content = {question.questionInfo.content}
+          dateText={formatDistance(
+            new Date(question.questionInfo.updated_at),
+            Date.now(),
+            { addSuffix: true },
+          )}
+          content={question.questionInfo.content}
           userData={{
             name: question.name,
             avatarUrl: question.avatarUrl,
           }}
         />
-
         <View style={styles.answerContainer}>
           <Text style={styles.numOfAnswers}>{countAnswer} answers</Text>
         </View>
 
-        <View>
-          <Button
-            title = {"correct"} 
-            onPress = {() => { fetchPickACorrectAnswer(answerId, true)}}
-          />
-        </View>
-
-        <View>
-          <Button
-            title = {"delete"}
-            onPress = {() => { fetchDeleteAnswer(answerId)}}
-          />
-        </View>
-        
         <Q2APagination page={page + 1} />
-
         {answersAndVotes.map((item, index) => (
           <Post
             voting={item.minus_upvote_downvote}
             key={index}
             correctAnswer={index == indexCorrectAns}
-            dateText={formatDistance(new Date(item.answer.updated_at), Date.now(),
-              {addSuffix: true,})}
+            dateText={formatDistance(
+              new Date(item.answer.updated_at),
+              Date.now(),
+              { addSuffix: true },
+            )}
             content={item.answer.content}
             userData={{
               name: item.name,
               avatarUrl: item.profilepictureurl,
             }}
+            onPickACorrectAnswer={
+              question.uid == question.questionInfo.uid
+                ? () => {
+                    setAnswerId(item.answer.id);
+                    fetchPickACorrectAnswer(answerId, true);
+                  }
+                : null
+            }
+            onPickDeleteAnswer={
+              question.uid == question.questionInfo.uid
+                ? () => {
+                    setAnswerId(item.answer.id);
+                    fetchDeleteAnswer(answerId);
+                  }
+                : null
+            }
           />
         ))}
         <Q2APagination page={3} />

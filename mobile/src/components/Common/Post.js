@@ -1,16 +1,18 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, Button } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 const Post = ({
   voting,
   content,
   title,
-  userData,
+  userData = { name: "", avatarUrl: "" },
   dateText,
   image,
   numOfAnswers,
   correctAnswer = false,
+  onPickACorrectAnswer = null,
+  onPickDeleteAnswer = null,
 }) => {
   return (
     <View style={styles.postContainer}>
@@ -95,6 +97,18 @@ const Post = ({
         <View style={styles.questionFooterContainer}>
           <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
           <Text style={styles.numOfAnswers}>{numOfAnswers}</Text>
+        </View>
+      )}
+
+      {onPickACorrectAnswer && (
+        <View>
+          <Button title={"correct"} onPress={onPickACorrectAnswer} />
+        </View>
+      )}
+
+      {onPickDeleteAnswer && (
+        <View>
+          <Button title={"delete"} onPress={onPickDeleteAnswer} />
         </View>
       )}
     </View>

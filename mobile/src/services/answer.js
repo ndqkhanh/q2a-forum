@@ -67,7 +67,7 @@ const getAllAnswersAndVotings = async (questionId,page,limit) =>
     try 
     {
         let data = await fetch (
-            `${API_URL}/v1/question/${questionId}/${page}/${limit}`,
+            `${API_URL}/question/${questionId}/${page}/${limit}`,
             {
                 method: "GET",
                 headers: {
