@@ -60,14 +60,12 @@ const ScreensHomeMain = ({ navigation, route }) => {
   };
   useEffect(() => {
     // fetchFeedInformation(0);
-
     // // Reload
     // return () => {
     //   setPage(0);
     //   setRefetch(false);
     //   setFeedData([]);
     //   setMaxLength(0);
-
     //   setRefetch(false);
     // };
   }, []);

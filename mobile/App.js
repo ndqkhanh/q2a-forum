@@ -34,9 +34,10 @@ if (TextInput.defaultProps == null) {
 import { createStackNavigator } from "@react-navigation/stack";
 import { API_URL } from "@env";
 import ScreensQ2AMain from "~screens/Q2A/Main";
+import BlankScreen from "~screens/BlankScreen/BlankScreen";
 const BottomTab = createBottomTabNavigator();
 //const Stack = createNativeStackNavigator();
-const BottomTabNavigator = ({navigation}) => {
+const BottomTabNavigator = ({ navigation }) => {
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -90,7 +91,7 @@ const BottomTabNavigator = ({navigation}) => {
         options={{
           tabBarButton: () => (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Post a question')}
+              onPress={() => navigation.navigate("Post a question")}
               style={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -148,6 +149,7 @@ const App = () => {
             headerShown: false,
           }}
         >
+          <Stack.Screen name="Blank" component={BlankScreen} />
           <Stack.Screen name="Login" component={SignupAndLogin} />
           <Stack.Screen name="Home" component={BottomTabNavigator} />
           {/* <Stack.Screen name="Q2A" component={ScreensQ2AMain} /> */}

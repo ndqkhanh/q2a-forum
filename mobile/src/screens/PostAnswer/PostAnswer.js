@@ -14,21 +14,20 @@ import {
   RichEditor,
   RichToolbar,
 } from "react-native-pell-rich-editor";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { controllPostAnswer } from "~controller/controllAnswer";
 
-const PostAnswerScreen = ({navigation}) => {
+const PostAnswerScreen = ({ navigation, route }) => {
   const richText = React.useRef();
-  const [title, setTitle] = React.useState(null);
   const [content, setContent] = React.useState(null);
   const postQuestion = async (passTitle, passContent) => {
     if (passTitle == null || passContent == null) {
-      Alert.alert('Require','Title and content must contain something!')
+      Alert.alert("Require", "Title and content must contain something!");
     } else {
-        var question = {
-          Title: passTitle,
-          Content: passContent
-        };
-        navigation.navigate("Your Feed",question)
+      var question = {
+        Title: passTitle,
+        Content: passContent,
+      };
+      navigation.navigate("Your Feed", question);
     }
   };
   return (
@@ -46,16 +45,17 @@ const PostAnswerScreen = ({navigation}) => {
           <RichEditor
             useContainer={false}
             ref={richText}
+            //placeholder = {route.params?.qid}
             onChange={(descriptionText) => {
               setContent(descriptionText);
-              console.log("descriptionText:", descriptionText);
+              //console.log("descriptionText:", descriptionText);
             }}
           />
         </Card>
       </View>
       <View style={styles.button}>
         <TouchableOpacity
-          style={{ backgroundColor: Colors.red30, borderRadius: 20, width:85 }}
+          style={{ backgroundColor: Colors.red30, borderRadius: 20, width: 85 }}
           activeOpacity={0.7}
           onPress={() => {
             navigation.goBack();
@@ -70,7 +70,12 @@ const PostAnswerScreen = ({navigation}) => {
             leftMargin: 20,
           }}
           activeOpacity={0.7}
-          onPress={()=>{navigation.goBack();}}
+          onPress={() => {
+            if (content != null && content != "") {
+              controllPostAnswer(content, route.params?.qid);
+              navigation.goBack();
+            }
+          }}
         >
           <Text style={styles.submitText}>Answer</Text>
         </TouchableOpacity>
@@ -123,7 +128,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 10,
     width: "95%",
-    height: "50%",
+    height: "70%",
   },
   button: {
     justifyContent: "flex-end",
@@ -135,6 +140,6 @@ const styles = StyleSheet.create({
     margin: 7,
     color: "white",
     fontWeight: "bold",
-    alignSelf: 'center',
+    alignSelf: "center",
   },
 });

@@ -95,7 +95,7 @@ const Post = ({
       {typeof numOfAnswers == "number" && (
         <View style={styles.questionFooterContainer}>
           <TouchableOpacity activeOpacity={0.8} onPress={onPressAnswer}>
-          <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
+            <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
           </TouchableOpacity>
           <Text style={styles.numOfAnswers}>{numOfAnswers}</Text>
         </View>

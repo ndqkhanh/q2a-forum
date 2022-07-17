@@ -35,7 +35,9 @@ const SearchBar = (props) => {
         placeholder="Type here"
         style={styles.inputStyle}
         onChangeText={(value) => textChange(value)}
-        onKeyPress = {({nativeEvent: {key: keyValue}}) => keyValue == 'Enter'?props?.onPressSearch:null}
+        onKeyPress={({ nativeEvent: { key: keyValue } }) =>
+          keyValue == "Enter" ? props?.onPressSearch : null
+        }
       />
     </View>
   );

@@ -16,19 +16,19 @@ import {
 } from "react-native-pell-rich-editor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const PostQuestionScreen = ({navigation}) => {
+const PostQuestionScreen = ({ navigation }) => {
   const richText = React.useRef();
   const [title, setTitle] = React.useState(null);
   const [content, setContent] = React.useState(null);
   const postQuestion = async (passTitle, passContent) => {
     if (passTitle == null || passContent == null) {
-      Alert.alert('Require','Title and content must contain something!')
+      Alert.alert("Require", "Title and content must contain something!");
     } else {
-        var question = {
-          Title: passTitle,
-          Content: passContent
-        };
-        navigation.navigate("Your Feed",question)
+      var question = {
+        Title: passTitle,
+        Content: passContent,
+      };
+      navigation.navigate("Your Feed", question);
     }
   };
   return (
@@ -59,7 +59,7 @@ const PostQuestionScreen = ({navigation}) => {
             ref={richText}
             onChange={(descriptionText) => {
               setContent(descriptionText);
-              console.log("descriptionText:", descriptionText);
+              //console.log("descriptionText:", descriptionText);
             }}
           />
         </Card>
@@ -81,7 +81,7 @@ const PostQuestionScreen = ({navigation}) => {
             leftMargin: 20,
           }}
           activeOpacity={0.7}
-          onPress={()=>postQuestion(title, content)}
+          onPress={() => postQuestion(title, content)}
         >
           <Text style={styles.submitText}>Submit</Text>
         </TouchableOpacity>

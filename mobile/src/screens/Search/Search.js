@@ -27,7 +27,8 @@ const SearchScreen = ({ navigation }) => {
   const pressNext = () => {
     let newPage = page + 1;
     setPage(newPage);
-    if (Math.ceil(searchData.length / limit) < newPage) getData(false, newPage - 1, limit);
+    if (Math.ceil(searchData.length / limit) < newPage)
+      getData(false, newPage - 1, limit);
   };
   const pressPrev = () => {
     if (page > 1) setPage(page - 1);
@@ -38,9 +39,8 @@ const SearchScreen = ({ navigation }) => {
       setSearchData([]);
       if (res != null) {
         setCountRes(parseInt(res.count));
-        if (newSearch ==  true) setSearchData([...res.questions]);
-        else setSearchData([...searchData,...res.questions]);
-        
+        if (newSearch == true) setSearchData([...res.questions]);
+        else setSearchData([...searchData, ...res.questions]);
       }
     } catch (error) {
       console.log(error);
@@ -78,38 +78,47 @@ const SearchScreen = ({ navigation }) => {
             getData(true, 0, limit);
           }}
         ></SearchBar>
-        {countRes > 0?<Text style={styles.resultTxt}>Found {Math.ceil(1 / 3)} result</Text>:null}
-        {searchData.length !== 0?<Q2APagination
-          page={page}
-          pressPrev={() => pressPrev()}
-          pressNext={() => pressNext()}
-        />:null}
+        {countRes > 0 ? (
+          <Text style={styles.resultTxt}>Found {Math.ceil(1 / 3)} result</Text>
+        ) : null}
+        {searchData.length !== 0 ? (
+          <Q2APagination
+            page={page}
+            pressPrev={() => pressPrev()}
+            pressNext={() => pressNext()}
+          />
+        ) : null}
       </View>
-      { countRes == 0?<Image
+      {countRes == 0 ? (
+        <Image
           source={require("~assets/img/no-result-found.png")}
           style={styles.imgNotFound}
-        />:
-      <ScrollView style={styles.body}>
-        {searchData
-          .filter(
-            (item,index) => (index >= (page - 1) * limit && index < page * limit),
-          )
-          .map((record, index) => (
-            <Post
-              key={index}
-              title={record.title}
-              content={record.content}
-              numOfAnswers={2}
-              userData={{
-                name: "record.userData.name",
-                avatarUrl: "record.userData.profilepictureurl",
-              }}
-              correctAnswer={"record.correctAnswerExists"}
-              onPressAnswer = {()=> navigation.navigate('Post answer')}
-            />
-          ))}
-      </ScrollView>
-}
+        />
+      ) : (
+        <ScrollView style={styles.body}>
+          {searchData
+            .filter(
+              (item, index) =>
+                index >= (page - 1) * limit && index < page * limit,
+            )
+            .map((record, index) => (
+              <Post
+                key={index}
+                title={record.title}
+                content={record.content}
+                numOfAnswers={2}
+                userData={{
+                  name: "record.userData.name",
+                  avatarUrl: "record.userData.profilepictureurl",
+                }}
+                correctAnswer={"record.correctAnswerExists"}
+                onPressAnswer={() => {
+                  navigation.navigate("Post answer", { qid: record.id });
+                }}
+              />
+            ))}
+        </ScrollView>
+      )}
       {/* <View style={{ flex: 1 }}>
       <Image
           source={require("~assets/img/bloodbros-search.gif")}
@@ -123,7 +132,7 @@ const SearchScreen = ({ navigation }) => {
 export default SearchScreen;
 
 const styles = StyleSheet.create({
-  imgNotFound:{
+  imgNotFound: {
     marginTop: 40,
     alignSelf: "center",
   },
