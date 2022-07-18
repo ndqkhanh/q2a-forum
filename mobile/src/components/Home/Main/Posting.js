@@ -1,7 +1,7 @@
 import React from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableHighlight, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
-const HomeMainPosting = () => {
+const HomeMainPosting = ({ navigation }) => {
   return (
     <View
       style={{
@@ -54,7 +54,12 @@ const HomeMainPosting = () => {
           marginTop: 10,
         }}
       >
-        <View
+        <TouchableHighlight
+          onPress={() => {
+            navigation.navigate("....", {
+              userId: "34343asdasd",
+            });
+          }}
           style={{
             backgroundColor: Colors.blue30,
             width: 70,
@@ -73,7 +78,7 @@ const HomeMainPosting = () => {
           >
             Post
           </Text>
-        </View>
+        </TouchableHighlight>
       </View>
     </View>
   );

@@ -43,7 +43,7 @@ const ScreensQ2AMain = () => {
         <Q2APagination page={3} />
         {[1, 2, 3, 4, 5, 6].map((item) => (
           <Post
-            voting={30}
+            voting={Math.floor(Math.random() * 10)}
             key={item}
             correctAnswer={item == 1}
             dateText={"3 days ago"}

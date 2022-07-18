@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -15,35 +15,15 @@ import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
 import { ScrollView } from "react-native-gesture-handler";
+import { UserContext } from "~provider/UserProvider";
 
 const ScreensSignInMain = ({ navigation }) => {
   const onSignUp = () => {
     navigation.navigate("signup_screen");
   };
+  const { fetchUserInformation } = useContext(UserContext);
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
-  useEffect(() => {
-    getStorageToken();
-  }, []);
-  const getStorageToken = async () => {
-    try {
-      let storageToken = await AsyncStorage.getItem("UserToken");
-      let responseCheckToken = await fetch(`${API_URL}/user`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${storageToken}`,
-        },
-      });
-      const mjson = await responseCheckToken.json();
-      if (mjson.hasOwnProperty("id")) {
-        navigation.navigate("Home");
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
 
   const fetchSignin = async (username, password) => {
     try {
@@ -67,7 +47,8 @@ const ScreensSignInMain = ({ navigation }) => {
           "UserToken",
           mjson["tokens"]["access"]["token"],
         );
-        navigation.navigate("Home");
+        fetchUserInformation();
+        // navigation.navigate("Home");
       } else {
         Alert.alert("Invalid", mjson["message"]);
       }
