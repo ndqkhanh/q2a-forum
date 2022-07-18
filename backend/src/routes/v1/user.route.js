@@ -16,12 +16,11 @@ router
   .get(auth('getUser'), validate(userValidation.getUser), userController.getUser)
   .post(auth('updateUser'), validate(userValidation.updateUser), userController.updateUser);
 
-
 router
   .route('/questions/:page/:limit')
   .get(auth('getMyQuestions'), validate(userValidation.getMyQuestions), userController.getMyQuestions);
 
-  module.exports = router;
+module.exports = router;
 
 /**
  * @swagger

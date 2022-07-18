@@ -25,7 +25,7 @@ const updateUser = {
     profilepictureurl: Joi.string().required(),
   }),
 };
-const getMyQuestions  = {
+const getMyQuestions = {
   params: {
     page: Joi.number().required(),
     limit: Joi.number().required(),

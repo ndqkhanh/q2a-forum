@@ -102,9 +102,9 @@ const updateUserById = async (userId, updateBody) => {
   return user;
 };
 
-const countMyQuestions = async(req) => {
+const countMyQuestions = async (req) => {
   const questions = await prisma.questions.findMany({
-    where : {uid: req.params.userId},
+    where: { uid: req.params.userId },
   });
 
   return questions.length;
@@ -114,13 +114,13 @@ const getMyQuestionsPagination = async (req) => {
   const questions = await prisma.questions.findMany({
     skip: req.params.page * req.params.limit,
     take: req.params.limit,
-    where : {
+    where: {
       uid: req.params.userId,
     },
   });
 
-  return questions
-}
+  return questions;
+};
 module.exports = {
   createUser,
   queryUsers,

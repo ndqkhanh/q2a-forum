@@ -32,11 +32,11 @@ const updateUser = catchAsync(async (req, res) => {
   res.send(user);
 });
 
-const getMyQuestions = catchAsync (async(req, res) => {
+const getMyQuestions = catchAsync(async (req, res) => {
   const countQuestions = await userService.countMyQuestions(req);
   const myQuestions = await userService.getMyQuestionsPagination(req);
 
-  res.send({count:countQuestions, questions: myQuestions});
+  res.send({ count: countQuestions, questions: myQuestions });
 });
 module.exports = {
   createUser,
