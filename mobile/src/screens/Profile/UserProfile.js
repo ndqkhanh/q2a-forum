@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   SafeAreaView,
@@ -13,11 +13,12 @@ import MyQuestions from "~components/Profile/myQuestions";
 import PersonalInfo from "~components/Profile/personalInfo";
 import { getMyProfile, getUserProfile } from "~services/getProfile";
 import { updateUserInformation } from "~services/user";
-
+import { UserContext } from "~provider/UserProvider";
 const ProfileScreen = ({ route }) => {
-  // const {userIdParam} = route.params;
+  // const {userId} = route.params;
   // const userId = JSON.stringify(userIdParam);
-  const [userData, setUserData] = useState({});
+  const { userData, setUserData } = useContext(UserContext);
+  // const [userData, setUserData] = useState({});
   const fetchUserProfile = async (userId) => {
     let data;
     if (userId != null) {

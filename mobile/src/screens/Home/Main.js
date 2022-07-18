@@ -33,7 +33,8 @@ const ScreensHomeMain = ({ navigation }) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
   const [feedData, setFeedData] = useState([]);
-
+  const { userData, setUserData } = useContext(UserContext);
+  console.log("userData ScreensHomeMain", userData);
   const [refetch, setRefetch] = useState(false);
   const fetchFeedInformation = async (page) => {
     let token = await AsyncStorage.getItem("UserToken");
@@ -107,7 +108,7 @@ const ScreensHomeMain = ({ navigation }) => {
         scrollEventThrottle={400}
         showsVerticalScrollIndicator={false}
       >
-        <HomeMainPosting />
+        <HomeMainPosting navigation={navigation} />
         {feedData.map((record) => (
           <Post
             key={record.id}
