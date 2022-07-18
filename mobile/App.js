@@ -9,8 +9,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useContext } from "react";
-import { Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserProvider } from "~provider/UserProvider";
@@ -131,8 +131,14 @@ function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
+const EmptyScreen = () => {
+  return <View></View>;
+};
 const Stack = createStackNavigator();
+
 const Navigation2 = () => {
+  const { userData, auth } = useContext(UserContext);
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -140,8 +146,13 @@ const Navigation2 = () => {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Home" component={BottomTabNavigator} />
-        <Stack.Screen name="Login" component={SignupAndLogin} />
+        {auth && userData ? (
+          <Stack.Screen name="Home" component={BottomTabNavigator} />
+        ) : auth === false ? (
+          <Stack.Screen name="Login" component={SignupAndLogin} />
+        ) : (
+          <Stack.Screen name="EmptyScreen" component={EmptyScreen} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

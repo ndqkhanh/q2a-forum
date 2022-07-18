@@ -19,9 +19,8 @@ const getUserProfile = async (userId) => {
   }
 };
 
-const getMyProfile = async () => {
+const getMyProfile = async (token) => {
   try {
-    let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(`${API_URL}/user`, {
       method: "GET",
       headers: {
