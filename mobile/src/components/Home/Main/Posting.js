@@ -56,7 +56,7 @@ const HomeMainPosting = () => {
       >
         <View
           style={{
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.blue30,
             width: 70,
             height: 30,
             borderRadius: 5,

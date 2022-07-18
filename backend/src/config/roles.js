@@ -1,5 +1,6 @@
 const allRoles = {
   user: [
+    'getProfile',
     'getUser',
     'updateUser',
     'createQuestion',

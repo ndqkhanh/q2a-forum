@@ -8,17 +8,15 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
-  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
-
-router
-  .route('/:userId')
-  .get(auth('getUser'), validate(userValidation.getUser), userController.getUser)
+  .get(auth('getProfile'), userController.getProfile)
+  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers)
   .post(auth('updateUser'), validate(userValidation.updateUser), userController.updateUser);
 
 router
   .route('/questions/:page/:limit')
   .get(auth('getMyQuestions'), validate(userValidation.getMyQuestions), userController.getMyQuestions);
+  
+router.route('/:userId').get(auth('getUser'), validate(userValidation.getUser), userController.getUser);
 
 module.exports = router;
 

@@ -22,13 +22,21 @@ const VoteAnswer = async (req) =>
         },
     });
     
+
+    if (!checkVotingExist)
+    {
+        throw new ApiError (httpStatus.NOT_FOUND, "Voting Not Found"); 
+    }
+
+
     if (req.body.status == 2)
     {
         const voting = await prisma.voting.delete({
             where : {
-                aid : req.params.answerId,
+                id : checkVotingExist.id,
             }
         });
+        return voting;
     }
 
 
@@ -52,6 +60,11 @@ const VoteAnswer = async (req) =>
             data:
             {
                 status: flag,
+            },
+
+            where : 
+            {
+                id: checkVotingExist.id,
             }
         });
         return voting;

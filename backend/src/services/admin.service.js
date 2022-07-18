@@ -31,35 +31,23 @@ const disableUser = async (req) => {
   return user;
 };
 
-const setConfiguration = async (req) =>
-{
-
+const setConfiguration = async (req) => {
   const isConfigExist = await prisma.configuration.findUnique({
-    where : {slug: req.params.slug},
+    where: { slug: req.params.slug },
   });
 
-  if (!isConfigExist)
-  {
-    const config = await prisma.configuration.create({
-      data: {
-        slug: req.params.slug, value:req.body.value},
-    });
-
-    return config;
-  }
-  else
-  {
-    const config = await prisma.configuration.update({
-      where : { slug: req.params.slug,},
-      data: 
-      {
-        value: req.body.value,
-      }
-    });
-
-    return config;
+  if (!isConfigExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Configuration Not Found');
   }
 
+  const config = await prisma.configuration.update({
+    where: { slug: req.params.slug },
+    data: {
+      value: req.body.value,
+    },
+  });
+
+  return config;
 };
 
 const getPendingQuestions = async (page, limit) => {
@@ -78,6 +66,19 @@ const getPendingQuestions = async (page, limit) => {
       status: 0,
     },
   });
+
+  for (let i = 0; i < listPendingQuestions.length; i++) {
+    const question = listPendingQuestions[i];
+    question.userData = await prisma.users.findUnique({
+      where: {
+        id: question.uid,
+      },
+      select: {
+        name: true,
+        profilepictureurl: true,
+      },
+    });
+  }
   return { count: countPendingQuestions, data: listPendingQuestions };
 };
 
@@ -95,6 +96,7 @@ const approveDeclineQuestion = async (questionId, status) => {
     where: { id: questionId },
     data: {
       status: status === 0 ? 2 : 1,
+      updated_at: new Date(),
     },
   });
   return questionResult;
