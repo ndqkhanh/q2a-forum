@@ -9,10 +9,12 @@ import {
   Text,
   View,
   TextInput,
+  Alert,
 } from "react-native";
 import { Button, Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import Post from "~components/Common/Post";
+import User from "~components/Common/UserList";
 import Q2APagination from "~components/Q2A/Pagination";
 import {
   deleteAnswer,
@@ -20,19 +22,27 @@ import {
   pickACorrectAnswer,
 } from "~services/answer";
 
+import { getUser } from "~services/user";
+
 const ScreensQ2AMain = () => {
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(0);
   const [indexCorrectAns, setIndexCorrectAns] = useState(0);
-  const [questionId, setQuestionId] = useState(
-    "db0e22f6-e058-4ae3-a08f-9964289d4575",
-  );
+
   const [question, setQuestion] = useState(null);
   const [countAnswer, setCountAnswer] = useState(0);
   const [answersAndVotes, setAnswersAndVotes] = useState([]);
   const [answerId, setAnswerId] = useState("");
-  const [isRefresh, setIsRefresh] = useState(false);
 
+  const [user, setUser] = useState(null);
+
+  // Fetch Get User who log in
+  const fetchGetUser = async () => {
+    const userData = await getUser();
+    setUser(userData);
+  };
+
+  // Fetch Pick correct answer
   const fetchPickACorrectAnswer = async (answerId, status) => {
     const res = await pickACorrectAnswer(answerId, status);
     if (res.success == true) {
@@ -42,17 +52,17 @@ const ScreensQ2AMain = () => {
         }
       }
     }
-
     console.log("response: ", res);
   };
 
+  // Fetch Delete Answer
   const fetchDeleteAnswer = async (answerId) => {
     const response = await deleteAnswer(answerId);
     console.log("response: ", response);
   };
 
+  // Fetch get all answer and voting
   const fetchGetAllAnswersAndVotings = async (questionId, page, limit) => {
-    console.log("fetch data trigger");
     const data = await getAllAnswersAndVotings(questionId, page, limit);
     console.log(data);
     setQuestion(data.question);
@@ -64,6 +74,7 @@ const ScreensQ2AMain = () => {
 
   useEffect(() => {
     fetchGetAllAnswersAndVotings("db0e22f6-e058-4ae3-a08f-9964289d4575", 0, 5);
+    fetchGetUser();
     for (let i = 0; i < answersAndVotes.length; i++) {
       if (answersAndVotes[i].answer.correct == true) {
         setIndexCorrectAns(i);
@@ -71,7 +82,7 @@ const ScreensQ2AMain = () => {
     }
   }, []);
 
-  if (!question) return null;
+  if (!question || !user) return null;
 
   return (
     <SafeAreaView
@@ -124,7 +135,7 @@ const ScreensQ2AMain = () => {
               avatarUrl: item.profilepictureurl,
             }}
             onPickACorrectAnswer={
-              question.uid == question.questionInfo.uid
+              user.id == question.questionInfo.uid
                 ? () => {
                     setAnswerId(item.answer.id);
                     fetchPickACorrectAnswer(answerId, true);
@@ -132,7 +143,7 @@ const ScreensQ2AMain = () => {
                 : null
             }
             onPickDeleteAnswer={
-              question.uid == question.questionInfo.uid
+              user.id == item.answer.uid
                 ? () => {
                     setAnswerId(item.answer.id);
                     fetchDeleteAnswer(answerId);

@@ -9,7 +9,6 @@ import {
   View,
   TouchableOpacity,
   Alert,
-
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -38,6 +37,7 @@ const ScreensSignInMain = ({ navigation }) => {
         },
       });
       const mjson = await responseCheckToken.json();
+      console.log(mjson);
       if (mjson.hasOwnProperty("id")) {
         navigation.navigate("Home");
       }
@@ -70,11 +70,9 @@ const ScreensSignInMain = ({ navigation }) => {
           mjson["tokens"]["access"]["token"],
         );
         navigation.navigate("Home");
-
       } else {
         Alert.alert("Invalid", mjson["message"]);
       }
-
     } catch (error) {
       console.log("error", error);
       Alert.alert("error", error.message);
@@ -83,60 +81,60 @@ const ScreensSignInMain = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-      <ScrollView style = {{flex: 1}}>
-      <View style={styles.mainIntro}>
-        <Image
-          source={require("~assets/img/login.gif")}
-          style={styles.imgIntro}
-        />
-        <Text style={styles.title}>Create better together.</Text>
-        <Text style={styles.subTitle}>Join our community</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.signInText}>Sign in</Text>
-
-        <View style={styles.fieldContainer}>
-          <Icon name="person-outline" style={styles.fieldIcon} />
-
-          <TextInput
-            style={styles.fieldInput}
-            placeholder="Username"
-            onChangeText={setUsername}
+      <ScrollView style={{ flex: 1 }}>
+        <View style={styles.mainIntro}>
+          <Image
+            source={require("~assets/img/login.gif")}
+            style={styles.imgIntro}
           />
+          <Text style={styles.title}>Create better together.</Text>
+          <Text style={styles.subTitle}>Join our community</Text>
         </View>
-        <View style={styles.fieldContainer}>
-          <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+        <View style={styles.inputContainer}>
+          <Text style={styles.signInText}>Sign in</Text>
 
-          <TextInput
-            style={styles.fieldInput}
-            placeholder="Password"
-            onChangeText={setPassword}
-            secureTextEntry={true}
-          />
-        </View>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => fetchSignin(username, password)}
-        >
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Login</Text>
+          <View style={styles.fieldContainer}>
+            <Icon name="person-outline" style={styles.fieldIcon} />
+
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Username"
+              onChangeText={setUsername}
+            />
           </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.signUpText}>
-        <Text style={styles.newForum}>
-          New to Forum?{" "}
-          <Text
-            style={{
-              color: Colors.blue40,
-              fontWeight: "bold",
-            }}
-            onPress={onSignUp}
+          <View style={styles.fieldContainer}>
+            <Icon name="lock-closed-outline" style={styles.fieldIcon} />
+
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Password"
+              onChangeText={setPassword}
+              secureTextEntry={true}
+            />
+          </View>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => fetchSignin(username, password)}
           >
-            Sign Up
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Login</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.signUpText}>
+          <Text style={styles.newForum}>
+            New to Forum?{" "}
+            <Text
+              style={{
+                color: Colors.blue40,
+                fontWeight: "bold",
+              }}
+              onPress={onSignUp}
+            >
+              Sign Up
+            </Text>
           </Text>
-        </Text>
-      </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -175,7 +173,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flexDirection: "row",
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   fieldIcon: {
     fontSize: 28,
