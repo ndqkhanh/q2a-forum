@@ -22,9 +22,16 @@ const updateUser = {
     profilepictureurl: Joi.string().required(),
   }),
 };
+const getMyQuestions = {
+  params: {
+    page: Joi.number().required(),
+    limit: Joi.number().required(),
+  },
+};
 
 module.exports = {
   getUsers,
   getUser,
   updateUser,
+  getMyQuestions,
 };
