@@ -14,11 +14,12 @@ const allRoles = {
     'pickCorrectAnswer',
     'getLatestFeed',
     'getMyQuestions',
+    'getAllAnswersAndVotings',
   ],
 
   moderator: ['approveDeclineQuestion', 'getPendingQuestions', 'banUser', 'getMetrics', 'getUsers'],
 
-  admin: ['listConfigurations', 'setConfiguration', 'getAllAnswersAndVotings'],
+  admin: ['listConfigurations', 'setConfiguration'],
 };
 
 allRoles.moderator = [...allRoles.moderator, ...allRoles.user];

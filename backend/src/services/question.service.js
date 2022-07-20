@@ -81,13 +81,46 @@ const searchQuestion = async (req) => {
       title: {
         contains: req.body.keyword,
       },
+      status: 2,
     },
   });
 
   if (!listQuestions) {
     throw new ApiError(httpStatus.NOT_FOUND, 'There is no questions related to keywords');
   }
-  return listQuestions;
+
+  let data = [];
+
+  for (let i = 0; i < listQuestions.length; i++) {
+    const user = await prisma.users.findUnique({
+      where: {
+        id: listQuestions[i].uid,
+      },
+    });
+
+    const answers = await prisma.answers.findMany({
+      where: {
+        qid: listQuestions[i].id,
+      },
+    });
+
+    let check = false;
+
+    for (let j = 0; j < answers.length; j++) {
+      if (answers[j].correct == true) check = true;
+    }
+
+    data.push({
+      questionData: listQuestions[i],
+      numOfAnswers: answers.length,
+      correctAnswerExists: check,
+      userData: {
+        name: user.name,
+        profilepictureurl: user.profilepictureurl,
+      },
+    });
+  }
+  return data;
 };
 
 const getLatestFeed = async (page) => {
