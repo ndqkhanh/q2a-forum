@@ -12,10 +12,9 @@ const banUser = catchAsync(async (req, res) => {
   res.send({ success: !!user });
 });
 
-const setConfiguration = catchAsync(async (req, res) =>
-{
+const setConfiguration = catchAsync(async (req, res) => {
   const config = await adminService.setConfiguration(req);
-  res.send({success: !! config});
+  res.send({ success: !!config });
 });
 
 const getPendingQuestions = catchAsync(async (req, res) => {

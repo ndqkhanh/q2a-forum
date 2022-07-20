@@ -17,17 +17,21 @@ const getUser = {
 };
 
 const updateUser = {
-  params: Joi.object().keys({
-    userId: Joi.string().uuid().required(),
-  }),
   body: Joi.object().keys({
     name: Joi.string().required(),
     profilepictureurl: Joi.string().required(),
   }),
+};
+const getMyQuestions = {
+  params: {
+    page: Joi.number().required(),
+    limit: Joi.number().required(),
+  },
 };
 
 module.exports = {
   getUsers,
   getUser,
   updateUser,
+  getMyQuestions,
 };

@@ -1,34 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors, Card } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-import { Alert } from "react-native";
-
-const PendingQuestion = ({
-  onPressApprove,
-  onPressDisapprove,
-  content,
-  title,
-  userData,
-  dateText,
-  image,
-}) => {
-  // const [test, setTest] = useState([1, 2, 3, 4, 5]);
-  // const onPressApprove = (test) => setTest(test.filter((item) => item !== 1));
-  // const onPressDisapprove = () => console.log(test);
-
+const MyQuestions = ({ content, title, userData, dateText, image }) => {
   return (
     <View style={styles.postContainer}>
       <View style={styles.postContentContainer}>
         <View style={styles.infoUserContainer}>
-          {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
-            <Image
-              source={{
-                uri: userData.avatarUrl,
-              }}
-              style={styles.avatar}
-            ></Image>
-          )}
+          <Image
+            source={{
+              uri: userData.avatarUrl,
+            }}
+            style={styles.avatar}
+          ></Image>
 
           <View style={styles.nameAndDate}>
             <Text style={styles.name}>{userData.name}</Text>
@@ -61,28 +45,14 @@ const PendingQuestion = ({
       </View>
       <View style={styles.questionFooterContainer}>
         <Card style={styles.verifyCard}>
-          <TouchableOpacity flexDirection={"row"} onPress={onPressApprove}>
+          <TouchableOpacity flexDirection={"row"}>
             <View flexDirection={"row"} alignItems={"center"}>
               <Icon
                 name="checkmark-outline"
                 style={styles.verifyIcon}
                 color={Colors.green10}
               />
-              <Text style={styles.approve}>Approve</Text>
-            </View>
-          </TouchableOpacity>
-        </Card>
-        <Card style={styles.verifyCard}>
-          <TouchableOpacity onPress={onPressDisapprove}>
-            <View flexDirection={"row"} alignItems={"center"}>
-              <Icon
-                name="close-outline"
-                style={styles.verifyIcon}
-                color={Colors.red10}
-              />
-              <Text style={styles.disapprove} red>
-                Disapprove
-              </Text>
+              <Text style={styles.status}>Pending</Text>
             </View>
           </TouchableOpacity>
         </Card>
@@ -151,15 +121,10 @@ const styles = StyleSheet.create({
   verifyIcon: {
     fontSize: 25,
   },
-  approve: {
+  status: {
     marginLeft: 5,
     fontWeight: "bold",
     color: Colors.green10,
   },
-  disapprove: {
-    marginLeft: 5,
-    fontWeight: "bold",
-    color: Colors.red10,
-  },
 });
-export default PendingQuestion;
+export default MyQuestions;

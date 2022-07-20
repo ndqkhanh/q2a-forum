@@ -1,71 +1,63 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { formatDistance } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import {
-  Image,
-  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
-import HomeMainWelcome from "~components/Home/Main/Welcome";
-import { UserContext } from "~provider/UserProvider";
 import Icon from "react-native-vector-icons/Ionicons";
-import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
-import { formatDistance } from "date-fns";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
-import { API_URL } from "@env";
-import { deleteAnswer, getAllAnswersAndVotings, pickACorrectAnswer } from "~services/answer";
-import { createNoSubstitutionTemplateLiteral } from "typescript";
+import HomeMainPosting from "~components/Home/Main/Posting";
+import { UserContext } from "~provider/UserProvider";
+import { getFeed } from "~services/feed";
 
-const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
-  const paddingToBottom = 20;
-  return layoutMeasurement.height + contentOffset.y >=
-    contentSize.height - paddingToBottom;
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 100;
+  return (
+    layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom
+  );
 };
 
-const ScreensHomeMain = ({navigation}) => {
+const ScreensHomeMain = ({ navigation }) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(0);
-  const [feedData, setFeedData] = useState([]);
+  const { setAuth } = useContext(UserContext);
 
+  const [feedData, setFeedData] = useState([]);
+  const [refetch, setRefetch] = useState(false);
   const fetchFeedInformation = async (page) => {
-    const token = await AsyncStorage.getItem("UserToken");
-    console.log (token);
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await getFeed(token, page);
+    var maxLength = 5;
     try {
-      let data = await fetch(
-        `${API_URL}/question/feed/${page}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      data = await data.json();
-      var maxLength = parseInt(data.count);
-      setMaxLength(maxLength);
-      setFeedData([...feedData, ...data.data]);
-      setPage(page + 1);
-      console.log("data:", data.data);
-      // console.log(formatDistance(new Date(feedData[0].updated_at), Date.now(), {
-      //   addSuffix: true,
-      // }));
+      maxLength = parseInt(data.count);
     } catch (error) {
       console.error("error", error);
     }
+    setMaxLength(maxLength);
+    setFeedData((feedData) => [...feedData, ...data.data]);
+    setPage((page) => page + 1);
+    setRefetch(false);
   };
-  // useEffect(() => {
-  //   fetchFeedInformation(0);
-  // }, []);
-  
+  useEffect(() => {
+    fetchFeedInformation(0);
+
+    // Reload
+    return () => {
+      setPage(0);
+      setRefetch(false);
+      setFeedData([]);
+      setMaxLength(0);
+
+      setRefetch(false);
+    };
+  }, []);
 
   return (
     <SafeAreaView
@@ -80,7 +72,8 @@ const ScreensHomeMain = ({navigation}) => {
           activeOpacity={0.8}
           onPress={async () => {
             await AsyncStorage.clear();
-            navigation.navigate("Login");
+
+            setAuth(false);
           }}
         >
           <Icon
@@ -92,71 +85,29 @@ const ScreensHomeMain = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      { <ScrollView
+      <ScrollView
         style={styles.body}
-        onScroll={({nativeEvent}) => {
-          if (isCloseToBottom(nativeEvent) && feedData.length < maxLength) {
-            console.log("scrolled to bottom");
+        onScroll={({ nativeEvent }) => {
+          if (
+            !refetch &&
+            isCloseToBottom(nativeEvent) &&
+            feedData.length < maxLength
+          ) {
+            console.log("scrolled to bottom of feed");
+            setRefetch(true);
             fetchFeedInformation(page);
           }
+        }}
+        contentContainerStyle={{
+          paddingBottom: 100,
         }}
         scrollEventThrottle={400}
         showsVerticalScrollIndicator={false}
       >
-        <HomeMainPosting />
-
-        {[
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              "feedData[0].content",
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-        ].map((record, index) => (
-          <Post key={index}
-            voting={record.voting}
-            dateText={record.dateText}
-            title={record.title}
-            content={record.content}
-            numOfAnswers={record.numOfAnswers}
-            userData={record.userData}
-          />
-        ))}
-        {/* {feedData.map((record, index) => (
-          <Post key={index}
+        <HomeMainPosting navigation={navigation} />
+        {feedData.map((record) => (
+          <Post
+            key={record.id}
             dateText={formatDistance(new Date(record.updated_at), Date.now(), {
               addSuffix: true,
             })}
@@ -169,8 +120,8 @@ const ScreensHomeMain = ({navigation}) => {
             }}
             correctAnswer={record.correctAnswerExists}
           />
-        ))} */}
-      </ScrollView> }
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 };

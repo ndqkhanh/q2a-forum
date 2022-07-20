@@ -26,7 +26,7 @@ const Post = ({
 
       <View style={styles.postContentContainer}>
         <View style={styles.infoUserContainer}>
-          {userData.avatarUrl && (
+          {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
             <Image
               source={{
                 uri: userData.avatarUrl,

@@ -1,11 +1,13 @@
 import { API_URL } from "@env";
 
-const updateUserInformation = async (token, body) => {
+const voteAndUnvoteAnswer = async (token, answerId, status) => {
   try {
     // let token = await AsyncStorage.getItem("UserToken");
-    let data = await fetch(`${API_URL}/user`, {
+    let data = await fetch(`${API_URL}/voting/${answerId}`, {
       method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        status,
+      }),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -19,4 +21,4 @@ const updateUserInformation = async (token, body) => {
   }
 };
 
-export { updateUserInformation };
+export { voteAndUnvoteAnswer };

@@ -1,11 +1,12 @@
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
+import { Alert } from "react-native";
 
-const updateUserInformation = async (token, body) => {
+const getFeed = async (token, page) => {
   try {
     // let token = await AsyncStorage.getItem("UserToken");
-    let data = await fetch(`${API_URL}/user`, {
-      method: "POST",
-      body: JSON.stringify(body),
+    let data = await fetch(`${API_URL}/question/feed/${page}`, {
+      method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -17,6 +18,7 @@ const updateUserInformation = async (token, body) => {
   } catch (error) {
     console.error("error---", error);
   }
+  return null;
 };
 
-export { updateUserInformation };
+export { getFeed };

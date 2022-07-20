@@ -13,12 +13,13 @@ const allRoles = {
     'deleteAnswer',
     'pickCorrectAnswer',
     'getLatestFeed',
-    'getAllAnswersAndVotings'
+    'getMyQuestions',
+    'getAllAnswersAndVotings',
   ],
 
   moderator: ['approveDeclineQuestion', 'getPendingQuestions', 'banUser', 'getMetrics', 'getUsers'],
 
-  admin: ['listConfigurations', 'setConfiguration', ],
+  admin: ['listConfigurations', 'setConfiguration'],
 };
 
 allRoles.moderator = [...allRoles.moderator, ...allRoles.user];

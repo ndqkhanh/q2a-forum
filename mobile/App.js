@@ -9,8 +9,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import * as React from "react";
-import { Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserProvider } from "~provider/UserProvider";
@@ -20,6 +20,7 @@ import ProfileScreen from "~screens/Profile/UserProfile";
 import ManageForumScreen from "~screens/Profile/ManageForum";
 import PostQuestionScreen from "~screens/PostNewQuestion";
 import SearchScreen from "~screens/Search/Search";
+import { UserContext } from "~provider/UserProvider";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -36,6 +37,7 @@ import ScreensQ2AMain from "~screens/Q2A/Main";
 const BottomTab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const BottomTabNavigator = () => {
+  const { userData } = useContext(UserContext);
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -111,7 +113,7 @@ const BottomTabNavigator = () => {
         }}
       />
 
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -119,25 +121,18 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="person-circle-outline" color={color} />
           ),
         }}
-      /> */}
-      {/* <BottomTab.Screen
-        name="Manage forum"
-        component={ManageForumScreen} 
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-circle-outline" color={color} />
-          ),
-        }}
-      /> */}
-      <BottomTab.Screen
-        name="Post a question"
-        component={PostQuestionScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-circle-outline" color={color} />
-          ),
-        }}
       />
+      {(userData.role == 0 || userData.role === 1) && (
+        <BottomTab.Screen
+          name="Manage forum"
+          component={ManageForumScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="person-circle-outline" color={color} />
+            ),
+          }}
+        />
+      )}
     </BottomTab.Navigator>
   );
 };
@@ -146,21 +141,36 @@ function TabBarIcon(props) {
   return <Icon size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
+const EmptyScreen = () => {
+  return <View></View>;
+};
+// const Stack = createStackNavigator();
 
+const Navigation2 = () => {
+  const { userData, auth } = useContext(UserContext);
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {auth && userData ? (
+          <Stack.Screen name="Home" component={BottomTabNavigator} />
+        ) : auth === false ? (
+          <Stack.Screen name="Login" component={SignupAndLogin} />
+        ) : (
+          <Stack.Screen name="EmptyScreen" component={EmptyScreen} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 const App = () => {
   return (
     <UserProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="Login" component={SignupAndLogin} />
-          <Stack.Screen name="Home" component={BottomTabNavigator} />
-          {/* <Stack.Screen name="Q2A" component={ScreensQ2AMain} /> */}
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Navigation2 />
     </UserProvider>
   );
 };
