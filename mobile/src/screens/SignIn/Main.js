@@ -1,27 +1,84 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "@env";
+import { ScrollView } from "react-native-gesture-handler";
+
 const ScreensSignInMain = ({ navigation }) => {
   const onSignUp = () => {
     navigation.navigate("signup_screen");
   };
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+  useEffect(() => {
+    getStorageToken();
+  }, []);
+  const getStorageToken = async () => {
+    try {
+      let storageToken = await AsyncStorage.getItem("UserToken");
+      let responseCheckToken = await fetch(`${API_URL}/user`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storageToken}`,
+        },
+      });
+      const mjson = await responseCheckToken.json();
+      if (mjson.hasOwnProperty("id")) {
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const fetchSignin = async (username, password) => {
+    try {
+      // alert(`${API_URL}/auth/signin`);
+      let responseLogin = await fetch(`${API_URL}/auth/signin`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer ",
+        },
+        body: JSON.stringify({
+          username: `${username}`,
+          password: `${password}`,
+        }),
+      });
+
+      const mjson = await responseLogin.json();
+      if (mjson.hasOwnProperty("tokens")) {
+        await AsyncStorage.setItem(
+          "UserToken",
+          mjson["tokens"]["access"]["token"],
+        );
+        navigation.navigate("Home");
+      } else {
+        Alert.alert("Invalid", mjson["message"]);
+      }
+    } catch (error) {
+      console.log("error", error);
+      Alert.alert("error", error.message);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-      <ScrollView
-        style={{
-          flex: 1,
-        }}
-      >
+      <ScrollView style={{ flex: 1 }}>
         <View style={styles.mainIntro}>
           <Image
             source={require("~assets/img/login.gif")}
@@ -36,17 +93,30 @@ const ScreensSignInMain = ({ navigation }) => {
           <View style={styles.fieldContainer}>
             <Icon name="person-outline" style={styles.fieldIcon} />
 
-            <TextInput style={styles.fieldInput} placeholder="Username" />
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Username"
+              onChangeText={setUsername}
+            />
           </View>
           <View style={styles.fieldContainer}>
             <Icon name="lock-closed-outline" style={styles.fieldIcon} />
 
-            <TextInput style={styles.fieldInput} placeholder="Password" />
+            <TextInput
+              style={styles.fieldInput}
+              placeholder="Password"
+              onChangeText={setPassword}
+              secureTextEntry={true}
+            />
           </View>
-
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Login</Text>
-          </View>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => fetchSignin(username, password)}
+          >
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Login</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.signUpText}>
           <Text style={styles.newForum}>

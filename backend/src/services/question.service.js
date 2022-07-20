@@ -57,12 +57,17 @@ const updateQuestion = async (req) => {
     data: {
       content: newContent,
       title: newTitle,
+      updated_at: new Date(),
     },
   });
 
   return updatedQuestion;
 };
 
+const countQuestionInDB = async (req) => {
+  const countQuestion = await prisma.questions.count({});
+  return countQuestion;
+};
 const searchQuestion = async (req) => {
   const countQuestions = await prisma.questions.count({});
   if (req.params.offset > countQuestions / req.params.limit) {
@@ -157,11 +162,32 @@ const getLatestFeed = async (page) => {
       },
     });
     question.correctAnswerExists = !!answer;
+    question.userData = await prisma.users.findUnique({
+      where: {
+        id: question.uid,
+      },
+      select: {
+        name: true,
+        profilepictureurl: true,
+      },
+    });
   }
 
-  return feed;
+  const quesCount = await prisma.questions.count({
+    where: {
+      status: 2,
+    },
+  });
+
+  return { count: quesCount, data: feed };
 };
 
+const getQuestionByID = async (req) => {
+  const question = await prisma.questions.findUnique({
+    where: { id: req.params.questionId },
+  });
+  return question;
+};
 const GetAnswersByQuestionIDPagination = async (req) => {
   const answers = await prisma.answers.findMany({
     skip: req.params.page * req.params.limit,
@@ -216,4 +242,6 @@ module.exports = {
   GetAnswersByQuestionIDPagination,
   GetAnswersAndVotings,
   countAnswerByQuestionID,
+  countQuestionInDB,
+  getQuestionByID,
 };
