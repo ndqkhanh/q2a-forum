@@ -1,25 +1,20 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { formatDistance } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import {
-  Image,
-  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
-import HomeMainWelcome from "~components/Home/Main/Welcome";
-import { UserContext } from "~provider/UserProvider";
 import Icon from "react-native-vector-icons/Ionicons";
-import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
-import { formatDistance } from "date-fns";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import HomeMainPosting from "~components/Home/Main/Posting";
+import { UserContext } from "~provider/UserProvider";
 import { getFeed } from "~services/feed";
-import { Alert } from "react-native";
-import { API_URL } from "@env";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 100;
@@ -32,8 +27,9 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 const ScreensHomeMain = ({ navigation }) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
-  const [feedData, setFeedData] = useState([]);
+  const { setAuth } = useContext(UserContext);
 
+  const [feedData, setFeedData] = useState([]);
   const [refetch, setRefetch] = useState(false);
   const fetchFeedInformation = async (page) => {
     let token = await AsyncStorage.getItem("UserToken");
@@ -76,7 +72,8 @@ const ScreensHomeMain = ({ navigation }) => {
           activeOpacity={0.8}
           onPress={async () => {
             await AsyncStorage.clear();
-            navigation.navigate("Login");
+
+            setAuth(false);
           }}
         >
           <Icon
@@ -107,7 +104,7 @@ const ScreensHomeMain = ({ navigation }) => {
         scrollEventThrottle={400}
         showsVerticalScrollIndicator={false}
       >
-        <HomeMainPosting />
+        <HomeMainPosting navigation={navigation} />
         {feedData.map((record) => (
           <Post
             key={record.id}
