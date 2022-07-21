@@ -103,7 +103,7 @@ const BottomTabNavigator = ({ navigation }) => {
         }}
       />
 
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -111,8 +111,9 @@ const BottomTabNavigator = ({ navigation }) => {
             <TabBarIcon name="person-circle-outline" color={color} />
           ),
         }}
-      /> */}
+      />
       {/* <BottomTab.Screen
+
         name="Manage forum"
         component={ManageForumScreen}
         options={{
@@ -121,15 +122,6 @@ const BottomTabNavigator = ({ navigation }) => {
           ),
         }}
       /> */}
-      <BottomTab.Screen
-        name="Post a question"
-        component={PostQuestionScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-circle-outline" color={color} />
-          ),
-        }}
-      />
     </BottomTab.Navigator>
   );
 };

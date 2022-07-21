@@ -25,6 +25,7 @@ const ScreensSignInMain = ({ navigation }) => {
 
   const fetchSignin = async (username, password) => {
     try {
+      // alert(`${API_URL}/auth/signin`);
       let responseLogin = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
         headers: {
@@ -49,7 +50,7 @@ const ScreensSignInMain = ({ navigation }) => {
       }
     } catch (error) {
       console.log("error", error);
-      Alert.alert("error", error);
+      Alert.alert("error", error.message);
     }
   };
   return (

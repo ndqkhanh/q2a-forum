@@ -17,12 +17,13 @@ import HomeMainPosting from "~components/Home/Main/Posting";
 import Post from "~components/Common/Post";
 import { formatDistance } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getFeed } from "~services/feed";
 import { Alert } from "react-native";
 import { API_URL } from "@env";
 import { controllPostQuestion } from "~controller/controllQuestion";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  const paddingToBottom = 20;
+  const paddingToBottom = 100;
   return (
     layoutMeasurement.height + contentOffset.y >=
     contentSize.height - paddingToBottom
@@ -33,41 +34,34 @@ const ScreensHomeMain = ({ navigation, route }) => {
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
   const [feedData, setFeedData] = useState([]);
+
+  const [refetch, setRefetch] = useState(false);
   const fetchFeedInformation = async (page) => {
-    //const [myQuestion,setMyQuestion] = React.useState();
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await getFeed(token, page);
+    var maxLength = 5;
     try {
-      const token = await AsyncStorage.getItem("UserToken");
-      let data = await fetch(`${API_URL}/question/feed/${page}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      data = await data.json();
-      var maxLength = parseInt(data.count);
-      setMaxLength(maxLength);
-      setFeedData([...feedData, ...data.data]);
-      setPage(page + 1);
-      console.log("data:", feedData);
-      // console.log(formatDistance(new Date(feedData[0].updated_at), Date.now(), {
-      //   addSuffix: true,
-      // }));
+      maxLength = parseInt(data.count);
     } catch (error) {
       console.error("error---", error);
     }
+    setMaxLength(maxLength);
+    setFeedData((feedData) => [...feedData, ...data.data]);
+    setPage((page) => page + 1);
+    setRefetch(false);
   };
   useEffect(() => {
-    // fetchFeedInformation(0);
-    // // Reload
-    // return () => {
-    //   setPage(0);
-    //   setRefetch(false);
-    //   setFeedData([]);
-    //   setMaxLength(0);
-    //   setRefetch(false);
-    // };
+    fetchFeedInformation(0);
+
+    // Reload
+    return () => {
+      setPage(0);
+      setRefetch(false);
+      setFeedData([]);
+      setMaxLength(0);
+
+      setRefetch(false);
+    };
   }, []);
 
   return (
@@ -98,10 +92,18 @@ const ScreensHomeMain = ({ navigation, route }) => {
       <ScrollView
         style={styles.body}
         onScroll={({ nativeEvent }) => {
-          if (isCloseToBottom(nativeEvent) && feedData.length < maxLength) {
-            console.log("scrolled to bottom");
+          if (
+            !refetch &&
+            isCloseToBottom(nativeEvent) &&
+            feedData.length < maxLength
+          ) {
+            console.log("scrolled to bottom of feed");
+            setRefetch(true);
             fetchFeedInformation(page);
           }
+        }}
+        contentContainerStyle={{
+          paddingBottom: 100,
         }}
         scrollEventThrottle={400}
         showsVerticalScrollIndicator={false}
@@ -130,75 +132,6 @@ const ScreensHomeMain = ({ navigation, route }) => {
             correctAnswer={record.correctAnswerExists}
           />
         ))}
-
-        {/* {[
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              "feedData[0].content",
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-          {
-            voting: 30,
-            dateText: "3 days ago",
-            title: "Câu hỏi về game?",
-            content:
-              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ.",
-            numOfAnswers: 100,
-            userData: {
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            },
-          },
-        ].map((record, index) => (
-          <Post key={index}
-            voting={record.voting}
-            dateText={record.dateText}
-            title={record.title}
-            content={record.content}
-            numOfAnswers={record.numOfAnswers}
-            userData={record.userData}
-          />
-        ))} */}
-
-        {/* <Post
-          voting={69}
-          dateText={"14 days ago"}
-          title={"Alo alo?"}
-          content={
-            "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-          }
-          numOfAnswers={22}
-          image={
-            "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
-          }
-          userData={{
-            name: "Chó Khánh",
-            avatarUrl:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
-          }}
-        /> */}
       </ScrollView>
     </SafeAreaView>
   );
