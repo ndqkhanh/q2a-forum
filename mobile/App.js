@@ -123,6 +123,7 @@ const Navigation2 = () => {
           headerShown: false,
         }}
       >
+        {/* PLEASE DO NOT CHANGE HERE. IF ANY, RETURN BACK TO THE ORIGINAL ONE ONCE PUSH CODE */}
         {auth && userData ? (
           <>
             <Stack.Screen name="Home" component={BottomTabNavigator} />
