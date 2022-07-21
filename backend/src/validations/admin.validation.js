@@ -10,12 +10,10 @@ const banUser = {
   }),
 };
 
-
 const setConfiguration = {
-  params: Joi.object().keys(
-    {
-      slug: Joi.string().required(),
-    }),
+  params: Joi.object().keys({
+    slug: Joi.string().required(),
+  }),
   body: Joi.object().keys({
     value: Joi.string(),
   }),

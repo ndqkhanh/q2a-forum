@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors, Card } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-const User = ({ userData, image }) => {
-  const [Banned, setBanned] = useState(false);
-  const pressBan = () => {
+
+const User = ({ userData, Status, pressBan }) => {
+  const [Banned, setBanned] = useState(Status);
+  const pressBanCombined = () => {
+    pressBan();
     if (Banned) setBanned(false);
     else setBanned(true);
   };
@@ -22,7 +24,7 @@ const User = ({ userData, image }) => {
           <View style={styles.nameAndDate}>
             <Text style={styles.name}>{userData.name}</Text>
           </View>
-          <TouchableOpacity onPress={pressBan}>
+          <TouchableOpacity onPress={pressBanCombined}>
             <View flexDirection={"row"} alignItems={"center"}>
               <Icon
                 {...(Banned
