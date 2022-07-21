@@ -1,8 +1,7 @@
-import { prop } from "cheerio/lib/api/attributes";
-import React, { useState } from "react";
-import { Image, Text, View, TouchableOpacity } from "react-native";
+import React from "react";
+import { Image, Text, TouchableHighlight, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
-const HomeMainPosting = (props) => {
+const HomeMainPosting = ({ navigation }) => {
   return (
     <View
       style={{
@@ -60,8 +59,23 @@ const HomeMainPosting = (props) => {
           marginTop: 10,
         }}
       >
-        <TouchableOpacity activeOpacity={0.7} onPress={props?.onPressPostToDB}>
-          <View
+        <TouchableHighlight
+          onPress={() => {
+            navigation.navigate("....", {
+              userId: "34343asdasd",
+            });
+          }}
+          style={{
+            backgroundColor: Colors.blue30,
+            width: 70,
+            height: 30,
+            borderRadius: 5,
+            marginTop: 5,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
             style={{
               backgroundColor: Colors.blue30,
               width: 70,
@@ -72,16 +86,9 @@ const HomeMainPosting = (props) => {
               alignItems: "center",
             }}
           >
-            <Text
-              style={{
-                color: Colors.white,
-                fontWeight: "bold",
-              }}
-            >
-              Post
-            </Text>
-          </View>
-        </TouchableOpacity>
+            Post
+          </Text>
+        </TouchableHighlight>
       </View>
     </View>
   );
