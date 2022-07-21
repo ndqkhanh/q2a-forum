@@ -21,6 +21,7 @@ import {
   getPendingQuestions,
   getUsers,
   updateConfiguration,
+  banUser,
 } from "~services/admin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -86,19 +87,11 @@ const ManageForumScreen = () => {
   const fetchPendingQuestions = async (page, limit) => {
     let token = await AsyncStorage.getItem("UserToken");
     const data = await getPendingQuestions(token, page, limit);
-    var maxLength = 5;
-    try {
-      maxLength = parseInt(data.count);
-    } catch (e) {
-      console.log(e);
-    }
+    let maxLength = parseInt(data.count);
     setMaxPendingQuestionsLength(maxLength);
     let tmp = [...pendingQuestionsData, ...data.data];
-    let uniqueData = await getUnique(tmp, "id").filter(
-      (item) => item.status == 0,
-    );
+    let uniqueData = await getUnique(tmp, "id").filter((e) => e.status === 0);
     setPendingQuestionsData(uniqueData);
-    // console.log("uniqueData:", uniqueData);
     setPendingQuestionsPage((pendingQuestionsPage) => pendingQuestionsPage + 1);
     setRefetch(false);
   };
@@ -154,17 +147,34 @@ const ManageForumScreen = () => {
       if (status === 1) {
         Alert.alert("Question declined successfully");
       }
+      setPendingQuestionsData((pendingQuestionsData) =>
+        pendingQuestionsData.filter((item) => item.id !== questionId),
+      );
     } else {
       Alert.alert("Question already approved or declined");
     }
-    if (pendingQuestionsData.length === 1) {
-      Alert.alert("No more pending questions");
-    }
-    if (maxPendingQuestionsLength > 4 && pendingQuestionsData.length <= 4) {
-      setPendingQuestionsPage(0);
-      fetchPendingQuestions(0, 5);
+  };
+
+  const fetchBanUser = async (userId, status) => {
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await banUser(token, userId, status);
+    if (data.success === true) {
+      if (status === false) {
+        Alert.alert("User is unbanned successfully");
+      }
+      if (status === true) {
+        Alert.alert("User is banned successfully");
+      }
+    } else {
+      Alert.alert("User already banned or unbanned");
     }
   };
+
+  useEffect(() => {
+    if (pendingQuestionsData.length <= 0) {
+      fetchPendingQuestions(0, 5);
+    }
+  }, [pendingQuestionsData]);
 
   useEffect(() => {
     fetchPendingQuestions(0, 5);
@@ -185,9 +195,7 @@ const ManageForumScreen = () => {
       setUsersPage(0);
       setUsersData([]);
 
-      // setCheckApprove(false);
-
-      // setIsPressed([true, false, false]);
+      setIsPressed([true, false, false]);
       setRefetch(false);
     };
   }, []);
@@ -285,19 +293,9 @@ const ManageForumScreen = () => {
                 key={record.id}
                 onPressApprove={() => {
                   fetchApproveDeclineQuestions(record.id, 0);
-                  setPendingQuestionsData(
-                    pendingQuestionsData.filter(
-                      (item) => item.id !== record.id,
-                    ),
-                  );
                 }}
                 onPressDisapprove={() => {
                   fetchApproveDeclineQuestions(record.id, 1);
-                  setPendingQuestionsData(
-                    pendingQuestionsData.filter(
-                      (item) => item.id !== record.id,
-                    ),
-                  );
                 }}
                 dateText={formatDistance(
                   new Date(record.updated_at),
@@ -341,6 +339,16 @@ const ManageForumScreen = () => {
                 userData={{
                   name: record.name,
                   avatarUrl: record.profilepictureurl,
+                }}
+                Status={record.disabled}
+                pressBan={() => {
+                  if (record.disabled === true) {
+                    fetchBanUser(record.id, false);
+                    record.disabled = false;
+                  } else {
+                    fetchBanUser(record.id, true);
+                    record.disabled = true;
+                  }
                 }}
               />
             ))}

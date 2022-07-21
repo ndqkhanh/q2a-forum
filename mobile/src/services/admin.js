@@ -3,7 +3,6 @@ import { API_URL } from "@env";
 
 const getMetrics = async (token) => {
   try {
-    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(`${API_URL}/admin/metrics`, {
       method: "GET",
       headers: {
@@ -21,7 +20,6 @@ const getMetrics = async (token) => {
 
 const getPendingQuestions = async (token, page, limit) => {
   try {
-    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(
       `${API_URL}/admin/manage-questions/${page}/${limit}`,
       {
@@ -42,7 +40,6 @@ const getPendingQuestions = async (token, page, limit) => {
 
 const approveDeclineQuestion = async (token, questionId, status) => {
   try {
-    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(`${API_URL}/admin/manage-questions`, {
       method: "POST",
       headers: {
@@ -64,7 +61,6 @@ const approveDeclineQuestion = async (token, questionId, status) => {
 
 const getUsers = async (token, page, limit) => {
   try {
-    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(`${API_URL}/admin/list-users/${page}/${limit}`, {
       method: "GET",
       headers: {
@@ -100,7 +96,6 @@ const getListConfigurations = async (token) => {
 
 const updateConfiguration = async (token, slug, value) => {
   try {
-    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(`${API_URL}/admin/set-configuration/${slug}`, {
       method: "POST",
       body: JSON.stringify({
@@ -119,6 +114,26 @@ const updateConfiguration = async (token, slug, value) => {
   }
 };
 
+const banUser = async (token, userId, status) => {
+  try {
+    let data = await fetch(`${API_URL}/admin/ban-user/${userId}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        status,
+      }),
+    });
+    data = await data.json();
+    return data;
+  } catch (error) {
+    console.error("error---", error);
+  }
+};
+
 export {
   getMetrics,
   getPendingQuestions,
@@ -126,4 +141,5 @@ export {
   getUsers,
   getListConfigurations,
   updateConfiguration,
+  banUser,
 };
