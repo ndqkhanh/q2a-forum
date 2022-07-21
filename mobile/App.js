@@ -123,12 +123,12 @@ const Navigation2 = () => {
           headerShown: false,
         }}
       >
+        {/* PLEASE DO NOT CHANGE HERE. IF ANY, RETURN BACK TO THE ORIGINAL ONE ONCE PUSH CODE */}
         {auth && userData ? (
           <>
-            <Stack.Screen name="Q2A" component={ScreensQ2AMain} />
             <Stack.Screen name="Home" component={BottomTabNavigator} />
             <Stack.Screen name="Editor" component={PostQuestionScreen} />
-            {/* <Stack.Screen name="Q2A" component={ScreensQ2AMain} /> */}
+            <Stack.Screen name="Q2A" component={ScreensQ2AMain} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Admin" component={ManageForumScreen} />
           </>
