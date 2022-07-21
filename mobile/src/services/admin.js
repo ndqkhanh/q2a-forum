@@ -128,7 +128,6 @@ const banUser = async (token, userId, status) => {
       }),
     });
     data = await data.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("error---", error);
