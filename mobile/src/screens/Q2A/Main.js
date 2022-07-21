@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { text } from "cheerio/lib/api/manipulation";
 import { formatDistance } from "date-fns";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -21,7 +21,7 @@ import {
   getAllAnswersAndVotings,
   pickACorrectAnswer,
 } from "~services/answer";
-
+import { UserContext } from "~provider/UserProvider";
 import { getUser } from "~services/user";
 
 const ScreensQ2AMain = () => {
@@ -36,11 +36,8 @@ const ScreensQ2AMain = () => {
 
   const [user, setUser] = useState(null);
 
-  // Fetch Get User who log in
-  const fetchGetUser = async () => {
-    const userData = await getUser();
-    setUser(userData);
-  };
+  // Use context to get userdata
+  const { userData } = useContext(UserContext);
 
   // Fetch Pick correct answer
   const fetchPickACorrectAnswer = async (answerId, status) => {
@@ -74,7 +71,6 @@ const ScreensQ2AMain = () => {
 
   useEffect(() => {
     fetchGetAllAnswersAndVotings("db0e22f6-e058-4ae3-a08f-9964289d4575", 0, 5);
-    fetchGetUser();
     for (let i = 0; i < answersAndVotes.length; i++) {
       if (answersAndVotes[i].answer.correct == true) {
         setIndexCorrectAns(i);
@@ -82,7 +78,7 @@ const ScreensQ2AMain = () => {
     }
   }, []);
 
-  if (!question || !user) return null;
+  if (!question || !userData) return null;
 
   return (
     <SafeAreaView
@@ -135,7 +131,7 @@ const ScreensQ2AMain = () => {
               avatarUrl: item.profilepictureurl,
             }}
             onPickACorrectAnswer={
-              user.id == question.questionInfo.uid
+              userData.id == question.questionInfo.uid
                 ? () => {
                     setAnswerId(item.answer.id);
                     fetchPickACorrectAnswer(answerId, true);
@@ -143,7 +139,7 @@ const ScreensQ2AMain = () => {
                 : null
             }
             onPickDeleteAnswer={
-              user.id == item.answer.uid
+              userData.id == item.answer.uid
                 ? () => {
                     setAnswerId(item.answer.id);
                     fetchDeleteAnswer(answerId);
