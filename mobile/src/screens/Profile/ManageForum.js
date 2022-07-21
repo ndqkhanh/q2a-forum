@@ -8,6 +8,7 @@ import {
   Alert,
   TextInput,
   Touchable,
+  TouchableHighlight,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "~provider/UserProvider";
@@ -44,7 +45,8 @@ const getUnique = (arr, index) => {
   return unique;
 };
 
-const ManageForumScreen = () => {
+const ManageForumScreen = ({ navigation }) => {
+  const { userData } = useContext(UserContext);
   const [isPressed, setIsPressed] = useState([true, false, false]);
   const questionsPressed = () => {
     setIsPressed([true, false, false]);
@@ -177,10 +179,12 @@ const ManageForumScreen = () => {
   }, [pendingQuestionsData]);
 
   useEffect(() => {
-    fetchPendingQuestions(0, 5);
-    fetchUsers(0, 10);
-    fetchMetricsInformation();
-    fetchConfigurations();
+    if (userData.role == 1 || userData.role == 0) {
+      fetchPendingQuestions(0, 5);
+      fetchUsers(0, 10);
+      fetchMetricsInformation();
+      userData.role === 1 && fetchConfigurations();
+    }
 
     return () => {
       setNumOfQuestions(0);
@@ -201,18 +205,45 @@ const ManageForumScreen = () => {
   }, []);
 
   const [refetch, setRefetch] = useState(false);
+  if (userData.role == 2)
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+        }}
+      >
+        <Text>This screen is only for Moderator or Admin</Text>
+        <TouchableHighlight
+          onPress={() => navigation.pop()}
+          style={{
+            width: 100,
+            height: 30,
+            backgroundColor: Colors.cyan50,
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 10,
+          }}
+        >
+          <Text>Back</Text>
+        </TouchableHighlight>
+      </View>
+    );
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.pop()}>
+          <Icon
+            name="arrow-back-outline"
+            style={{
+              fontSize: 30,
+              color: Colors.cyan10,
+            }}
+          />
+        </TouchableOpacity>
         <Text style={styles.header}>Manage Forum</Text>
-        <Icon
-          name="log-out-outline"
-          style={{
-            fontSize: 30,
-            color: Colors.cyan10,
-          }}
-        />
       </View>
       <View style={styles.body}>
         <View style={styles.infoSection}>
@@ -258,14 +289,16 @@ const ManageForumScreen = () => {
               <Text black>Users</Text>
             </Card>
           </TouchableOpacity>
-          <TouchableOpacity onPress={configPressed}>
-            <Card
-              style={styles.menu}
-              {...(isPressed[2] ? { backgroundColor: Colors.blue60 } : {})}
-            >
-              <Text black>Config</Text>
-            </Card>
-          </TouchableOpacity>
+          {userData.role === 0 && (
+            <TouchableOpacity onPress={configPressed}>
+              <Card
+                style={styles.menu}
+                {...(isPressed[2] ? { backgroundColor: Colors.blue60 } : {})}
+              >
+                <Text black>Config</Text>
+              </Card>
+            </TouchableOpacity>
+          )}
         </View>
         {isPressed[0] ? (
           <ScrollView
@@ -354,7 +387,8 @@ const ManageForumScreen = () => {
             ))}
           </ScrollView>
         ) : (
-          isPressed[2] && (
+          isPressed[2] &&
+          userData.role === 0 && (
             <View
               style={{
                 paddingTop: 10,
@@ -435,6 +469,7 @@ const styles = StyleSheet.create({
     //marginHorizontal: 20,
     padding: 10,
     alignItems: "center",
+    paddingHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
   },
