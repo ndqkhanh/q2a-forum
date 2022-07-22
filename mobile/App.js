@@ -75,7 +75,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Search"
         component={SearchScreen}
         options={{
@@ -84,8 +84,8 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="search-circle-outline" color={color} />
           ),
         }}
-      /> */}
-      <BottomTab.Screen
+      />
+      {/* <BottomTab.Screen
         name="Q2A"
         component={ScreensQ2AMain}
         options={{
@@ -94,7 +94,7 @@ const BottomTabNavigator = () => {
             <TabBarIcon name="search-circle-outline" color={color} />
           ),
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Add"
         component={ScreensHomeMain}
