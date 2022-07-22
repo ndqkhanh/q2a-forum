@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -25,6 +26,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 const ScreensHomeMain = ({ navigation }) => {
+  const { userData } = useContext(UserContext);
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
   const { setAuth } = useContext(UserContext);
@@ -104,6 +106,83 @@ const ScreensHomeMain = ({ navigation }) => {
         scrollEventThrottle={400}
         showsVerticalScrollIndicator={false}
       >
+        <View
+          style={{
+            flexDirection: "row",
+            marginVertical: 5,
+          }}
+        >
+          <TouchableHighlight
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: Colors.white,
+              borderRadius: 5,
+              padding: 5,
+              marginRight: userData.role === 2 ? 0 : 10,
+              justifyContent: "center",
+            }}
+            onPress={() => navigation.navigate("Profile")}
+            underlayColor={Colors.cyan50}
+          >
+            <>
+              <Icon
+                name="person-outline"
+                style={{
+                  fontSize: 30,
+                  color: Colors.cyan20,
+                }}
+              />
+              <Text
+                style={{
+                  marginLeft: 5,
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: Colors.cyan20,
+                }}
+              >
+                Profile
+              </Text>
+            </>
+          </TouchableHighlight>
+          {(userData.role == 1 || userData.role == 0) && (
+            <TouchableHighlight
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                backgroundColor: Colors.white,
+                borderRadius: 5,
+                padding: 5,
+                marginLeft: 10,
+                justifyContent: "center",
+              }}
+              onPress={() => navigation.navigate("Admin")}
+              underlayColor={Colors.cyan50}
+            >
+              <>
+                <Icon
+                  name="flame-outline"
+                  style={{
+                    fontSize: 30,
+                    color: Colors.cyan20,
+                  }}
+                />
+                <Text
+                  style={{
+                    marginLeft: 5,
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color: Colors.cyan20,
+                  }}
+                >
+                  Admin
+                </Text>
+              </>
+            </TouchableHighlight>
+          )}
+        </View>
         <HomeMainPosting navigation={navigation} />
         {feedData.map((record) => (
           <Post

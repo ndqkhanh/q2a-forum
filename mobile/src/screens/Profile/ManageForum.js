@@ -8,6 +8,7 @@ import {
   Alert,
   TextInput,
   Touchable,
+  TouchableHighlight,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "~provider/UserProvider";
@@ -21,6 +22,7 @@ import {
   getPendingQuestions,
   getUsers,
   updateConfiguration,
+  banUser,
 } from "~services/admin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -43,7 +45,8 @@ const getUnique = (arr, index) => {
   return unique;
 };
 
-const ManageForumScreen = () => {
+const ManageForumScreen = ({ navigation }) => {
+  const { userData } = useContext(UserContext);
   const [isPressed, setIsPressed] = useState([true, false, false]);
   const questionsPressed = () => {
     setIsPressed([true, false, false]);
@@ -86,19 +89,11 @@ const ManageForumScreen = () => {
   const fetchPendingQuestions = async (page, limit) => {
     let token = await AsyncStorage.getItem("UserToken");
     const data = await getPendingQuestions(token, page, limit);
-    var maxLength = 5;
-    try {
-      maxLength = parseInt(data.count);
-    } catch (e) {
-      console.log(e);
-    }
+    let maxLength = parseInt(data.count);
     setMaxPendingQuestionsLength(maxLength);
     let tmp = [...pendingQuestionsData, ...data.data];
-    let uniqueData = await getUnique(tmp, "id").filter(
-      (item) => item.status == 0,
-    );
+    let uniqueData = await getUnique(tmp, "id").filter((e) => e.status === 0);
     setPendingQuestionsData(uniqueData);
-    // console.log("uniqueData:", uniqueData);
     setPendingQuestionsPage((pendingQuestionsPage) => pendingQuestionsPage + 1);
     setRefetch(false);
   };
@@ -154,23 +149,42 @@ const ManageForumScreen = () => {
       if (status === 1) {
         Alert.alert("Question declined successfully");
       }
+      setPendingQuestionsData((pendingQuestionsData) =>
+        pendingQuestionsData.filter((item) => item.id !== questionId),
+      );
     } else {
       Alert.alert("Question already approved or declined");
     }
-    if (pendingQuestionsData.length === 1) {
-      Alert.alert("No more pending questions");
-    }
-    if (maxPendingQuestionsLength > 4 && pendingQuestionsData.length <= 4) {
-      setPendingQuestionsPage(0);
-      fetchPendingQuestions(0, 5);
+  };
+
+  const fetchBanUser = async (userId, status) => {
+    let token = await AsyncStorage.getItem("UserToken");
+    const data = await banUser(token, userId, status);
+    if (data.success === true) {
+      if (status === false) {
+        Alert.alert("User is unbanned successfully");
+      }
+      if (status === true) {
+        Alert.alert("User is banned successfully");
+      }
+    } else {
+      Alert.alert("User already banned or unbanned");
     }
   };
 
   useEffect(() => {
-    fetchPendingQuestions(0, 5);
-    fetchUsers(0, 10);
-    fetchMetricsInformation();
-    fetchConfigurations();
+    if (pendingQuestionsData.length <= 0) {
+      fetchPendingQuestions(0, 5);
+    }
+  }, [pendingQuestionsData]);
+
+  useEffect(() => {
+    if (userData.role == 1 || userData.role == 0) {
+      fetchPendingQuestions(0, 5);
+      fetchUsers(0, 10);
+      fetchMetricsInformation();
+      userData.role === 1 && fetchConfigurations();
+    }
 
     return () => {
       setNumOfQuestions(0);
@@ -185,26 +199,51 @@ const ManageForumScreen = () => {
       setUsersPage(0);
       setUsersData([]);
 
-      // setCheckApprove(false);
-
-      // setIsPressed([true, false, false]);
+      setIsPressed([true, false, false]);
       setRefetch(false);
     };
   }, []);
 
   const [refetch, setRefetch] = useState(false);
+  if (userData.role == 2)
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+        }}
+      >
+        <Text>This screen is only for Moderator or Admin</Text>
+        <TouchableHighlight
+          onPress={() => navigation.pop()}
+          style={{
+            width: 100,
+            height: 30,
+            backgroundColor: Colors.cyan50,
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 10,
+          }}
+        >
+          <Text>Back</Text>
+        </TouchableHighlight>
+      </View>
+    );
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.pop()}>
+          <Icon
+            name="arrow-back-outline"
+            style={{
+              fontSize: 30,
+              color: Colors.cyan10,
+            }}
+          />
+        </TouchableOpacity>
         <Text style={styles.header}>Manage Forum</Text>
-        <Icon
-          name="log-out-outline"
-          style={{
-            fontSize: 30,
-            color: Colors.cyan10,
-          }}
-        />
       </View>
       <View style={styles.body}>
         <View style={styles.infoSection}>
@@ -250,14 +289,16 @@ const ManageForumScreen = () => {
               <Text black>Users</Text>
             </Card>
           </TouchableOpacity>
-          <TouchableOpacity onPress={configPressed}>
-            <Card
-              style={styles.menu}
-              {...(isPressed[2] ? { backgroundColor: Colors.blue60 } : {})}
-            >
-              <Text black>Config</Text>
-            </Card>
-          </TouchableOpacity>
+          {userData.role === 0 && (
+            <TouchableOpacity onPress={configPressed}>
+              <Card
+                style={styles.menu}
+                {...(isPressed[2] ? { backgroundColor: Colors.blue60 } : {})}
+              >
+                <Text black>Config</Text>
+              </Card>
+            </TouchableOpacity>
+          )}
         </View>
         {isPressed[0] ? (
           <ScrollView
@@ -285,19 +326,9 @@ const ManageForumScreen = () => {
                 key={record.id}
                 onPressApprove={() => {
                   fetchApproveDeclineQuestions(record.id, 0);
-                  setPendingQuestionsData(
-                    pendingQuestionsData.filter(
-                      (item) => item.id !== record.id,
-                    ),
-                  );
                 }}
                 onPressDisapprove={() => {
                   fetchApproveDeclineQuestions(record.id, 1);
-                  setPendingQuestionsData(
-                    pendingQuestionsData.filter(
-                      (item) => item.id !== record.id,
-                    ),
-                  );
                 }}
                 dateText={formatDistance(
                   new Date(record.updated_at),
@@ -342,11 +373,22 @@ const ManageForumScreen = () => {
                   name: record.name,
                   avatarUrl: record.profilepictureurl,
                 }}
+                Status={record.disabled}
+                pressBan={() => {
+                  if (record.disabled === true) {
+                    fetchBanUser(record.id, false);
+                    record.disabled = false;
+                  } else {
+                    fetchBanUser(record.id, true);
+                    record.disabled = true;
+                  }
+                }}
               />
             ))}
           </ScrollView>
         ) : (
-          isPressed[2] && (
+          isPressed[2] &&
+          userData.role === 0 && (
             <View
               style={{
                 paddingTop: 10,
@@ -427,6 +469,7 @@ const styles = StyleSheet.create({
     //marginHorizontal: 20,
     padding: 10,
     alignItems: "center",
+    paddingHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
   },

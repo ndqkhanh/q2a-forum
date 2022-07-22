@@ -1,5 +1,6 @@
 import React from "react";
 import { Image, StyleSheet, Text, View, Button } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 const Post = ({
@@ -11,8 +12,8 @@ const Post = ({
   image,
   numOfAnswers,
   correctAnswer = false,
-  onPickACorrectAnswer = null,
-  onPickDeleteAnswer = null,
+  onDelete = null,
+  onPickCorrectAnswer = null,
 }) => {
   return (
     <View style={styles.postContainer}>
@@ -100,15 +101,39 @@ const Post = ({
         </View>
       )}
 
-      {onPickACorrectAnswer && (
-        <View>
-          <Button title={"correct"} onPress={onPickACorrectAnswer} />
-        </View>
-      )}
+      {(onDelete || onPickCorrectAnswer) && (
+        <View style={styles.questionFooterContainer}>
+          {onDelete && (
+            <View
+              style={{
+                flex: 1,
+              }}
+            >
+              <TouchableOpacity onPress={onDelete}>
+                <Text
+                  style={{
+                    color: Colors.cyan30,
+                    fontWeight: "700",
+                  }}
+                >
+                  Delete
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
-      {onPickDeleteAnswer && (
-        <View>
-          <Button title={"delete"} onPress={onPickDeleteAnswer} />
+          {onPickCorrectAnswer && (
+            <TouchableOpacity onPress={onPickCorrectAnswer}>
+              <Text
+                style={{
+                  color: Colors.cyan30,
+                  fontWeight: "700",
+                }}
+              >
+                Pick correct
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </View>
