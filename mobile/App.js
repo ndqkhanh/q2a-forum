@@ -32,7 +32,7 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps.allowFontScaling = false;
 }
 const BottomTab = createBottomTabNavigator();
-//const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
 const BottomTabNavigator = ({ navigation }) => {
   const { userData } = useContext(UserContext);
   return (
@@ -110,7 +110,7 @@ function TabBarIcon(props) {
 const EmptyScreen = () => {
   return <View></View>;
 };
-// const Stack = createStackNavigator();
+const Stack = createStackNavigator();
 
 const Navigation2 = () => {
   const { userData, auth } = useContext(UserContext);

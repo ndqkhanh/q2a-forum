@@ -130,7 +130,7 @@ const ScreensQ2AMain = () => {
               name: item.name,
               avatarUrl: item.profilepictureurl,
             }}
-            onPickACorrectAnswer={
+            onPickCorrectAnswer={
               userData.id == question.questionInfo.uid
                 ? () => {
                     setAnswerId(item.answer.id);
@@ -138,7 +138,7 @@ const ScreensQ2AMain = () => {
                   }
                 : null
             }
-            onPickDeleteAnswer={
+            onDelete={
               userData.id == item.answer.uid
                 ? () => {
                     setAnswerId(item.answer.id);
