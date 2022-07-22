@@ -67,6 +67,9 @@ const updateQuestion = async (req) => {
 const countQuestionInDB = async (req) => {
   const countQuestion = await prisma.questions.count({
     where: {
+      title: {
+        contains: req.body.keyword,
+      },
       status: 2,
     },
   });
