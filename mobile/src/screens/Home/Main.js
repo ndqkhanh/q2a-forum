@@ -212,6 +212,9 @@ const ScreensHomeMain = ({ navigation, route }) => {
               console.log("navigate to Q2A");
               navigation.navigate("Q2A", { questionId: record.id });
             }}
+            onPressAnswer={() => {
+              navigation.navigate("Post answer", { qid: record.id });
+            }}
           />
         ))}
       </ScrollView>

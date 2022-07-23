@@ -19,17 +19,6 @@ import { controllPostAnswer } from "~controller/controllAnswer";
 const PostAnswerScreen = ({ navigation, route }) => {
   const richText = React.useRef();
   const [content, setContent] = React.useState(null);
-  const postQuestion = async (passTitle, passContent) => {
-    if (passTitle == null || passContent == null) {
-      Alert.alert("Require", "Title and content must contain something!");
-    } else {
-      var question = {
-        Title: passTitle,
-        Content: passContent,
-      };
-      navigation.navigate("Your Feed", question);
-    }
-  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>

@@ -47,6 +47,9 @@ const updateQuestion = async (req) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Question Not Found');
   }
 
+  if (question.uid != req.userId) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'You are not the owner of this question');
+  }
   const newTitle = req.body.title;
   const newContent = req.body.content;
 

@@ -8,6 +8,7 @@ import Post from "~components/Common/Post";
 import SearchBar from "~components/SearchBar/SearchBar";
 import { formatDistance } from "date-fns";
 
+
 const SearchScreen = ({ navigation }) => {
   const [titleSearch, setTitleSearch] = React.useState("");
   const [countRes, setCountRes] = React.useState(null);
@@ -114,7 +115,7 @@ const SearchScreen = ({ navigation }) => {
                 }}
                 correctAnswer={record.correctAnswerExists}
                 onPressAnswer={() => {
-                  navigation.navigate("Post answer", { qid: record.id });
+                  navigation.navigate("Post answer", { qid: record.questionData.id });
                 }}
               />
             ))}
