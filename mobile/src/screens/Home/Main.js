@@ -186,8 +186,14 @@ const ScreensHomeMain = ({ navigation, route }) => {
             </TouchableHighlight>
           )}
         </View>
-        <HomeMainPosting navigation={navigation} />
-        {feedData.map((record) => (
+        <HomeMainPosting
+          onPress={() => navigation.navigate("Editor")}
+          content={route.params?.Content}
+          onPressPost = {() =>{controllPostQuestion(route.params?.Title, route.params?.Content)
+            navigation.setParams({Title: null, Content: null})
+          }}
+        />
+        {feedData.map((record, index) => (
           <Post
             key={index}
             dateText={formatDistance(new Date(record.updated_at), Date.now(), {

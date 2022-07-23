@@ -1,11 +1,12 @@
 import * as React from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { controllsSearchQuestion } from "~controller/controllQuestion";
 import Q2APagination from "~components/Q2A/Pagination";
 import Post from "~components/Common/Post";
 import SearchBar from "~components/SearchBar/SearchBar";
+import { formatDistance } from "date-fns";
 
 const SearchScreen = ({ navigation }) => {
   const [titleSearch, setTitleSearch] = React.useState("");
@@ -14,10 +15,12 @@ const SearchScreen = ({ navigation }) => {
   const limit = 2;
   const [page, setPage] = React.useState(1);
   const pressNext = () => {
-    let newPage = page + 1;
-    setPage(newPage);
-    if (Math.ceil(searchData.length / limit) < newPage)
-      getData(false, newPage - 1, limit);
+    if (page < Math.ceil(countRes / limit)) {
+      let newPage = page + 1;
+      setPage(newPage);
+      if (Math.ceil(searchData.length / limit) < newPage)
+        getData(false, newPage - 1, limit);
+    }
   };
   const pressPrev = () => {
     if (page > 1) setPage(page - 1);
@@ -64,15 +67,17 @@ const SearchScreen = ({ navigation }) => {
           textChange={setTitleSearch}
           onPressSearch={() => {
             setPage(1);
+            setCountRes(null);
             getData(true, 0, limit);
           }}
         ></SearchBar>
         {countRes > 0 ? (
-          <Text style={styles.resultTxt}>Found {Math.ceil(1 / 3)} result</Text>
+          <Text style={styles.resultTxt}>Found {countRes} result</Text>
         ) : null}
         {searchData.length !== 0 ? (
           <Q2APagination
             page={page}
+            maxPage={Math.ceil(countRes / limit)}
             pressPrev={() => pressPrev()}
             pressNext={() => pressNext()}
           />
@@ -93,14 +98,21 @@ const SearchScreen = ({ navigation }) => {
             .map((record, index) => (
               <Post
                 key={index}
-                title={record.title}
-                content={record.content}
-                numOfAnswers={2}
+                dateText={formatDistance(
+                  new Date(record.questionData.updated_at),
+                  Date.now(),
+                  {
+                    addSuffix: true,
+                  },
+                )}
+                title={record.questionData.title}
+                content={record.questionData.content}
+                numOfAnswers={record.numOfAnswers}
                 userData={{
-                  name: "record.userData.name",
-                  avatarUrl: "record.userData.profilepictureurl",
+                  name: record.userData.name,
+                  avatarUrl: record.userData.profilepictureurl,
                 }}
-                correctAnswer={"record.correctAnswerExists"}
+                correctAnswer={record.correctAnswerExists}
                 onPressAnswer={() => {
                   navigation.navigate("Post answer", { qid: record.id });
                 }}

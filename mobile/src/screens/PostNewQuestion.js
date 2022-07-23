@@ -48,7 +48,10 @@ const PostQuestionScreen = ({ navigation }) => {
       <View style={styles.body}>
         <Text style={styles.textTitle}>Title</Text>
         <Card style={styles.typingTitle}>
-          <TextInput style={{ height: 45, paddingHorizontal: 10 }}onChangeText={(tilteText) => setTitle(tilteText)}  />
+          <TextInput
+            style={{ height: 45, paddingHorizontal: 10 }}
+            onChangeText={(tilteText) => setTitle(tilteText)}
+          />
         </Card>
         <Text
           style={[

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors } from "react-native-ui-lib";
 
-const Q2APagination = ({ page, pressPrev, pressNext }) => {
+const Q2APagination = ({ page, maxPage, pressPrev, pressNext }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity activeOpacity={0.8} onPress={pressPrev}>
@@ -11,7 +11,7 @@ const Q2APagination = ({ page, pressPrev, pressNext }) => {
         </View>
       </TouchableOpacity>
       <View style={styles.pageContainer}>
-        <Text style={styles.pageNumber}>{page}</Text>
+        <Text style={styles.pageNumber}>{page}{maxPage && (`/${maxPage}`)}</Text>
       </View>
       <TouchableOpacity activeOpacity={0.8} onPress={pressNext}>
         <View style={styles.btnPage}>
