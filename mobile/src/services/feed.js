@@ -4,7 +4,6 @@ import { Alert } from "react-native";
 
 const getFeed = async (token, page) => {
   try {
-    // let token = await AsyncStorage.getItem("UserToken");
     let data = await fetch(`${API_URL}/question/feed/${page}`, {
       method: "GET",
       headers: {

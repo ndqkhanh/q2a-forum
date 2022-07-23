@@ -30,7 +30,16 @@ const SearchBar = (props) => {
           color="#000"
         />
       </TouchableOpacity>
-      <Text style={{ fontSize: 30, paddingBottom: 5, paddingRight: 5 }}>|</Text>
+      <Text
+        style={{
+          fontSize: 30,
+          paddingBottom: 5,
+          paddingRight: 5,
+          color: Colors.cyan30,
+        }}
+      >
+        |
+      </Text>
       <TextInput
         placeholder="Type here"
         style={styles.inputStyle}
@@ -64,6 +73,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    borderRadius: 50,
+    borderRadius: 10,
   },
 });

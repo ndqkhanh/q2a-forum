@@ -14,7 +14,7 @@ import PersonalInfo from "~components/Profile/personalInfo";
 import { getMyProfile, getUserProfile } from "~services/getProfile";
 import { updateUserInformation } from "~services/user";
 import { UserContext } from "~provider/UserProvider";
-const ProfileScreen = ({ route }) => {
+const ProfileScreen = ({ navigation }) => {
   // const {userId} = route.params;
   // const userId = JSON.stringify(userIdParam);
   const { userData, setUserData } = useContext(UserContext);
@@ -57,14 +57,16 @@ const ProfileScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.pop()}>
+          <Icon
+            name="arrow-back-outline"
+            style={{
+              fontSize: 30,
+              color: Colors.cyan10,
+            }}
+          />
+        </TouchableOpacity>
         <Text style={styles.header}>Profile</Text>
-        <Icon
-          name="log-out-outline"
-          style={{
-            fontSize: 30,
-            color: Colors.cyan10,
-          }}
-        />
       </View>
       <View style={styles.body}>
         <View style={styles.infoSection}>
@@ -333,6 +335,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
     flexDirection: "row",
+    paddingHorizontal: 20,
     justifyContent: "space-between",
   },
   header: {

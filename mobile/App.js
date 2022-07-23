@@ -8,19 +8,19 @@
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useContext, useEffect, useState } from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import React, { useContext } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-import { UserProvider } from "~provider/UserProvider";
+import { UserContext, UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
-import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
-import ProfileScreen from "~screens/Profile/UserProfile";
-import ManageForumScreen from "~screens/Profile/ManageForum";
 import PostQuestionScreen from "~screens/PostNewQuestion";
+import ManageForumScreen from "~screens/Profile/ManageForum";
+import ProfileScreen from "~screens/Profile/UserProfile";
+import ScreensQ2AMain from "~screens/Q2A/Main";
 import SearchScreen from "~screens/Search/Search";
-import { UserContext } from "~provider/UserProvider";
+import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -31,13 +31,9 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }
-import { createStackNavigator } from "@react-navigation/stack";
-import { API_URL } from "@env";
-import ScreensQ2AMain from "~screens/Q2A/Main";
-import BlankScreen from "~screens/BlankScreen/BlankScreen";
 const BottomTab = createBottomTabNavigator();
 //const Stack = createNativeStackNavigator();
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({ navigation }) => {
   const { userData } = useContext(UserContext);
   return (
     <BottomTab.Navigator
@@ -76,23 +72,16 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
-      <BottomTab.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="search-circle-outline" color={color} />
-          ),
-        }}
-      />
+
       <BottomTab.Screen
         name="Add"
         component={ScreensHomeMain}
         options={{
           tabBarButton: () => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("Post a question")}
+              onPress={() => {
+                navigation.navigate("Editor");
+              }}
               style={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -103,27 +92,14 @@ const BottomTabNavigator = () => {
           ),
         }}
       />
-
       <BottomTab.Screen
-        name="Profile"
-        component={ProfileScreen}
+        name="Search"
+        component={SearchScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-circle-outline" color={color} />
-          ),
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
         }}
       />
-      {(userData.role == 0 || userData.role === 1) && (
-        <BottomTab.Screen
-          name="Manage forum"
-          component={ManageForumScreen}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <TabBarIcon name="person-circle-outline" color={color} />
-            ),
-          }}
-        />
-      )}
     </BottomTab.Navigator>
   );
 };
@@ -147,8 +123,15 @@ const Navigation2 = () => {
           headerShown: false,
         }}
       >
+        {/* PLEASE DO NOT CHANGE HERE. IF ANY, RETURN BACK TO THE ORIGINAL ONE ONCE PUSH CODE */}
         {auth && userData ? (
-          <Stack.Screen name="Home" component={BottomTabNavigator} />
+          <>
+            <Stack.Screen name="Home" component={BottomTabNavigator} />
+            <Stack.Screen name="Editor" component={PostQuestionScreen} />
+            <Stack.Screen name="Q2A" component={ScreensQ2AMain} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Admin" component={ManageForumScreen} />
+          </>
         ) : auth === false ? (
           <Stack.Screen name="Login" component={SignupAndLogin} />
         ) : (

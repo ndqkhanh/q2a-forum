@@ -1,5 +1,6 @@
 import React from "react";
-import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 const Post = ({
@@ -12,6 +13,8 @@ const Post = ({
   numOfAnswers,
   correctAnswer = false,
   onPressAnswer,
+  onDelete = null,
+  onPickCorrectAnswer = null,
 }) => {
   return (
     <View style={styles.postContainer}>
@@ -98,6 +101,42 @@ const Post = ({
             <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
           </TouchableOpacity>
           <Text style={styles.numOfAnswers}>{numOfAnswers}</Text>
+        </View>
+      )}
+
+      {(onDelete || onPickCorrectAnswer) && (
+        <View style={styles.questionFooterContainer}>
+          {onDelete && (
+            <View
+              style={{
+                flex: 1,
+              }}
+            >
+              <TouchableOpacity onPress={onDelete}>
+                <Text
+                  style={{
+                    color: Colors.cyan30,
+                    fontWeight: "700",
+                  }}
+                >
+                  Delete
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {onPickCorrectAnswer && (
+            <TouchableOpacity onPress={onPickCorrectAnswer}>
+              <Text
+                style={{
+                  color: Colors.cyan30,
+                  fontWeight: "700",
+                }}
+              >
+                Pick correct
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </View>

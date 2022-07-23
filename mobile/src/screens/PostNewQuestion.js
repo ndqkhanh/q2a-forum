@@ -6,9 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { TextInput } from "react-native-gesture-handler";
 import {
   actions,
   RichEditor,
@@ -34,21 +34,32 @@ const PostQuestionScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.pop()}>
+          <Icon
+            name="arrow-back-outline"
+            style={{
+              fontSize: 30,
+              color: Colors.cyan10,
+            }}
+          />
+        </TouchableOpacity>
         <Text style={styles.header}>Post a question</Text>
-        <Icon
-          name="log-out-outline"
-          style={{
-            fontSize: 30,
-            color: Colors.cyan10,
-          }}
-        />
       </View>
       <View style={styles.body}>
         <Text style={styles.textTitle}>Title</Text>
         <Card style={styles.typingTitle}>
-          <TextInput onChangeText={(tilteText) => setTitle(tilteText)} />
+          <TextInput style={{ height: 45, paddingHorizontal: 10 }}onChangeText={(tilteText) => setTitle(tilteText)}  />
         </Card>
-        <Text style={styles.textTitle}>Content</Text>
+        <Text
+          style={[
+            styles.textTitle,
+            {
+              marginTop: 30,
+            },
+          ]}
+        >
+          Content
+        </Text>
         <RichToolbar
           editor={richText}
           actions={[actions.setBold, actions.setItalic, actions.setUnderline]}
@@ -66,7 +77,11 @@ const PostQuestionScreen = ({ navigation }) => {
       </View>
       <View style={styles.button}>
         <TouchableOpacity
-          style={{ backgroundColor: Colors.red30, borderRadius: 20 }}
+          style={{
+            backgroundColor: Colors.red30,
+            borderRadius: 5,
+            paddingHorizontal: 20,
+          }}
           activeOpacity={0.7}
           onPress={() => {
             navigation.navigate("Your Feed");
@@ -77,8 +92,8 @@ const PostQuestionScreen = ({ navigation }) => {
         <TouchableOpacity
           style={{
             backgroundColor: Colors.blue40,
-            borderRadius: 20,
-            leftMargin: 20,
+            borderRadius: 5,
+            paddingHorizontal: 20,
           }}
           activeOpacity={0.7}
           onPress={() => postQuestion(title, content)}
@@ -107,6 +122,7 @@ const styles = StyleSheet.create({
     //justifyContent: "center",
     //marginHorizontal: 20,
     padding: 10,
+    paddingHorizontal: 20,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -122,8 +138,8 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: 20,
     fontWeight: "bold",
+    marginLeft: 10,
     color: Colors.black,
-    marginTop: 10,
   },
   typingTitle: {
     marginLeft: 10,
@@ -137,7 +153,6 @@ const styles = StyleSheet.create({
     height: "50%",
   },
   button: {
-    justifyContent: "flex-end",
     flexDirection: "row",
     justifyContent: "space-evenly",
   },
