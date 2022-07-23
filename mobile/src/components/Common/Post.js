@@ -12,6 +12,7 @@ const Post = ({
   image,
   numOfAnswers,
   correctAnswer = false,
+  onPressAnswer,
   onDelete = null,
   onPickCorrectAnswer = null,
 }) => {
@@ -96,7 +97,9 @@ const Post = ({
 
       {typeof numOfAnswers == "number" && (
         <View style={styles.questionFooterContainer}>
-          <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
+          <TouchableOpacity activeOpacity={0.8} onPress={onPressAnswer}>
+            <Icon name="chatbubble-ellipses" style={styles.commentIcon} />
+          </TouchableOpacity>
           <Text style={styles.numOfAnswers}>{numOfAnswers}</Text>
         </View>
       )}

@@ -40,7 +40,6 @@ const ScreensSignInMain = ({ navigation }) => {
           password: `${password}`,
         }),
       });
-
       const mjson = await responseLogin.json();
       if (mjson.hasOwnProperty("tokens")) {
         await AsyncStorage.setItem(

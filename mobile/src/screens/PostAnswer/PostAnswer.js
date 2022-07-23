@@ -6,19 +6,18 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { TextInput } from "react-native-gesture-handler";
 import {
   actions,
   RichEditor,
   RichToolbar,
 } from "react-native-pell-rich-editor";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { controllPostAnswer } from "~controller/controllAnswer";
 
-const PostQuestionScreen = ({ navigation }) => {
+const PostAnswerScreen = ({ navigation, route }) => {
   const richText = React.useRef();
-  const [title, setTitle] = React.useState(null);
   const [content, setContent] = React.useState(null);
   const postQuestion = async (passTitle, passContent) => {
     if (passTitle == null || passContent == null) {
@@ -34,35 +33,10 @@ const PostQuestionScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.pop()}>
-          <Icon
-            name="arrow-back-outline"
-            style={{
-              fontSize: 30,
-              color: Colors.cyan10,
-            }}
-          />
-        </TouchableOpacity>
-        <Text style={styles.header}>Post a question</Text>
+        <Text style={styles.header}>Your answer</Text>
       </View>
       <View style={styles.body}>
-        <Text style={styles.textTitle}>Title</Text>
-        <Card style={styles.typingTitle}>
-          <TextInput
-            style={{ height: 45, paddingHorizontal: 10 }}
-            onChangeText={(tilteText) => setTitle(tilteText)}
-          />
-        </Card>
-        <Text
-          style={[
-            styles.textTitle,
-            {
-              marginTop: 30,
-            },
-          ]}
-        >
-          Content
-        </Text>
+        <Text style={styles.textTitle}>Content</Text>
         <RichToolbar
           editor={richText}
           actions={[actions.setBold, actions.setItalic, actions.setUnderline]}
@@ -71,6 +45,7 @@ const PostQuestionScreen = ({ navigation }) => {
           <RichEditor
             useContainer={false}
             ref={richText}
+            //placeholder = {route.params?.qid}
             onChange={(descriptionText) => {
               setContent(descriptionText);
               //console.log("descriptionText:", descriptionText);
@@ -80,35 +55,36 @@ const PostQuestionScreen = ({ navigation }) => {
       </View>
       <View style={styles.button}>
         <TouchableOpacity
-          style={{
-            backgroundColor: Colors.red30,
-            borderRadius: 5,
-            paddingHorizontal: 20,
-          }}
+          style={{ backgroundColor: Colors.red30, borderRadius: 20, width: 85 }}
           activeOpacity={0.7}
           onPress={() => {
-            navigation.navigate("Your Feed");
+            navigation.goBack();
           }}
         >
-          <Text style={styles.submitText}>Cancel</Text>
+          <Text style={styles.submitText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
             backgroundColor: Colors.blue40,
-            borderRadius: 5,
-            paddingHorizontal: 20,
+            borderRadius: 20,
+            leftMargin: 20,
           }}
           activeOpacity={0.7}
-          onPress={() => postQuestion(title, content)}
+          onPress={() => {
+            if (content != null && content != "") {
+              controllPostAnswer(content, route.params?.qid);
+              navigation.goBack();
+            }
+          }}
         >
-          <Text style={styles.submitText}>Submit</Text>
+          <Text style={styles.submitText}>Answer</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-export default PostQuestionScreen;
+export default PostAnswerScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -125,7 +101,6 @@ const styles = StyleSheet.create({
     //justifyContent: "center",
     //marginHorizontal: 20,
     padding: 10,
-    paddingHorizontal: 20,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -141,8 +116,8 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    marginLeft: 10,
     color: Colors.black,
+    marginTop: 10,
   },
   typingTitle: {
     marginLeft: 10,
@@ -153,9 +128,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 10,
     width: "95%",
-    height: "50%",
+    height: "70%",
   },
   button: {
+    justifyContent: "flex-end",
     flexDirection: "row",
     justifyContent: "space-evenly",
   },
@@ -164,5 +140,6 @@ const styles = StyleSheet.create({
     margin: 7,
     color: "white",
     fontWeight: "bold",
+    alignSelf: "center",
   },
 });

@@ -16,6 +16,9 @@ import Post from "~components/Common/Post";
 import HomeMainPosting from "~components/Home/Main/Posting";
 import { UserContext } from "~provider/UserProvider";
 import { getFeed } from "~services/feed";
+import { Alert } from "react-native";
+import { API_URL } from "@env";
+import { controllPostQuestion } from "~controller/controllQuestion";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 100;
@@ -25,7 +28,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   );
 };
 
-const ScreensHomeMain = ({ navigation }) => {
+const ScreensHomeMain = ({ navigation, route }) => {
   const { userData } = useContext(UserContext);
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
@@ -69,7 +72,7 @@ const ScreensHomeMain = ({ navigation }) => {
       }}
     >
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Q & A Forum</Text>
+        <Text style={styles.header}>Q & A forum</Text>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={async () => {
@@ -183,10 +186,16 @@ const ScreensHomeMain = ({ navigation }) => {
             </TouchableHighlight>
           )}
         </View>
-        <HomeMainPosting navigation={navigation} />
-        {feedData.map((record) => (
+        <HomeMainPosting
+          onPress={() => navigation.navigate("Editor")}
+          content={route.params?.Content}
+          onPressPost = {() =>{controllPostQuestion(route.params?.Title, route.params?.Content)
+            navigation.setParams({Title: null, Content: null})
+          }}
+        />
+        {feedData.map((record, index) => (
           <Post
-            key={record.id}
+            key={index}
             dateText={formatDistance(new Date(record.updated_at), Date.now(), {
               addSuffix: true,
             })}
