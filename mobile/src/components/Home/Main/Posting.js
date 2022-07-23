@@ -1,7 +1,8 @@
+import { prop } from "cheerio/lib/api/attributes";
 import React from "react";
 import { Image, Text, TouchableHighlight, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
-const HomeMainPosting = ({ navigation }) => {
+const HomeMainPosting = (props) => {
   return (
     <TouchableHighlight
       style={{
@@ -10,7 +11,7 @@ const HomeMainPosting = ({ navigation }) => {
         padding: 10,
         marginTop: 10,
       }}
-      onPress={() => navigation.navigate("Editor")}
+      onPress={props?.onPress}
       underlayColor={Colors.cyan50}
     >
       <>
@@ -45,7 +46,7 @@ const HomeMainPosting = ({ navigation }) => {
                 fontSize: 15,
               }}
             >
-              Write something...
+              {props.content || 'Write something...'}
             </Text>
           </View>
         </View>
@@ -58,11 +59,7 @@ const HomeMainPosting = ({ navigation }) => {
           }}
         >
           <TouchableHighlight
-            onPress={() => {
-              navigation.navigate("....", {
-                userId: "34343asdasd",
-              });
-            }}
+            onPress={props?.onPressPost}
             style={{
               backgroundColor: Colors.blue30,
               width: 70,

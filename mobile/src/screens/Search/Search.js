@@ -1,12 +1,44 @@
 import * as React from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
+import { controllsSearchQuestion } from "~controller/controllQuestion";
+import Q2APagination from "~components/Q2A/Pagination";
 import Post from "~components/Common/Post";
 import SearchBar from "~components/SearchBar/SearchBar";
+import { formatDistance } from "date-fns";
 
 const SearchScreen = ({ navigation }) => {
   const [titleSearch, setTitleSearch] = React.useState("");
+  const [countRes, setCountRes] = React.useState(null);
+  const [searchData, setSearchData] = React.useState([]);
+  const limit = 2;
+  const [page, setPage] = React.useState(1);
+  const pressNext = () => {
+    if (page < Math.ceil(countRes / limit)) {
+      let newPage = page + 1;
+      setPage(newPage);
+      if (Math.ceil(searchData.length / limit) < newPage)
+        getData(false, newPage - 1, limit);
+    }
+  };
+  const pressPrev = () => {
+    if (page > 1) setPage(page - 1);
+  };
+  const getData = async (newSearch, page, limit) => {
+    try {
+      let res = await controllsSearchQuestion(titleSearch, page, limit);
+      setSearchData([]);
+      if (res != null) {
+        setCountRes(parseInt(res.count));
+        if (newSearch == true) setSearchData([...res.questions]);
+        else setSearchData([...searchData, ...res.questions]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.backgroundView}>
       {/* <Text style={{ fontSize: 30, alignSelf: 'center', color: Colors.blue40 }}>Find question</Text> */}
@@ -14,7 +46,7 @@ const SearchScreen = ({ navigation }) => {
         <View
           style={{
             height: 50,
-            marginHorizontal: 20,
+            marginHorizontal: 10,
             alignItems: "center",
             flexDirection: "row",
             justifyContent: "space-between",
@@ -31,44 +63,69 @@ const SearchScreen = ({ navigation }) => {
         </View>
       </View>
       <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-        <SearchBar textChange={setTitleSearch}></SearchBar>
+        <SearchBar
+          textChange={setTitleSearch}
+          onPressSearch={() => {
+            setPage(1);
+            setCountRes(null);
+            getData(true, 0, limit);
+          }}
+        ></SearchBar>
+        {countRes > 0 ? (
+          <Text style={styles.resultTxt}>Found {countRes} result</Text>
+        ) : null}
+        {searchData.length !== 0 ? (
+          <Q2APagination
+            page={page}
+            maxPage={Math.ceil(countRes / limit)}
+            pressPrev={() => pressPrev()}
+            pressNext={() => pressNext()}
+          />
+        ) : null}
       </View>
-      <View style={{ flex: 1 }}>
-        <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
-          <Post
-            voting={30}
-            dateText={"3 days ago"}
-            title={"Câu hỏi về game?"}
-            content={
-              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-            }
-            numOfAnswers={100}
-            userData={{
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
-            }}
-          />
-
-          <Post
-            voting={69}
-            dateText={"14 days ago"}
-            title={"Alo alo?"}
-            content={
-              "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-            }
-            numOfAnswers={22}
-            image={
-              "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
-            }
-            userData={{
-              name: "Chó Khánh",
-              avatarUrl:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3TDQBB-_F1sfu-gElz73vtUAdlOdLerHDw&usqp=CAU",
-            }}
-          />
+      {countRes == 0 ? (
+        <Image
+          source={require("~assets/img/no-result-found.png")}
+          style={styles.imgNotFound}
+        />
+      ) : (
+        <ScrollView style={styles.body}>
+          {searchData
+            .filter(
+              (item, index) =>
+                index >= (page - 1) * limit && index < page * limit,
+            )
+            .map((record, index) => (
+              <Post
+                key={index}
+                dateText={formatDistance(
+                  new Date(record.questionData.updated_at),
+                  Date.now(),
+                  {
+                    addSuffix: true,
+                  },
+                )}
+                title={record.questionData.title}
+                content={record.questionData.content}
+                numOfAnswers={record.numOfAnswers}
+                userData={{
+                  name: record.userData.name,
+                  avatarUrl: record.userData.profilepictureurl,
+                }}
+                correctAnswer={record.correctAnswerExists}
+                onPressAnswer={() => {
+                  navigation.navigate("Post answer", { qid: record.id });
+                }}
+              />
+            ))}
         </ScrollView>
-      </View>
+      )}
+      {/* <View style={{ flex: 1 }}>
+      <Image
+          source={require("~assets/img/bloodbros-search.gif")}
+          style={styles.imgIntro}
+        />
+      </View> */}
     </SafeAreaView>
   );
 };
@@ -76,6 +133,16 @@ const SearchScreen = ({ navigation }) => {
 export default SearchScreen;
 
 const styles = StyleSheet.create({
+  imgNotFound: {
+    marginTop: 40,
+    alignSelf: "center",
+  },
+  imgIntro: {
+    marginTop: 40,
+    alignSelf: "center",
+    width: 300,
+    height: 300,
+  },
   backgroundView: {
     flex: 1,
     backgroundColor: Colors.cyan70,
@@ -93,5 +160,11 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  resultTxt: {
+    fontSize: 15,
+    fontWeight: "bold",
+    alignSelf: "center",
+    marginTop: 20,
   },
 });
