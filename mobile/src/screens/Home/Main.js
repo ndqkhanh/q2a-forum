@@ -207,6 +207,9 @@ const ScreensHomeMain = ({ navigation, route }) => {
               avatarUrl: record.userData.profilepictureurl,
             }}
             correctAnswer={record.correctAnswerExists}
+            onPressAnswer={() => {
+              navigation.navigate("Post answer", { qid: record.id });
+            }}
           />
         ))}
       </ScrollView>

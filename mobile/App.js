@@ -21,6 +21,7 @@ import ProfileScreen from "~screens/Profile/UserProfile";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 import SearchScreen from "~screens/Search/Search";
 import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
+import PostAnswerScreen from "~screens/PostAnswer/PostAnswer";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -124,10 +125,12 @@ const Navigation2 = () => {
         }}
       >
         {/* PLEASE DO NOT CHANGE HERE. IF ANY, RETURN BACK TO THE ORIGINAL ONE ONCE PUSH CODE */}
+        {/* console.log(auth.toString()) */}
         {auth && userData ? (
           <>
             <Stack.Screen name="Home" component={BottomTabNavigator} />
             <Stack.Screen name="Editor" component={PostQuestionScreen} />
+            <Stack.Screen name="Post answer" component={PostAnswerScreen} />
             <Stack.Screen name="Q2A" component={ScreensQ2AMain} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Admin" component={ManageForumScreen} />
