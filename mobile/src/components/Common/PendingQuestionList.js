@@ -13,10 +13,6 @@ const PendingQuestion = ({
   dateText,
   image,
 }) => {
-  // const [test, setTest] = useState([1, 2, 3, 4, 5]);
-  // const onPressApprove = (test) => setTest(test.filter((item) => item !== 1));
-  // const onPressDisapprove = () => console.log(test);
-
   return (
     <View style={styles.postContainer}>
       <View style={styles.postContentContainer}>

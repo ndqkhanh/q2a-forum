@@ -1,21 +1,10 @@
 import * as React from "react";
-
-import {
-  Text,
-  View,
-  StyleSheet,
-  ScrollView,
-  Image,
-  TextInput,
-  Dimensions,
-  Pressable,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
-import SearchBar from "~components/SearchBar/SearchBar";
-import Post from "~components/Common/Post";
 import Icon from "react-native-vector-icons/Ionicons";
+import Post from "~components/Common/Post";
+import SearchBar from "~components/SearchBar/SearchBar";
+
 const SearchScreen = ({ navigation }) => {
   const [titleSearch, setTitleSearch] = React.useState("");
   return (
