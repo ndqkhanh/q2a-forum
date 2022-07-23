@@ -189,8 +189,9 @@ const ScreensHomeMain = ({ navigation, route }) => {
         <HomeMainPosting
           onPress={() => navigation.navigate("Editor")}
           content={route.params?.Content}
-          onPressPost = {() =>{controllPostQuestion(route.params?.Title, route.params?.Content)
-            navigation.setParams({Title: null, Content: null})
+          onPressPost={() => {
+            controllPostQuestion(route.params?.Title, route.params?.Content);
+            navigation.setParams({ Title: null, Content: null });
           }}
         />
         {feedData.map((record, index) => (
@@ -207,6 +208,10 @@ const ScreensHomeMain = ({ navigation, route }) => {
               avatarUrl: record.userData.profilepictureurl,
             }}
             correctAnswer={record.correctAnswerExists}
+            onPressQ2A={() => {
+              console.log("navigate to Q2A");
+              navigation.navigate("Q2A", { questionId: record.id });
+            }}
           />
         ))}
       </ScrollView>

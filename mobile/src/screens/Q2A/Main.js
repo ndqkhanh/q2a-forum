@@ -20,11 +20,13 @@ import {
   deleteAnswer,
   getAllAnswersAndVotings,
   pickACorrectAnswer,
-} from "~services/answer";
+} from "~services/Answer";
 import { UserContext } from "~provider/UserProvider";
 import { getUser } from "~services/user";
 
-const ScreensQ2AMain = () => {
+const ScreensQ2AMain = ({ navigate, route }) => {
+  const { questionId } = route.params;
+
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(0);
   const [indexCorrectAns, setIndexCorrectAns] = useState(0);
@@ -70,7 +72,7 @@ const ScreensQ2AMain = () => {
   };
 
   useEffect(() => {
-    fetchGetAllAnswersAndVotings("db0e22f6-e058-4ae3-a08f-9964289d4575", 0, 5);
+    fetchGetAllAnswersAndVotings(questionId, 0, 5);
     for (let i = 0; i < answersAndVotes.length; i++) {
       if (answersAndVotes[i].answer.correct == true) {
         setIndexCorrectAns(i);
