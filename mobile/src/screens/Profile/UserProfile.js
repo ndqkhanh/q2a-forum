@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useContext, useEffect, useState } from "react";
+import { formatDistance } from "date-fns";
 import {
   Alert,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -12,13 +14,26 @@ import Icon from "react-native-vector-icons/Ionicons";
 import MyQuestions from "~components/Profile/myQuestions";
 import PersonalInfo from "~components/Profile/personalInfo";
 import { getMyProfile, getUserProfile } from "~services/getProfile";
-import { updateUserInformation } from "~services/user";
+import { updateUserInformation, getMyQuestions } from "~services/user";
 import { UserContext } from "~provider/UserProvider";
+
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 100;
+  return (
+    layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom
+  );
+};
+
 const ProfileScreen = ({ route }) => {
   // const {userId} = route.params;
   // const userId = JSON.stringify(userIdParam);
   const { userData, setUserData } = useContext(UserContext);
   // const [userData, setUserData] = useState({});
+  const [myQuestionsData, setMyQuestionsData] = useState([]);
+  const [maxLength, setMaxLength] = useState(0);
+  const [page, setPage] = useState(0);
+  const [refetch, setRefetch] = useState(false);
   const fetchUserProfile = async (userId) => {
     let data;
     if (userId != null) {
@@ -28,6 +43,21 @@ const ProfileScreen = ({ route }) => {
     }
     if (data) setUserData(data);
   };
+  const limit = 5;
+  const fetchMyQuestions = async (page, limit) => {
+    let token = await AsyncStorage.getItem("UserToken");
+    let data = await getMyQuestions(token, page, limit);
+    var maxLength = 5;
+    try {
+      maxLength = parseInt(data.count);
+    } catch (error) {
+      console.error("error---", error);
+    }
+    setMaxLength(maxLength);
+    setMyQuestionsData((myQuestionsData) => [...myQuestionsData, ...data.questions]);
+    setPage((page) => page + 1);
+    setRefetch(false);
+  }
   const saveInformation = async () => {
     let token = await AsyncStorage.getItem("UserToken");
     let data = await updateUserInformation(token, {
@@ -43,6 +73,16 @@ const ProfileScreen = ({ route }) => {
   };
   useEffect(() => {
     fetchUserProfile(userData.id);
+  }, []);
+  useEffect(() => {
+    fetchMyQuestions(0, 5);
+    // Reload
+    return () => {
+      setPage(0);
+      setRefetch(false);
+      setMyQuestionsData([]);
+      setMaxLength(0);
+    };
   }, []);
   const [tab, setTab] = useState("Personal info");
   const personalInfoTab = () => {
@@ -174,18 +214,35 @@ const ProfileScreen = ({ route }) => {
               margin: 10,
             }}
           >
-            <MyQuestions
-              dateText={"3 days ago"}
-              title={"Câu hỏi về game?"}
-              content={
-                "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-              }
-              userData={{
-                name: "Bảo Dragon",
-                avatarUrl:
-                  "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            <ScrollView
+              onScroll={({ nativeEvent }) => {
+                if (
+                  !refetch &&
+                  isCloseToBottom(nativeEvent) &&
+                  myQuestionsData.length < maxLength
+                ) {
+                  console.log("scrolled to bottom of feed");
+                  setRefetch(true);
+                  fetchMyQuestions(page, limit);
+                }
               }}
-            />
+              contentContainerStyle={{
+                paddingBottom: 100,
+              }}
+              //scrollEventThrottle={400}
+              showsVerticalScrollIndicator={false}
+            >
+              {myQuestionsData.map((record) => (
+                <MyQuestions
+                  dateText = {formatDistance(new Date(record.updated_at), Date.now(), {
+                    addSuffix: true,
+                  })}
+                  content = {record.content}
+                  title = {record.title}
+                  userData = {userData}
+                />
+              ))}
+            </ScrollView>
           </View>
         ) : (
           tab == "Edit Profile" && (
@@ -361,16 +418,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: "space-around",
   },
-  logOutButton: {
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
-  },
-  logOutText: {
-    fontSize: 20,
-    margin: 7,
-    color: "white",
-    fontWeight: "bold",
-  },
+  // logOutButton: {
+  //   justifyContent: "flex-end",
+  //   alignItems: "flex-end",
+  // },
+  // logOutText: {
+  //   fontSize: 20,
+  //   margin: 7,
+  //   color: "white",
+  //   fontWeight: "bold",
+  // },
   menu: {
     borderRadius: 0,
   },
