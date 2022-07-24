@@ -1,6 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formatDistance } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -18,6 +20,7 @@ import {
   getAllAnswersAndVotings,
   pickACorrectAnswer,
 } from "~services/Answer";
+import { deleteQuestion } from "~services/Question";
 
 const ScreensQ2AMain = ({ navigation, route }) => {
   const { questionId } = route.params;
@@ -30,8 +33,6 @@ const ScreensQ2AMain = ({ navigation, route }) => {
   const [countAnswer, setCountAnswer] = useState(0);
   const [answersAndVotes, setAnswersAndVotes] = useState([]);
   const [answerId, setAnswerId] = useState("");
-
-  const [user, setUser] = useState(null);
 
   // Use context to get userdata
   const { userData } = useContext(UserContext);
@@ -46,7 +47,6 @@ const ScreensQ2AMain = ({ navigation, route }) => {
         }
       }
     }
-    console.log("response: ", res);
   };
 
   // Fetch Delete Answer
@@ -55,10 +55,43 @@ const ScreensQ2AMain = ({ navigation, route }) => {
     console.log("response: ", response);
   };
 
+  // Fetch Delete Question
+  const fetchDeleteQuestion = async () => {
+    Alert.alert(
+      "Delete Question",
+      "Are you sure to delete this question?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => Alert.alert("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            let token = await AsyncStorage.getItem("UserToken");
+            const response = await deleteQuestion(token, questionId);
+            if (response.success == true) {
+              navigation.navigate("Home");
+            } else {
+              Alert.alert("Delete question failure.");
+            }
+          },
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () =>
+          Alert.alert(
+            "This alert was dismissed by tapping outside of the alert dialog.",
+          ),
+      },
+    );
+  };
+
   // Fetch get all answer and voting
   const fetchGetAllAnswersAndVotings = async (questionId, page, limit) => {
     const data = await getAllAnswersAndVotings(questionId, page, limit);
-    console.log(data);
     setQuestion(data.question);
     setCountAnswer(data.answers.count);
     setAnswersAndVotes(data.answers.data);
@@ -117,6 +150,11 @@ const ScreensQ2AMain = ({ navigation, route }) => {
             name: question.name,
             avatarUrl: question.avatarUrl,
           }}
+          onDelete={
+            userData.id == question.questionInfo.uid
+              ? fetchDeleteQuestion
+              : null
+          }
         />
         <View style={styles.answerContainer}>
           <Text style={styles.numOfAnswers}>{countAnswer} answers</Text>
