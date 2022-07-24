@@ -3,6 +3,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useNavigation } from '@react-navigation/native';
 const Post = ({
   voting,
   content,
@@ -16,6 +17,7 @@ const Post = ({
   onDelete = null,
   onPickCorrectAnswer = null,
 }) => {
+  const navigation1 = useNavigation();
   return (
     <View style={styles.postContainer}>
       {typeof voting == "number" && (
@@ -29,12 +31,16 @@ const Post = ({
       <View style={styles.postContentContainer}>
         <View style={styles.infoUserContainer}>
           {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
-            <Image
-              source={{
-                uri: userData.avatarUrl,
-              }}
-              style={styles.avatar}
-            ></Image>
+            <TouchableOpacity
+              onPress={() => navigation1.navigate("Profile", {"uid": userData.id})}  
+            >
+              <Image
+                source={{
+                  uri: userData.avatarUrl,
+                }}
+                style={styles.avatar}
+              ></Image>
+            </TouchableOpacity>
           )}
           <View
             style={{
@@ -145,7 +151,8 @@ const Post = ({
 const styles = StyleSheet.create({
   postContainer: {
     backgroundColor: Colors.white,
-    marginTop: 20,
+    //marginTop: 20,
+    marginBottom: 20,
   },
   votingContainer: {
     backgroundColor: Colors.grey60,

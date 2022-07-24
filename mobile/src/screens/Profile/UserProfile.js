@@ -25,9 +25,8 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   );
 };
 
-const ProfileScreen = ({ navigation }) => {
-  // const {userId} = route.params;
-  // const userId = JSON.stringify(userIdParam);
+const ProfileScreen = ({ navigation, route }) => {
+  const userId = route.params;
   const { userData, setUserData } = useContext(UserContext);
   // const [userData, setUserData] = useState({});
   const [myQuestionsData, setMyQuestionsData] = useState([]);
@@ -241,13 +240,14 @@ const ProfileScreen = ({ navigation }) => {
                   })}
                   content = {record.content}
                   title = {record.title}
+                  status = {record.status}
                   userData = {userData}
                 />
               ))}
             </ScrollView>
           </View>
         ) : (
-          tab == "Edit Profile" && (
+          tab == "Edit Profile" && ( 
             <View
               style={{
                 backgroundColor: Colors.white,
@@ -319,7 +319,6 @@ const ProfileScreen = ({ navigation }) => {
                   }}
                 />
               </View>
-
               <TouchableOpacity
                 style={{
                   alignSelf: "center",
