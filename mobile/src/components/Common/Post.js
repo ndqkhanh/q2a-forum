@@ -1,13 +1,16 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Image, StyleSheet, Text, View, Button } from "react-native";
+import {
+  TouchableOpacity,
+  TouchableHighlight,
+} from "react-native-gesture-handler";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 const Post = ({
   voting,
   content,
   title,
-  userData,
+  userData = { name: "", avatarUrl: "" },
   dateText,
   image,
   numOfAnswers,
@@ -15,9 +18,16 @@ const Post = ({
   onPressAnswer,
   onDelete = null,
   onPickCorrectAnswer = null,
+  onPressQ2A = null,
 }) => {
   return (
     <View style={styles.postContainer}>
+      {onPressQ2A && (
+        <TouchableHighlight onPress={onPressQ2A}>
+          <Button title="watch post" />
+        </TouchableHighlight>
+      )}
+
       {typeof voting == "number" && (
         <View style={styles.votingContainer}>
           <Icon name="caret-up-outline" style={styles.votingUp} />

@@ -33,7 +33,7 @@ const ScreensSignInMain = ({ navigation }) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: "Bearer ",
+          Authorization: "Bearer",
         },
         body: JSON.stringify({
           username: `${username}`,
@@ -56,6 +56,7 @@ const ScreensSignInMain = ({ navigation }) => {
       Alert.alert("error", error.message);
     }
   };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
       <ScrollView style={{ flex: 1 }}>

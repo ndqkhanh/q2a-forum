@@ -33,7 +33,7 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps.allowFontScaling = false;
 }
 const BottomTab = createBottomTabNavigator();
-//const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
 const BottomTabNavigator = ({ navigation }) => {
   const { userData } = useContext(UserContext);
   return (
@@ -73,7 +73,6 @@ const BottomTabNavigator = ({ navigation }) => {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
-
       <BottomTab.Screen
         name="Add"
         component={ScreensHomeMain}
