@@ -1,4 +1,3 @@
-import { prop } from "cheerio/lib/api/attributes";
 import * as React from "react";
 
 import {
@@ -44,8 +43,10 @@ const SearchBar = (props) => {
       <TextInput
         placeholder="Type here"
         style={styles.inputStyle}
-        defaultValue={""}
         onChangeText={(value) => textChange(value)}
+        onKeyPress={({ nativeEvent: { key: keyValue } }) =>
+          keyValue == "Enter" ? props?.onPressSearch : null
+        }
       />
     </View>
   );
@@ -58,8 +59,8 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     textAlign: "left",
-    fontSize: 17,
-    //width: wid * 0.8,
+    fontSize: 20,
+    width: wid * 0.8,
     paddingTop: 10,
     paddingRight: 20,
     paddingBottom: 10,

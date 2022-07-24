@@ -16,7 +16,7 @@ route
 
 route
   .route('/search/:offset/:limit')
-  .get(auth('searchQuestion'), validate(questionValidation.searchQuestion), questionControlller.searchQuestion);
+  .post(auth('searchQuestion'), validate(questionValidation.searchQuestion), questionControlller.searchQuestion);
 
 route
   .route('/feed/:page')

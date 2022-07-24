@@ -47,6 +47,13 @@ const updateQuestion = async (req) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Question Not Found');
   }
 
+  if (question.uid != req.user.id) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'You are not the owner of this question');
+  }
+
+  if (question.status != 2) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Question is not approved!');
+  }
   const newTitle = req.body.title;
   const newContent = req.body.content;
 
@@ -65,7 +72,14 @@ const updateQuestion = async (req) => {
 };
 
 const countQuestionInDB = async (req) => {
-  const countQuestion = await prisma.questions.count({});
+  const countQuestion = await prisma.questions.count({
+    where: {
+      title: {
+        contains: req.body.keyword,
+      },
+      status: 2,
+    },
+  });
   return countQuestion;
 };
 const searchQuestion = async (req) => {
