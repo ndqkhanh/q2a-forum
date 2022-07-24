@@ -35,7 +35,6 @@ if (TextInput.defaultProps == null) {
 const BottomTab = createBottomTabNavigator();
 // const Stack = createNativeStackNavigator();
 const BottomTabNavigator = ({ navigation }) => {
-  const { userData } = useContext(UserContext);
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
