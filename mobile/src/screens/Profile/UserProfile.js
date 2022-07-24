@@ -17,7 +17,8 @@ import { UserContext } from "~provider/UserProvider";
 const ProfileScreen = ({ navigation }) => {
   // const {userId} = route.params;
   // const userId = JSON.stringify(userIdParam);
-  const { userData, setUserData } = useContext(UserContext);
+  const { userData, setUserData, fetchUserInformation } =
+    useContext(UserContext);
   // const [userData, setUserData] = useState({});
   const fetchUserProfile = async (userId) => {
     let data;
@@ -39,7 +40,7 @@ const ProfileScreen = ({ navigation }) => {
     } else {
       Alert.alert("Update account failure.");
     }
-    setUserData(data);
+    fetchUserInformation();
   };
   useEffect(() => {
     fetchUserProfile(userData.id);

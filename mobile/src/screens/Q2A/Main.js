@@ -1,30 +1,25 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { text } from "cheerio/lib/api/manipulation";
 import { formatDistance } from "date-fns";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   View,
-  TextInput,
-  Alert,
 } from "react-native";
-import { Button, Colors } from "react-native-ui-lib";
+import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import Post from "~components/Common/Post";
-import User from "~components/Common/UserList";
 import Q2APagination from "~components/Q2A/Pagination";
+import { UserContext } from "~provider/UserProvider";
 import {
   deleteAnswer,
   getAllAnswersAndVotings,
   pickACorrectAnswer,
 } from "~services/Answer";
-import { UserContext } from "~provider/UserProvider";
-import { getUser } from "~services/user";
 
-const ScreensQ2AMain = ({ navigate, route }) => {
+const ScreensQ2AMain = ({ navigation, route }) => {
   const { questionId } = route.params;
 
   const [page, setPage] = useState(0);
@@ -90,7 +85,18 @@ const ScreensQ2AMain = ({ navigate, route }) => {
       }}
     >
       <View style={styles.headerContainer}>
-        <Icon name="arrow-back-outline" style={styles.back} />
+        <TouchableHighlight
+          onPress={() => navigation.pop()}
+          style={{
+            position: "absolute",
+            alignSelf: "center",
+            left: 0,
+          }}
+          underlayColor={"transparent"}
+        >
+          <Icon name="arrow-back-outline" style={styles.back} />
+        </TouchableHighlight>
+
         <Text style={styles.header}>{question.questionInfo.title}</Text>
       </View>
       <ScrollView
@@ -148,6 +154,7 @@ const ScreensQ2AMain = ({ navigate, route }) => {
                   }
                 : null
             }
+            // onUpdate={() => console.log("test")}
           />
         ))}
         <Q2APagination page={3} />
@@ -179,9 +186,6 @@ const styles = StyleSheet.create({
   back: {
     fontSize: 30,
     color: Colors.cyan10,
-    position: "absolute",
-    left: 0,
-    alignSelf: "center",
   },
   answerContainer: {
     backgroundColor: Colors.white,
