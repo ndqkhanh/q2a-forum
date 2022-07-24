@@ -34,8 +34,7 @@ if (TextInput.defaultProps == null) {
 }
 const BottomTab = createBottomTabNavigator();
 // const Stack = createNativeStackNavigator();
-const BottomTabNavigator = ({ navigation, route }) => {
-  const { userData } = useContext(UserContext);
+const BottomTabNavigator = ({ navigation }) => {
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -68,7 +67,6 @@ const BottomTabNavigator = ({ navigation, route }) => {
       <BottomTab.Screen
         name="Your Feed"
         component={ScreensHomeMain}
-        initialParams={{ params: route.params }}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
