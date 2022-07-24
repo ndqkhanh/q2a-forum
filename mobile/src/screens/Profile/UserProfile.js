@@ -414,12 +414,6 @@ const styles = StyleSheet.create({
     padding: 5,
     marginLeft: 10,
   },
-  infoCard: {
-    width: "100%",
-    padding: 10,
-    marginTop: 10,
-    justifyContent: "space-around",
-  },
   // logOutButton: {
   //   justifyContent: "flex-end",
   //   alignItems: "flex-end",
