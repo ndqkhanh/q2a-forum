@@ -1,11 +1,87 @@
-import React from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Colors } from "react-native-ui-lib";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { text } from "cheerio/lib/api/manipulation";
+import { formatDistance } from "date-fns";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Alert,
+} from "react-native";
+import { Button, Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import Post from "~components/Common/Post";
+import User from "~components/Common/UserList";
 import Q2APagination from "~components/Q2A/Pagination";
+import {
+  deleteAnswer,
+  getAllAnswersAndVotings,
+  pickACorrectAnswer,
+} from "~services/Answer";
+import { UserContext } from "~provider/UserProvider";
+import { getUser } from "~services/user";
 
-const ScreensQ2AMain = () => {
+const ScreensQ2AMain = ({ navigate, route }) => {
+  const { questionId } = route.params;
+
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(0);
+  const [indexCorrectAns, setIndexCorrectAns] = useState(0);
+
+  const [question, setQuestion] = useState(null);
+  const [countAnswer, setCountAnswer] = useState(0);
+  const [answersAndVotes, setAnswersAndVotes] = useState([]);
+  const [answerId, setAnswerId] = useState("");
+
+  const [user, setUser] = useState(null);
+
+  // Use context to get userdata
+  const { userData } = useContext(UserContext);
+
+  // Fetch Pick correct answer
+  const fetchPickACorrectAnswer = async (answerId, status) => {
+    const res = await pickACorrectAnswer(answerId, status);
+    if (res.success == true) {
+      for (let i = 0; i < answersAndVotes.length; i++) {
+        if (answersAndVotes[i].answer.id == answerId) {
+          setIndexCorrectAns(i);
+        }
+      }
+    }
+    console.log("response: ", res);
+  };
+
+  // Fetch Delete Answer
+  const fetchDeleteAnswer = async (answerId) => {
+    const response = await deleteAnswer(answerId);
+    console.log("response: ", response);
+  };
+
+  // Fetch get all answer and voting
+  const fetchGetAllAnswersAndVotings = async (questionId, page, limit) => {
+    const data = await getAllAnswersAndVotings(questionId, page, limit);
+    console.log(data);
+    setQuestion(data.question);
+    setCountAnswer(data.answers.count);
+    setAnswersAndVotes(data.answers.data);
+    setPage(page);
+    setLimit(limit);
+  };
+
+  useEffect(() => {
+    fetchGetAllAnswersAndVotings(questionId, 0, 5);
+    for (let i = 0; i < answersAndVotes.length; i++) {
+      if (answersAndVotes[i].answer.correct == true) {
+        setIndexCorrectAns(i);
+      }
+    }
+  }, []);
+
+  if (!question || !userData) return null;
+
   return (
     <SafeAreaView
       style={{
@@ -15,7 +91,7 @@ const ScreensQ2AMain = () => {
     >
       <View style={styles.headerContainer}>
         <Icon name="arrow-back-outline" style={styles.back} />
-        <Text style={styles.header}>Câu hỏi về game?</Text>
+        <Text style={styles.header}>{question.questionInfo.title}</Text>
       </View>
       <ScrollView
         contentContainerStyle={{
@@ -25,37 +101,55 @@ const ScreensQ2AMain = () => {
         showsVerticalScrollIndicator={false}
       >
         <Post
-          dateText={"3 days ago"}
-          // title={"Câu hỏi về game?"}
-          content={
-            "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-          }
+          dateText={formatDistance(
+            new Date(question.questionInfo.updated_at),
+            Date.now(),
+            { addSuffix: true },
+          )}
+          content={question.questionInfo.content}
           userData={{
-            name: "Bảo Dragon",
-            avatarUrl:
-              "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            name: question.name,
+            avatarUrl: question.avatarUrl,
           }}
         />
-
         <View style={styles.answerContainer}>
-          <Text style={styles.numOfAnswers}>10 answers</Text>
+          <Text style={styles.numOfAnswers}>{countAnswer} answers</Text>
         </View>
-        <Q2APagination page={3} />
-        {[1, 2, 3, 4, 5, 6].map((item) => (
+
+        <Q2APagination page={page + 1} />
+        {answersAndVotes.map((item, index) => (
           <Post
-            voting={Math.floor(Math.random() * 10)}
-            key={item}
-            correctAnswer={item == 1}
-            dateText={"3 days ago"}
-            content={"Em xin trả lời bác như này."}
+            voting={item.minus_upvote_downvote}
+            key={index}
+            correctAnswer={index == indexCorrectAns}
+            dateText={formatDistance(
+              new Date(item.answer.updated_at),
+              Date.now(),
+              { addSuffix: true },
+            )}
+            content={item.answer.content}
             userData={{
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+              name: item.name,
+              avatarUrl: item.profilepictureurl,
             }}
+            onPickCorrectAnswer={
+              userData.id == question.questionInfo.uid
+                ? () => {
+                    setAnswerId(item.answer.id);
+                    fetchPickACorrectAnswer(answerId, true);
+                  }
+                : null
+            }
+            onDelete={
+              userData.id == item.answer.uid
+                ? () => {
+                    setAnswerId(item.answer.id);
+                    fetchDeleteAnswer(answerId);
+                  }
+                : null
+            }
           />
         ))}
-
         <Q2APagination page={3} />
       </ScrollView>
     </SafeAreaView>
