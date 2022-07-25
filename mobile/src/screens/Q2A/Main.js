@@ -19,7 +19,7 @@ import {
   deleteAnswer,
   getAllAnswersAndVotings,
   pickACorrectAnswer,
-} from "~services/Answer";
+} from "~services/answer";
 import { deleteQuestion } from "~services/Question";
 
 const ScreensQ2AMain = ({ navigation, route }) => {
