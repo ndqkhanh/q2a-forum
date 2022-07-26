@@ -14,11 +14,12 @@ import {
   RichEditor,
   RichToolbar,
 } from "react-native-pell-rich-editor";
-import { controllPostAnswer } from "~controller/controllAnswer";
+import { controllPostAnswer, controllUpdateQuestion } from "~controller/controllAnswer";
 
 const PostAnswerScreen = ({ navigation, route }) => {
+  const initContent = route.params?.Content.split('&lt;').join('<')
   const richText = React.useRef();
-  const [content, setContent] = React.useState(null);
+  const [content, setContent] = React.useState(initContent);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -34,7 +35,7 @@ const PostAnswerScreen = ({ navigation, route }) => {
           <RichEditor
             useContainer={false}
             ref={richText}
-            //placeholder = {route.params?.qid}
+            initialContentHTML = {initContent}
             onChange={(descriptionText) => {
               setContent(descriptionText);
               //console.log("descriptionText:", descriptionText);
@@ -61,8 +62,14 @@ const PostAnswerScreen = ({ navigation, route }) => {
           activeOpacity={0.7}
           onPress={() => {
             if (content != null && content != "") {
+              if(route.params?.update){
+                controllUpdateQuestion(route.params?.aid, content)
+                navigation.goBack()
+              }
+              else{
               controllPostAnswer(content, route.params?.qid);
               navigation.goBack();
+              }
             }
           }}
         >
