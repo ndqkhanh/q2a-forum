@@ -9,6 +9,7 @@ import {
   Text,
   TouchableHighlight,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -19,7 +20,7 @@ import {
   deleteAnswer,
   getAllAnswersAndVotings,
   pickACorrectAnswer,
-} from "~services/Answer";
+} from "~services/answer";
 import { deleteQuestion } from "~services/Question";
 
 const ScreensQ2AMain = ({ navigation, route }) => {
@@ -156,6 +157,17 @@ const ScreensQ2AMain = ({ navigation, route }) => {
               : null
           }
         />
+        <TouchableOpacity
+          style={styles.newAnswer}
+          activeOpacity={0.8}
+          onPress={() => {
+            navigation.navigate("Post answer", { qid: questionId });
+          }}
+        >
+          <View style={styles.btnPage}>
+            <Text style={styles.btnTextPage}>Write answer</Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.answerContainer}>
           <Text style={styles.numOfAnswers}>{countAnswer} answers</Text>
         </View>
@@ -234,6 +246,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 23,
     color: Colors.blue40,
+  },
+  btnPage: {
+    backgroundColor: Colors.blue40,
+    paddingVertical: 5,
+    width: 150,
+    height: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  btnTextPage: {
+    fontWeight: "bold",
+    fontSize: 15,
+    color: Colors.white,
+  },
+  newAnswer: {
+    alignSelf: "center",
+    marginTop: 20,
   },
 });
 export default ScreensQ2AMain;
