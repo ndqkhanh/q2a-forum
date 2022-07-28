@@ -1,5 +1,5 @@
 import { Alert } from "react-native";
-import { postQuestion, searchQuestion } from "~services/Question";
+import { postQuestion, searchQuestion, updateQuestion } from "~services/Question";
 const controllPostQuestion = async (passTitle, passContent) => {
   try {
     let message = await postQuestion(passTitle, passContent);
@@ -28,5 +28,15 @@ const controllsSearchQuestion = async (keyword, page, limit) => {
     // Alert.alert("error", error);
   }
 };
+const controllUpdateQuestion = async (qid,title,content) =>{
+  try {
+    let message = await updateQuestion(qid,title,content);
+    Alert.alert(message.header, JSON.stringify(message.content));
+  } catch (error) {
+    return null;
+    // console.log(error);
+    // Alert.alert("error", error);
+  }
+}
 
-export { controllPostQuestion, controllsSearchQuestion };
+export { controllPostQuestion, controllsSearchQuestion, controllUpdateQuestion };

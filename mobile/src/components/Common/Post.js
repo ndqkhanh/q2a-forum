@@ -143,7 +143,7 @@ const Post = ({
                   alignItems: "center",
                 }}
               >
-                <TouchableOpacity onPress={onDelete}>
+                <TouchableOpacity onPress={onUpdate}>
                   <Text
                     style={{
                       color: Colors.cyan30,

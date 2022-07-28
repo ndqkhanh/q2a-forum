@@ -33,4 +33,104 @@ const postAnswer = async (passContent, passQid) => {
   }
   return message;
 };
-export { postAnswer };
+const pickACorrectAnswer = async (answerId) => {
+  const token = await AsyncStorage.getItem("UserToken");
+  try {
+    let data = await fetch(`${API_URL}/answer/${answerId}/pick-correct`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    data = await data.json();
+    return data;
+  } catch (error) {
+    console.log("error", error);
+    Alert.alert("error", error.message);
+  }
+  return null;
+};
+
+const deleteAnswer = async (answerId) => {
+  const token = await AsyncStorage.getItem("UserToken");
+  try {
+    let data = await fetch(`${API_URL}/answer/${answerId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    data = await data.json();
+    return data;
+  } catch (error) {
+    console.log("error", error);
+    Alert.alert("error", error.message);
+  }
+  return null;
+};
+
+const getAllAnswersAndVotings = async (questionId, page, limit) => {
+  const token = await AsyncStorage.getItem("UserToken");
+  try {
+    let data = await fetch(
+      `${API_URL}/question/${questionId}/${page}/${limit}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    data = data.json();
+    return data;
+  } catch (error) {
+    console.log("error", error);
+    Alert.alert("error", error);
+  }
+  return null;
+};
+
+const updateAnswer = async (answerId, passContent) => {
+  let message = {};
+  const token = await AsyncStorage.getItem("UserToken");
+  try {
+    let respondUpdateQuestion = await fetch(`${API_URL}/answer/${answerId}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        content: `${passContent}`,
+      }),
+    });
+    const mjson = await respondUpdateQuestion.json();
+    if (mjson.hasOwnProperty("id")) {
+      message = {
+        header: "Update sucess",
+        content: null,
+      };
+    } else if (mjson.hasOwnProperty("message"))
+      message = { header: "Error", content: mjson.message };
+    else return null;
+  } catch (error) {
+    message = { header: "Error", content: error };
+    //console.log(error);
+  }
+  return message;
+};
+
+export {
+  postAnswer,
+  pickACorrectAnswer,
+  deleteAnswer,
+  getAllAnswersAndVotings,
+  updateAnswer,
+};
