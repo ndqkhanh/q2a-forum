@@ -156,6 +156,15 @@ const ScreensQ2AMain = ({ navigation, route }) => {
               ? fetchDeleteQuestion
               : null
           }
+          onUpdate={userData.id == question.questionInfo.uid ?() =>
+              
+            navigation.navigate("Editor", {
+              update: true,
+              qid: questionId,
+              Content: question.questionInfo.content,
+              Title: question.questionInfo.title,
+            }): null
+          }
         />
         <TouchableOpacity
           style={styles.newAnswer}
@@ -204,7 +213,16 @@ const ScreensQ2AMain = ({ navigation, route }) => {
                   }
                 : null
             }
-            // onUpdate={() => console.log("test")}
+            onUpdate={
+              userData.id == item.answer.uid?
+              ()=> navigation.navigate("Post answer", {
+                update: true,
+                aid: item.answer.id,
+                Content: item.answer.content,
+              }):
+              null
+            }
+            
           />
         ))}
         <Q2APagination page={3} />
