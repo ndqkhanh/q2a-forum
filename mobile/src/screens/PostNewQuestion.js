@@ -18,8 +18,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { controllUpdateQuestion } from "~controller/controllQuestion";
 
 const PostQuestionScreen = ({ navigation, route }) => {
-  const initTitle = route.params?.Title
-  const initContent = route.params?.Content.split('&lt;').join('<')
+  const initTitle = route.params?.Title;
+  const initContent = route.params?.Content.split("&lt;").join("<");
   const richText = React.useRef();
   const [title, setTitle] = React.useState(initTitle);
   const [content, setContent] = React.useState(initContent);
@@ -27,18 +27,17 @@ const PostQuestionScreen = ({ navigation, route }) => {
     if (passTitle == null || passContent == null) {
       Alert.alert("Require", "Title and content must contain something!");
     } else {
-      if(route.params?.update){
-        controllUpdateQuestion(route.params?.qid, passTitle, passContent)
-        navigation.goBack()
+      if (route.params?.update) {
+        controllUpdateQuestion(route.params?.qid, passTitle, passContent);
+        navigation.goBack();
+      } else {
+        var question = {
+          Title: passTitle,
+          Content: passContent,
+        };
+        navigation.navigate("Your Feed", question);
       }
-      else{
-      var question = {
-        Title: passTitle,
-        Content: passContent,
-      };
-      navigation.navigate("Your Feed", question);
     }
-  }
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -59,7 +58,7 @@ const PostQuestionScreen = ({ navigation, route }) => {
         <Card style={styles.typingTitle}>
           <TextInput
             style={{ height: 45, paddingHorizontal: 10 }}
-            defaultValue = {initTitle}
+            defaultValue={initTitle}
             onChangeText={(tilteText) => setTitle(tilteText)}
           />
         </Card>
@@ -81,7 +80,7 @@ const PostQuestionScreen = ({ navigation, route }) => {
           <RichEditor
             useContainer={false}
             ref={richText}
-            initialContentHTML = {initContent}
+            initialContentHTML={initContent}
             onChange={(descriptionText) => {
               setContent(descriptionText);
               //console.log("descriptionText:", descriptionText);

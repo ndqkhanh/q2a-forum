@@ -21,6 +21,7 @@ import {
   getAllAnswersAndVotings,
   pickACorrectAnswer,
 } from "~services/answer";
+import { voteAndUnvoteAnswer } from "~services/voting";
 import { deleteQuestion } from "~services/Question";
 
 const ScreensQ2AMain = ({ navigation, route }) => {
@@ -90,6 +91,28 @@ const ScreensQ2AMain = ({ navigation, route }) => {
     );
   };
 
+  const fetchVoteAndUnvoteAnswer = async (status, answerId) => {
+    let token = await AsyncStorage.getItem("UserToken");
+
+    const response = await voteAndUnvoteAnswer(token, answerId, status);
+    if (response.success == true) {
+      fetchGetAllAnswersAndVotings(questionId, page, 5);
+      // setAnswersAndVotes((answersAndVotes) => {
+      //   return answersAndVotes.map((item) => {
+      //     if (item.answer.id === answerId) {
+      //       let t = status == 0 ? 1 : status == 1 ? -1 : 0
+      //       return {
+      //         ...item,
+      //         minus_upvote_downvote: item.minus_upvote_downvote + status ,
+      //       };
+      //     }
+      //   });
+      // });
+    } else {
+      Alert.alert("Voting failure.");
+    }
+  };
+
   // Fetch get all answer and voting
   const fetchGetAllAnswersAndVotings = async (questionId, page, limit) => {
     const data = await getAllAnswersAndVotings(questionId, page, limit);
@@ -156,14 +179,16 @@ const ScreensQ2AMain = ({ navigation, route }) => {
               ? fetchDeleteQuestion
               : null
           }
-          onUpdate={userData.id == question.questionInfo.uid ?() =>
-              
-            navigation.navigate("Editor", {
-              update: true,
-              qid: questionId,
-              Content: question.questionInfo.content,
-              Title: question.questionInfo.title,
-            }): null
+          onUpdate={
+            userData.id == question.questionInfo.uid
+              ? () =>
+                  navigation.navigate("Editor", {
+                    update: true,
+                    qid: questionId,
+                    Content: question.questionInfo.content,
+                    Title: question.questionInfo.title,
+                  })
+              : null
           }
         />
         <TouchableOpacity
@@ -197,6 +222,7 @@ const ScreensQ2AMain = ({ navigation, route }) => {
               name: item.name,
               avatarUrl: item.profilepictureurl,
             }}
+            votingStatus={item.voting_status}
             onPickCorrectAnswer={
               userData.id == question.questionInfo.uid
                 ? () => {
@@ -205,6 +231,9 @@ const ScreensQ2AMain = ({ navigation, route }) => {
                   }
                 : null
             }
+            onUpVote={() => fetchVoteAndUnvoteAnswer(0, item.answer.id)}
+            onDownVote={() => fetchVoteAndUnvoteAnswer(1, item.answer.id)}
+            onUnVote={() => fetchVoteAndUnvoteAnswer(2, item.answer.id)}
             onDelete={
               userData.id == item.answer.uid
                 ? () => {
@@ -214,18 +243,17 @@ const ScreensQ2AMain = ({ navigation, route }) => {
                 : null
             }
             onUpdate={
-              userData.id == item.answer.uid?
-              ()=> navigation.navigate("Post answer", {
-                update: true,
-                aid: item.answer.id,
-                Content: item.answer.content,
-              }):
-              null
+              userData.id == item.answer.uid
+                ? () =>
+                    navigation.navigate("Post answer", {
+                      update: true,
+                      aid: item.answer.id,
+                      Content: item.answer.content,
+                    })
+                : null
             }
-            
           />
         ))}
-        <Q2APagination page={3} />
       </ScrollView>
     </SafeAreaView>
   );
