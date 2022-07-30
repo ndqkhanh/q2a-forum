@@ -22,6 +22,7 @@ import ScreensQ2AMain from "~screens/Q2A/Main";
 import SearchScreen from "~screens/Search/Search";
 import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 import PostAnswerScreen from "~screens/PostAnswer/PostAnswer";
+import { ConfigProvider } from "~provider/ConfigProvider";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -145,7 +146,9 @@ const Navigation2 = () => {
 const App = () => {
   return (
     <UserProvider>
-      <Navigation2 />
+      <ConfigProvider>
+        <Navigation2 />
+      </ConfigProvider>
     </UserProvider>
   );
 };
