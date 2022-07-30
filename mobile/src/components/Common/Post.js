@@ -8,6 +8,7 @@ import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 const Post = ({
   voting,
+  votingStatus,
   content,
   title,
   userData = { name: "", avatarUrl: "" },
@@ -20,6 +21,9 @@ const Post = ({
   onPickCorrectAnswer = null,
   onPressQ2A = null,
   onUpdate = null,
+  onUpVote = null,
+  onUnVote = null,
+  onDownVote = null,
 }) => {
   return (
     <TouchableHighlight
@@ -30,9 +34,32 @@ const Post = ({
       <>
         {typeof voting == "number" && (
           <View style={styles.votingContainer}>
-            <Icon name="caret-up-outline" style={styles.votingUp} />
-            <Icon name="caret-down-outline" style={styles.votingDown} />
-            <Text style={styles.votingScore}>+{voting}</Text>
+            <TouchableOpacity
+              onPress={votingStatus === true ? onUnVote : onUpVote}
+            >
+              <Icon
+                name="caret-up-outline"
+                style={[
+                  styles.votingUp,
+                  votingStatus === true && { color: Colors.yellow10 },
+                ]}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={votingStatus === false ? onUnVote : onDownVote}
+            >
+              <Icon
+                name="caret-down-outline"
+                style={[
+                  styles.votingDown,
+                  votingStatus === false && { color: Colors.yellow10 },
+                ]}
+              />
+            </TouchableOpacity>
+
+            <Text style={styles.votingScore}>
+              {voting >= 0 ? "+" + voting : voting}
+            </Text>
           </View>
         )}
 
@@ -143,7 +170,7 @@ const Post = ({
                   alignItems: "center",
                 }}
               >
-                <TouchableOpacity onPress={onDelete}>
+                <TouchableOpacity onPress={onUpdate}>
                   <Text
                     style={{
                       color: Colors.cyan30,
@@ -195,7 +222,7 @@ const styles = StyleSheet.create({
   },
   votingUp: {
     fontSize: 35,
-    color: Colors.yellow10,
+    color: Colors.red50,
   },
   votingDown: {
     fontSize: 35,

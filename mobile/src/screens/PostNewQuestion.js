@@ -15,20 +15,28 @@ import {
   RichToolbar,
 } from "react-native-pell-rich-editor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { controllUpdateQuestion } from "~controller/controllQuestion";
 
-const PostQuestionScreen = ({ navigation }) => {
+const PostQuestionScreen = ({ navigation, route }) => {
+  const initTitle = route.params?.Title;
+  const initContent = route.params?.Content.split("&lt;").join("<");
   const richText = React.useRef();
-  const [title, setTitle] = React.useState(null);
-  const [content, setContent] = React.useState(null);
+  const [title, setTitle] = React.useState(initTitle);
+  const [content, setContent] = React.useState(initContent);
   const postQuestion = async (passTitle, passContent) => {
     if (passTitle == null || passContent == null) {
       Alert.alert("Require", "Title and content must contain something!");
     } else {
-      var question = {
-        Title: passTitle,
-        Content: passContent,
-      };
-      navigation.navigate("Your Feed", question);
+      if (route.params?.update) {
+        controllUpdateQuestion(route.params?.qid, passTitle, passContent);
+        navigation.goBack();
+      } else {
+        var question = {
+          Title: passTitle,
+          Content: passContent,
+        };
+        navigation.navigate("Your Feed", question);
+      }
     }
   };
   return (
@@ -50,6 +58,7 @@ const PostQuestionScreen = ({ navigation }) => {
         <Card style={styles.typingTitle}>
           <TextInput
             style={{ height: 45, paddingHorizontal: 10 }}
+            defaultValue={initTitle}
             onChangeText={(tilteText) => setTitle(tilteText)}
           />
         </Card>
@@ -71,6 +80,7 @@ const PostQuestionScreen = ({ navigation }) => {
           <RichEditor
             useContainer={false}
             ref={richText}
+            initialContentHTML={initContent}
             onChange={(descriptionText) => {
               setContent(descriptionText);
               //console.log("descriptionText:", descriptionText);
@@ -87,7 +97,7 @@ const PostQuestionScreen = ({ navigation }) => {
           }}
           activeOpacity={0.7}
           onPress={() => {
-            navigation.navigate("Your Feed");
+            navigation.goBack();
           }}
         >
           <Text style={styles.submitText}>Cancel</Text>
