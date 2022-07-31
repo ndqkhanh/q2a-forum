@@ -15,13 +15,14 @@ import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext, UserProvider } from "~provider/UserProvider";
 import ScreensHomeMain from "~screens/Home/Main";
+import PostAnswerScreen from "~screens/PostAnswer/PostAnswer";
 import PostQuestionScreen from "~screens/PostNewQuestion";
 import ManageForumScreen from "~screens/Profile/ManageForum";
 import ProfileScreen from "~screens/Profile/UserProfile";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 import SearchScreen from "~screens/Search/Search";
-import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
-import PostAnswerScreen from "~screens/PostAnswer/PostAnswer";
+import ScreensSignInMain from "~screens/SignIn/Main";
+import ScreensSignUpMain from "~screens/SignUp/Main";
 
 if (Text.defaultProps == null) {
   Text.defaultProps = {};
@@ -33,9 +34,8 @@ if (TextInput.defaultProps == null) {
   TextInput.defaultProps.allowFontScaling = false;
 }
 const BottomTab = createBottomTabNavigator();
-//const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
 const BottomTabNavigator = ({ navigation }) => {
-  const { userData } = useContext(UserContext);
   return (
     <BottomTab.Navigator
       initialRouteName="Home" // What tab do we want to default to
@@ -73,7 +73,6 @@ const BottomTabNavigator = ({ navigation }) => {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
-
       <BottomTab.Screen
         name="Add"
         component={ScreensHomeMain}
@@ -113,6 +112,23 @@ const EmptyScreen = () => {
   return <View></View>;
 };
 const Stack = createStackNavigator();
+
+const SignupAndLogin = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="login_screen"
+        component={ScreensSignInMain}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="signup_screen"
+        component={ScreensSignUpMain}
+        options={{ header: () => null }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const Navigation2 = () => {
   const { userData, auth } = useContext(UserContext);

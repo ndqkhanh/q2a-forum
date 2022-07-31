@@ -43,18 +43,30 @@ const ScreensHomeMain = ({ navigation, route }) => {
     try {
       maxLength = parseInt(data.count);
     } catch (error) {
-      console.error("error---", error);
+      console.error("error", error);
     }
     setMaxLength(maxLength);
     setFeedData((feedData) => [...feedData, ...data.data]);
     setPage((page) => page + 1);
     setRefetch(false);
   };
-  useEffect(() => {
-    fetchFeedInformation(0);
 
-    // Reload
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setPage(0);
+      setRefetch(false);
+      setFeedData([]);
+      setMaxLength(0);
+
+      setRefetch(false);
+      fetchFeedInformation(0);
+      // The screen is focused
+      // Call any action
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
     return () => {
+      unsubscribe();
       setPage(0);
       setRefetch(false);
       setFeedData([]);
@@ -62,8 +74,21 @@ const ScreensHomeMain = ({ navigation, route }) => {
 
       setRefetch(false);
     };
-  }, []);
+  }, [navigation]);
 
+  // useEffect(() => {
+  //   // fetchFeedInformation(0);
+
+  //   // Reload
+  //   return () => {
+  //     setPage(0);
+  //     setRefetch(false);
+  //     setFeedData([]);
+  //     setMaxLength(0);
+
+  //     setRefetch(false);
+  //   };
+  // }, []);
   return (
     <SafeAreaView
       style={{
@@ -189,8 +214,9 @@ const ScreensHomeMain = ({ navigation, route }) => {
         <HomeMainPosting
           onPress={() => navigation.navigate("Editor")}
           content={route.params?.Content}
-          onPressPost = {() =>{controllPostQuestion(route.params?.Title, route.params?.Content)
-            navigation.setParams({Title: null, Content: null})
+          onPressPost={() => {
+            controllPostQuestion(route.params?.Title, route.params?.Content);
+            navigation.setParams({ Title: null, Content: null });
           }}
         />
         {feedData.map((record, index) => (
@@ -207,6 +233,10 @@ const ScreensHomeMain = ({ navigation, route }) => {
               avatarUrl: record.userData.profilepictureurl,
             }}
             correctAnswer={record.correctAnswerExists}
+            onPressQ2A={() => {
+              console.log("navigate to Q2A");
+              navigation.navigate("Q2A", { questionId: record.id });
+            }}
             onPressAnswer={() => {
               navigation.navigate("Post answer", { qid: record.id });
             }}

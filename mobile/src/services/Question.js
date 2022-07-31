@@ -78,4 +78,63 @@ const searchQuestion = async (keyword, page, limit) => {
   return message;
 };
 
-export { postQuestion, searchQuestion };
+const deleteQuestion = async (token, questionId) => {
+  try {
+    let data = await fetch(`${API_URL}/question/${questionId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    data = await data.json();
+    return data;
+  } catch (error) {
+    console.log("error", error);
+    Alert.alert("error", error.message);
+  }
+  return null;
+};
+
+const updateQuestion = async (qid, passTitle, passContent) => {
+  let message = {};
+  if (passTitle == null || passContent == null) {
+    message = {
+      header: "Can not post pending question list",
+      content: "Missing title or content",
+    };
+  } else {
+    try {
+      const token = await AsyncStorage.getItem("UserToken");
+      let responseUpdateQuestion = await fetch(`${API_URL}/question/${qid}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: `${passTitle}`,
+          content: `${passContent}`,
+        }),
+      });
+
+      const mjson = await responseUpdateQuestion.json();
+      if (mjson.hasOwnProperty("id")) {
+        message = {
+          header: "Update Sucess",
+          content: null,
+        };
+      } else if (mjson.hasOwnProperty("message"))
+        message = { header: "Error", content: mjson.message };
+      else return null;
+    } catch (error) {
+      message = { header: "Error", content: error };
+      console.log(error);
+    }
+  }
+  return message;
+};
+
+export { postQuestion, searchQuestion, deleteQuestion, updateQuestion };

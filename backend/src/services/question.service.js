@@ -47,8 +47,12 @@ const updateQuestion = async (req) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Question Not Found');
   }
 
-  if (question.uid != req.userId) {
+  if (question.uid != req.user.id) {
     throw new ApiError(httpStatus.NOT_FOUND, 'You are not the owner of this question');
+  }
+
+  if (question.status != 2) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Question is not approved!');
   }
   const newTitle = req.body.title;
   const newContent = req.body.content;
@@ -193,10 +197,18 @@ const getLatestFeed = async (page) => {
 };
 
 const getQuestionByID = async (req) => {
-  const question = await prisma.questions.findUnique({
+  const questionRecord = await prisma.questions.findUnique({
     where: { id: req.params.questionId },
   });
-  return question;
+  const userRecord = await prisma.users.findUnique({
+    where: { id: questionRecord.uid },
+  });
+  return {
+    questionInfo: questionRecord,
+    uid: userRecord.id,
+    name: userRecord.name,
+    avatarUrl: userRecord.profilepictureurl,
+  };
 };
 const GetAnswersByQuestionIDPagination = async (req) => {
   const answers = await prisma.answers.findMany({
@@ -228,7 +240,7 @@ const GetAnswersAndVotings = async (answers) => {
       count_upvotes: upvotes.length,
       count_downvotes: downvotes.length,
       minus_upvote_downvote: upvotes.length - downvotes.length,
-      username: user.username,
+      name: user.name,
       profilepictureurl: user.profilepictureurl,
     });
   }

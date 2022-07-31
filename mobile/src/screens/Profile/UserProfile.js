@@ -28,6 +28,11 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 const ProfileScreen = ({ navigation, route }) => {
   const userId = route.params;
   const { userData, setUserData } = useContext(UserContext);
+const ProfileScreen = ({ navigation }) => {
+  // const {userId} = route.params;
+  // const userId = JSON.stringify(userIdParam);
+  const { userData, setUserData, fetchUserInformation } =
+    useContext(UserContext);
   // const [userData, setUserData] = useState({});
   const [myQuestionsData, setMyQuestionsData] = useState([]);
   const [maxLength, setMaxLength] = useState(0);
@@ -68,7 +73,7 @@ const ProfileScreen = ({ navigation, route }) => {
     } else {
       Alert.alert("Update account failure.");
     }
-    setUserData(data);
+    fetchUserInformation();
   };
   useEffect(() => {
     fetchUserProfile(userData.id);

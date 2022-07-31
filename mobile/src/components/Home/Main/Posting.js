@@ -47,7 +47,7 @@ const HomeMainPosting = (props) => {
                 fontSize: 15,
               }}
             >
-              {props.content || 'Write something...'}
+              {props.content || "Write something..."}
             </Text>
           </View>
         </View>

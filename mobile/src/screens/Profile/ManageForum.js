@@ -59,8 +59,9 @@ const ManageForumScreen = ({ navigation }) => {
   };
   const [numOfQuestions, setNumOfQuestions] = useState(0);
   const [numOfUsers, setNumOfUsers] = useState(0);
-  const [numOfAnswers, setNumOfAnswers] = useState(0);
-  const [configNumOfQuestionInFeed, setConfigNumOfQuestionInFeed] = useState(0);
+  const [numOfAnswers, setNumOfAnswers] = useState("0");
+  const [configNumOfQuestionInFeed, setConfigNumOfQuestionInFeed] =
+    useState("0");
   const [configForumName, setConfigForumName] = useState("");
 
   const fetchMetricsInformation = async () => {
@@ -82,6 +83,7 @@ const ManageForumScreen = ({ navigation }) => {
     data.forEach((config) => {
       obj[config.slug] = config.value;
     });
+
     setConfigNumOfQuestionInFeed(obj.NUM_OF_QUESTIONS_IN_FEED);
     setConfigForumName(obj.FORUM_NAME);
     setConfiguration(obj);
@@ -183,7 +185,7 @@ const ManageForumScreen = ({ navigation }) => {
       fetchPendingQuestions(0, 5);
       fetchUsers(0, 10);
       fetchMetricsInformation();
-      userData.role === 1 && fetchConfigurations();
+      userData.role === 0 && fetchConfigurations();
     }
 
     return () => {

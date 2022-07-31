@@ -1,11 +1,139 @@
-import React from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { formatDistance } from "date-fns";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import Post from "~components/Common/Post";
 import Q2APagination from "~components/Q2A/Pagination";
+import { UserContext } from "~provider/UserProvider";
+import {
+  deleteAnswer,
+  getAllAnswersAndVotings,
+  pickACorrectAnswer,
+} from "~services/answer";
+import { voteAndUnvoteAnswer } from "~services/voting";
+import { deleteQuestion } from "~services/Question";
 
-const ScreensQ2AMain = () => {
+const ScreensQ2AMain = ({ navigation, route }) => {
+  const { questionId } = route.params;
+
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(0);
+  const [indexCorrectAns, setIndexCorrectAns] = useState(0);
+
+  const [question, setQuestion] = useState(null);
+  const [countAnswer, setCountAnswer] = useState(0);
+  const [answersAndVotes, setAnswersAndVotes] = useState([]);
+  const [answerId, setAnswerId] = useState("");
+
+  // Use context to get userdata
+  const { userData } = useContext(UserContext);
+
+  // Fetch Pick correct answer
+  const fetchPickACorrectAnswer = async (answerId, status) => {
+    const res = await pickACorrectAnswer(answerId, status);
+    if (res.success == true) {
+      for (let i = 0; i < answersAndVotes.length; i++) {
+        if (answersAndVotes[i].answer.id == answerId) {
+          setIndexCorrectAns(i);
+        }
+      }
+    }
+  };
+
+  // Fetch Delete Answer
+  const fetchDeleteAnswer = async (answerId) => {
+    const response = await deleteAnswer(answerId);
+    console.log("response: ", response);
+  };
+
+  // Fetch Delete Question
+  const fetchDeleteQuestion = async () => {
+    Alert.alert(
+      "Delete Question",
+      "Are you sure to delete this question?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => Alert.alert("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            let token = await AsyncStorage.getItem("UserToken");
+            const response = await deleteQuestion(token, questionId);
+            if (response.success == true) {
+              navigation.navigate("Home");
+            } else {
+              Alert.alert("Delete question failure.");
+            }
+          },
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () =>
+          Alert.alert(
+            "This alert was dismissed by tapping outside of the alert dialog.",
+          ),
+      },
+    );
+  };
+
+  const fetchVoteAndUnvoteAnswer = async (status, answerId) => {
+    let token = await AsyncStorage.getItem("UserToken");
+
+    const response = await voteAndUnvoteAnswer(token, answerId, status);
+    if (response.success == true) {
+      fetchGetAllAnswersAndVotings(questionId, page, 5);
+      // setAnswersAndVotes((answersAndVotes) => {
+      //   return answersAndVotes.map((item) => {
+      //     if (item.answer.id === answerId) {
+      //       let t = status == 0 ? 1 : status == 1 ? -1 : 0
+      //       return {
+      //         ...item,
+      //         minus_upvote_downvote: item.minus_upvote_downvote + status ,
+      //       };
+      //     }
+      //   });
+      // });
+    } else {
+      Alert.alert("Voting failure.");
+    }
+  };
+
+  // Fetch get all answer and voting
+  const fetchGetAllAnswersAndVotings = async (questionId, page, limit) => {
+    const data = await getAllAnswersAndVotings(questionId, page, limit);
+    setQuestion(data.question);
+    setCountAnswer(data.answers.count);
+    setAnswersAndVotes(data.answers.data);
+    setPage(page);
+    setLimit(limit);
+  };
+
+  useEffect(() => {
+    fetchGetAllAnswersAndVotings(questionId, 0, 5);
+    for (let i = 0; i < answersAndVotes.length; i++) {
+      if (answersAndVotes[i].answer.correct == true) {
+        setIndexCorrectAns(i);
+      }
+    }
+  }, []);
+
+  if (!question || !userData) return null;
+
   return (
     <SafeAreaView
       style={{
@@ -14,8 +142,19 @@ const ScreensQ2AMain = () => {
       }}
     >
       <View style={styles.headerContainer}>
-        <Icon name="arrow-back-outline" style={styles.back} />
-        <Text style={styles.header}>Câu hỏi về game?</Text>
+        <TouchableHighlight
+          onPress={() => navigation.pop()}
+          style={{
+            position: "absolute",
+            alignSelf: "center",
+            left: 0,
+          }}
+          underlayColor={"transparent"}
+        >
+          <Icon name="arrow-back-outline" style={styles.back} />
+        </TouchableHighlight>
+
+        <Text style={styles.header}>{question.questionInfo.title}</Text>
       </View>
       <ScrollView
         contentContainerStyle={{
@@ -25,38 +164,96 @@ const ScreensQ2AMain = () => {
         showsVerticalScrollIndicator={false}
       >
         <Post
-          dateText={"3 days ago"}
-          // title={"Câu hỏi về game?"}
-          content={
-            "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-          }
+          dateText={formatDistance(
+            new Date(question.questionInfo.updated_at),
+            Date.now(),
+            { addSuffix: true },
+          )}
+          content={question.questionInfo.content}
           userData={{
-            name: "Bảo Dragon",
-            avatarUrl:
-              "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            name: question.name,
+            avatarUrl: question.avatarUrl,
           }}
+          onDelete={
+            userData.id == question.questionInfo.uid
+              ? fetchDeleteQuestion
+              : null
+          }
+          onUpdate={
+            userData.id == question.questionInfo.uid
+              ? () =>
+                  navigation.navigate("Editor", {
+                    update: true,
+                    qid: questionId,
+                    Content: question.questionInfo.content,
+                    Title: question.questionInfo.title,
+                  })
+              : null
+          }
         />
-
+        <TouchableOpacity
+          style={styles.newAnswer}
+          activeOpacity={0.8}
+          onPress={() => {
+            navigation.navigate("Post answer", { qid: questionId });
+          }}
+        >
+          <View style={styles.btnPage}>
+            <Text style={styles.btnTextPage}>Write answer</Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.answerContainer}>
-          <Text style={styles.numOfAnswers}>10 answers</Text>
+          <Text style={styles.numOfAnswers}>{countAnswer} answers</Text>
         </View>
-        <Q2APagination page={3} />
-        {[1, 2, 3, 4, 5, 6].map((item) => (
+
+        <Q2APagination page={page + 1} />
+        {answersAndVotes.map((item, index) => (
           <Post
-            voting={Math.floor(Math.random() * 10)}
-            key={item}
-            correctAnswer={item == 1}
-            dateText={"3 days ago"}
-            content={"Em xin trả lời bác như này."}
+            voting={item.minus_upvote_downvote}
+            key={index}
+            correctAnswer={index == indexCorrectAns}
+            dateText={formatDistance(
+              new Date(item.answer.updated_at),
+              Date.now(),
+              { addSuffix: true },
+            )}
+            content={item.answer.content}
             userData={{
-              name: "Bảo Dragon",
-              avatarUrl:
-                "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+              name: item.name,
+              avatarUrl: item.profilepictureurl,
             }}
+            votingStatus={item.voting_status}
+            onPickCorrectAnswer={
+              userData.id == question.questionInfo.uid
+                ? () => {
+                    setAnswerId(item.answer.id);
+                    fetchPickACorrectAnswer(answerId, true);
+                  }
+                : null
+            }
+            onUpVote={() => fetchVoteAndUnvoteAnswer(0, item.answer.id)}
+            onDownVote={() => fetchVoteAndUnvoteAnswer(1, item.answer.id)}
+            onUnVote={() => fetchVoteAndUnvoteAnswer(2, item.answer.id)}
+            onDelete={
+              userData.id == item.answer.uid
+                ? () => {
+                    setAnswerId(item.answer.id);
+                    fetchDeleteAnswer(answerId);
+                  }
+                : null
+            }
+            onUpdate={
+              userData.id == item.answer.uid
+                ? () =>
+                    navigation.navigate("Post answer", {
+                      update: true,
+                      aid: item.answer.id,
+                      Content: item.answer.content,
+                    })
+                : null
+            }
           />
         ))}
-
-        <Q2APagination page={3} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -85,9 +282,6 @@ const styles = StyleSheet.create({
   back: {
     fontSize: 30,
     color: Colors.cyan10,
-    position: "absolute",
-    left: 0,
-    alignSelf: "center",
   },
   answerContainer: {
     backgroundColor: Colors.white,
@@ -98,6 +292,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 23,
     color: Colors.blue40,
+  },
+  btnPage: {
+    backgroundColor: Colors.blue40,
+    paddingVertical: 5,
+    width: 150,
+    height: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  btnTextPage: {
+    fontWeight: "bold",
+    fontSize: 15,
+    color: Colors.white,
+  },
+  newAnswer: {
+    alignSelf: "center",
+    marginTop: 20,
   },
 });
 export default ScreensQ2AMain;
