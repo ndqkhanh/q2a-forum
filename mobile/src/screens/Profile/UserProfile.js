@@ -27,12 +27,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 
 const ProfileScreen = ({ navigation, route }) => {
   const userId = route.params;
-  const { userData, setUserData } = useContext(UserContext);
-const ProfileScreen = ({ navigation }) => {
-  // const {userId} = route.params;
-  // const userId = JSON.stringify(userIdParam);
-  const { userData, setUserData, fetchUserInformation } =
-    useContext(UserContext);
+  const { userData, setUserData, fetchUserInformation } = useContext(UserContext);
   // const [userData, setUserData] = useState({});
   const [myQuestionsData, setMyQuestionsData] = useState([]);
   const [maxLength, setMaxLength] = useState(0);
@@ -227,7 +222,7 @@ const ProfileScreen = ({ navigation }) => {
                   isCloseToBottom(nativeEvent) &&
                   myQuestionsData.length < maxLength
                 ) {
-                  console.log("scrolled to bottom of feed");
+                  console.log("scrolled to bottom of the list");
                   setRefetch(true);
                   fetchMyQuestions(page, limit);
                 }
@@ -238,8 +233,9 @@ const ProfileScreen = ({ navigation }) => {
               //scrollEventThrottle={400}
               showsVerticalScrollIndicator={false}
             >
-              {myQuestionsData.map((record) => (
+              {myQuestionsData.map((record, index) => (
                 <MyQuestions
+                key = {index}
                   dateText = {formatDistance(new Date(record.updated_at), Date.now(), {
                     addSuffix: true,
                   })}
