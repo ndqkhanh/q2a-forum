@@ -16,7 +16,7 @@ import {
 } from "react-native-pell-rich-editor";
 import {
   controllPostAnswer,
-  controllUpdateQuestion,
+  controllUpdateAnswer ,
 } from "~controller/controllAnswer";
 
 const PostAnswerScreen = ({ navigation, route }) => {
@@ -66,7 +66,7 @@ const PostAnswerScreen = ({ navigation, route }) => {
           onPress={() => {
             if (content != null && content != "") {
               if (route.params?.update) {
-                controllUpdateQuestion(route.params?.aid, content);
+                controllUpdateAnswer (route.params?.aid, content);
                 navigation.goBack();
               } else {
                 controllPostAnswer(content, route.params?.qid);
