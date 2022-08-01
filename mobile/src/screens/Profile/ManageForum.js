@@ -497,9 +497,9 @@ const styles = StyleSheet.create({
   },
   menu: {
     borderRadius: 0,
-    paddingLeft: 20,
+    paddingLeft: 30,
     paddingRight: 30,
-    marginRight: 2,
+    //marginRight: 2,
   },
   config: {
     backgroundColor: "white",

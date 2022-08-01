@@ -14,8 +14,10 @@ import Q2APagination from "~components/Q2A/Pagination";
 import Post from "~components/Common/Post";
 import SearchBar from "~components/SearchBar/SearchBar";
 import { formatDistance } from "date-fns";
+import { ConfigContext } from "~provider/ConfigProvider";
 
 const SearchScreen = ({ navigation }) => {
+  const configData = React.useContext(ConfigContext);
   const [titleSearch, setTitleSearch] = React.useState("");
   const [countRes, setCountRes] = React.useState(null);
   const [searchData, setSearchData] = React.useState([]);
@@ -59,7 +61,7 @@ const SearchScreen = ({ navigation }) => {
             justifyContent: "space-between",
           }}
         >
-          <Text style={styles.header}>Q & A Forum</Text>
+          <Text style={styles.header}>{configData.configData[0].value}</Text>
           <Icon
             name="log-out-outline"
             style={{

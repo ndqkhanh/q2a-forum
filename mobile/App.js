@@ -21,6 +21,8 @@ import ManageForumScreen from "~screens/Profile/ManageForum";
 import ProfileScreen from "~screens/Profile/UserProfile";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 import SearchScreen from "~screens/Search/Search";
+// import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
+import { ConfigContext, ConfigProvider } from "~provider/ConfigProvider";
 import ScreensSignInMain from "~screens/SignIn/Main";
 import ScreensSignUpMain from "~screens/SignUp/Main";
 
@@ -132,7 +134,7 @@ const SignupAndLogin = () => {
 
 const Navigation2 = () => {
   const { userData, auth } = useContext(UserContext);
-
+  const { configData } = useContext(ConfigContext);
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -142,7 +144,7 @@ const Navigation2 = () => {
       >
         {/* PLEASE DO NOT CHANGE HERE. IF ANY, RETURN BACK TO THE ORIGINAL ONE ONCE PUSH CODE */}
         {/* console.log(auth.toString()) */}
-        {auth && userData ? (
+        {auth && userData && configData ? (
           <>
             <Stack.Screen name="Home" component={BottomTabNavigator} />
             <Stack.Screen name="Editor" component={PostQuestionScreen} />
@@ -164,6 +166,7 @@ const App = () => {
   return (
     <UserProvider>
       <Navigation2 />
+      {/* </ConfigProvider> */}
     </UserProvider>
   );
 };

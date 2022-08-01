@@ -39,6 +39,8 @@ const ScreensQ2AMain = ({ navigation, route }) => {
   // Use context to get userdata
   const { userData } = useContext(UserContext);
 
+  // console.log("ConfigContext.Provider: ", ConfigContext);
+
   // Fetch Pick correct answer
   const fetchPickACorrectAnswer = async (answerId, status) => {
     const res = await pickACorrectAnswer(answerId, status);

@@ -107,12 +107,10 @@ const updateAnswer = async (answerId, passContent) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(
-        {
-          content: `${passContent}`
-        }
-      )
-    })
+      body: JSON.stringify({
+        content: `${passContent}`,
+      }),
+    });
     const mjson = await respondUpdateQuestion.json();
     if (mjson.hasOwnProperty("id")) {
       message = {
