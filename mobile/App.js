@@ -21,7 +21,7 @@ import ManageForumScreen from "~screens/Profile/ManageForum";
 import ProfileScreen from "~screens/Profile/UserProfile";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 import SearchScreen from "~screens/Search/Search";
-import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
+// import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
 import { ConfigProvider } from "~provider/ConfigProvider";
 import ScreensSignInMain from "~screens/SignIn/Main";
 import ScreensSignUpMain from "~screens/SignUp/Main";
