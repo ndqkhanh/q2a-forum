@@ -19,7 +19,7 @@ import { controllUpdateQuestion } from "~controller/controllQuestion";
 
 const PostQuestionScreen = ({ navigation, route }) => {
   const initTitle = route.params?.Title;
-  const initContent = route.params?.Content.split("&lt;").join("<");
+  const initContent = route.params?.Content?.split("&lt;")?.join("<");
   const richText = React.useRef();
   const [title, setTitle] = React.useState(initTitle);
   const [content, setContent] = React.useState(initContent);
