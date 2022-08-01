@@ -6,6 +6,7 @@ import {
 } from "react-native-gesture-handler";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useNavigation } from '@react-navigation/native';
 const Post = ({
   voting,
   votingStatus,
@@ -25,6 +26,7 @@ const Post = ({
   onUnVote = null,
   onDownVote = null,
 }) => {
+  const navigation1 = useNavigation();
   return (
     <TouchableHighlight
       onPress={onPressQ2A}
@@ -211,7 +213,8 @@ const Post = ({
 const styles = StyleSheet.create({
   postContainer: {
     backgroundColor: Colors.white,
-    marginTop: 20,
+    //marginTop: 20,
+    marginBottom: 20,
   },
   votingContainer: {
     backgroundColor: Colors.grey60,
