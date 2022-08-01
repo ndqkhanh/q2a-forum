@@ -16,11 +16,11 @@ import {
 } from "react-native-pell-rich-editor";
 import {
   controllPostAnswer,
-  controllUpdateAnswer ,
+  controllUpdateQuestion,
 } from "~controller/controllAnswer";
 
 const PostAnswerScreen = ({ navigation, route }) => {
-  const initContent = route?.params?.Content?.split("&lt;")?.join("<") || "";
+  const initContent = route?.params?.Content?.split("&lt;").join("<") || "";
   const richText = React.useRef();
   const [content, setContent] = React.useState(initContent);
   return (
@@ -66,7 +66,7 @@ const PostAnswerScreen = ({ navigation, route }) => {
           onPress={() => {
             if (content != null && content != "") {
               if (route.params?.update) {
-                controllUpdateAnswer (route.params?.aid, content);
+                controllUpdateQuestion(route.params?.aid, content);
                 navigation.goBack();
               } else {
                 controllPostAnswer(content, route.params?.qid);

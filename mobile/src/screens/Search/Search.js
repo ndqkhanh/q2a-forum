@@ -17,7 +17,7 @@ import { formatDistance } from "date-fns";
 import { ConfigContext } from "~provider/ConfigProvider";
 
 const SearchScreen = ({ navigation }) => {
-  const configData = React.useContext(ConfigContext);
+  const { configData } = React.useContext(ConfigContext);
   const [titleSearch, setTitleSearch] = React.useState("");
   const [countRes, setCountRes] = React.useState(null);
   const [searchData, setSearchData] = React.useState([]);
@@ -61,7 +61,7 @@ const SearchScreen = ({ navigation }) => {
             justifyContent: "space-between",
           }}
         >
-          <Text style={styles.header}>{configData.configData[0].value}</Text>
+          <Text style={styles.header}>{configData[0].value}</Text>
           <Icon
             name="log-out-outline"
             style={{

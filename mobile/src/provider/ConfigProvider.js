@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { getConfiguration } from "~services/getConfig";
 import { API_URL } from "@env";
-import { UserContext } from "./UserProvider";
+import { UserContext } from "~provider/UserProvider";
+
 const ConfigContext = React.createContext();
 
 ConfigContext.displayName = "ConfigContext";

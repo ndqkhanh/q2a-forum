@@ -19,21 +19,4 @@ const updateUserInformation = async (token, body) => {
   }
 };
 
-const getMyQuestions = async (token, page, limit) => {
-  try {
-    let data = await fetch(`${API_URL}/user/questions/${page}/${limit}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    data = await data.json();
-    return data;
-  } catch (error){
-    console.error("error---", error);
-  }
-};
-
-export { updateUserInformation, getMyQuestions };
+export { updateUserInformation };

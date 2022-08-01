@@ -14,6 +14,7 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext, UserProvider } from "~provider/UserProvider";
+import { ConfigContext, ConfigProvider } from "~provider/ConfigProvider";
 import ScreensHomeMain from "~screens/Home/Main";
 import PostAnswerScreen from "~screens/PostAnswer/PostAnswer";
 import PostQuestionScreen from "~screens/PostNewQuestion";
@@ -22,7 +23,6 @@ import ProfileScreen from "~screens/Profile/UserProfile";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 import SearchScreen from "~screens/Search/Search";
 // import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
-import { ConfigContext, ConfigProvider } from "~provider/ConfigProvider";
 import ScreensSignInMain from "~screens/SignIn/Main";
 import ScreensSignUpMain from "~screens/SignUp/Main";
 
@@ -111,10 +111,7 @@ function TabBarIcon(props) {
 }
 
 const EmptyScreen = () => {
-  return <View>
-    <Text>
-    </Text>
-  </View>;
+  return <View></View>;
 };
 const Stack = createStackNavigator();
 
@@ -168,8 +165,9 @@ const Navigation2 = () => {
 const App = () => {
   return (
     <UserProvider>
-      <Navigation2 />
-      {/* </ConfigProvider> */}
+      <ConfigProvider>
+        <Navigation2 />
+      </ConfigProvider>
     </UserProvider>
   );
 };
