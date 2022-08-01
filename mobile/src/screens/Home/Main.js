@@ -19,6 +19,7 @@ import { getFeed } from "~services/feed";
 import { Alert } from "react-native";
 import { API_URL } from "@env";
 import { controllPostQuestion } from "~controller/controllQuestion";
+import { ConfigContext } from "~provider/ConfigProvider";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 100;
@@ -29,6 +30,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 const ScreensHomeMain = ({ navigation, route }) => {
+  const configData = useContext(ConfigContext);
   const { userData } = useContext(UserContext);
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
@@ -97,7 +99,7 @@ const ScreensHomeMain = ({ navigation, route }) => {
       }}
     >
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Q & A forum</Text>
+        <Text style={styles.header}>{configData.configData[0].value}</Text>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={async () => {
