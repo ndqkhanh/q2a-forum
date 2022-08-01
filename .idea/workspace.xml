@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8aa7dc5-46c3-4bee-b592-98b0212ba291" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/backend/src/services/question.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/question.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/src/components/Common/Post.js" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/src/components/Common/Post.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/src/screens/Q2A/Main.js" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/src/screens/Q2A/Main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/src/services/answer.js" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/src/services/answer.js" afterDir="false" />
-    </list>
+    <list default="true" id="b8aa7dc5-46c3-4bee-b592-98b0212ba291" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
