@@ -20,7 +20,7 @@ import {
 } from "~controller/controllAnswer";
 
 const PostAnswerScreen = ({ navigation, route }) => {
-  const initContent = route?.params?.Content?.split("&lt;").join("<") || "";
+  const initContent = route?.params?.Content?.split("&lt;")?.join("<") || "";
   const richText = React.useRef();
   const [content, setContent] = React.useState(initContent);
   return (

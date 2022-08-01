@@ -111,7 +111,10 @@ function TabBarIcon(props) {
 }
 
 const EmptyScreen = () => {
-  return <View></View>;
+  return <View>
+    <Text>
+    </Text>
+  </View>;
 };
 const Stack = createStackNavigator();
 
