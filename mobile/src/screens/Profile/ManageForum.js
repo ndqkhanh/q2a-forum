@@ -25,6 +25,7 @@ import {
   banUser,
 } from "~services/admin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { is_empty } from "~utils/string";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 280;
@@ -119,6 +120,18 @@ const ManageForumScreen = ({ navigation }) => {
   };
 
   const onUpdateConfiguration = async () => {
+    if (is_empty(configForumName)) {
+      Alert.alert("Forum name can't be empty");
+      return;
+    }
+    if (is_empty(configNumOfQuestionInFeed)) {
+      Alert.alert("Number of question can't be empty");
+      return;
+    }
+    if (isNaN(parseInt(configNumOfQuestionInFeed))) {
+      Alert.alert("Number of question must be a number");
+      return;
+    }
     let token = await AsyncStorage.getItem("UserToken");
     let data;
     if (configuration.FORUM_NAME != configForumName) {
