@@ -151,12 +151,12 @@ const ManageForumScreen = ({ navigation }) => {
       if (status === 1) {
         Alert.alert("Question declined successfully");
       }
+      setPendingQuestionsData((pendingQuestionsData) =>
+        pendingQuestionsData.filter((item) => item.id !== questionId),
+      );
     } else {
       Alert.alert("Question already approved or declined");
     }
-    setPendingQuestionsData((pendingQuestionsData) =>
-      pendingQuestionsData.filter((item) => item.id !== questionId),
-    );
   };
 
   const fetchBanUser = async (userId, status) => {
@@ -497,9 +497,9 @@ const styles = StyleSheet.create({
   },
   menu: {
     borderRadius: 0,
-    paddingLeft: 30,
+    paddingLeft: 20,
     paddingRight: 30,
-    //marginRight: 2,
+    marginRight: 2,
   },
   config: {
     backgroundColor: "white",

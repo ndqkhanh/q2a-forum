@@ -10,7 +10,6 @@ const HomeMainPosting = (props) => {
         flex: 1,
         padding: 10,
         marginTop: 10,
-        marginBottom: 20,
       }}
       onPress={props?.onPress}
       underlayColor={Colors.cyan50}

@@ -10,7 +10,7 @@ const controllPostAnswer = async (passContent, passQid) => {
     // Alert.alert("error", error);
   }
 };
-const controllUpdateAnswer = async (qid, passContent) => {
+const controllUpdateQuestion = async (qid, passContent) => {
   try {
     let message = await updateAnswer(qid, passContent);
     Alert.alert(message.header, JSON.stringify(message.content));
@@ -20,4 +20,4 @@ const controllUpdateAnswer = async (qid, passContent) => {
     // Alert.alert("error", error);
   }
 };
-export { controllPostAnswer, controllUpdateAnswer };
+export { controllPostAnswer, controllUpdateQuestion };

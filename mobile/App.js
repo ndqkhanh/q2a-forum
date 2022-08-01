@@ -14,6 +14,7 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext, UserProvider } from "~provider/UserProvider";
+import { ConfigContext, ConfigProvider } from "~provider/ConfigProvider";
 import ScreensHomeMain from "~screens/Home/Main";
 import PostAnswerScreen from "~screens/PostAnswer/PostAnswer";
 import PostQuestionScreen from "~screens/PostNewQuestion";
@@ -22,7 +23,6 @@ import ProfileScreen from "~screens/Profile/UserProfile";
 import ScreensQ2AMain from "~screens/Q2A/Main";
 import SearchScreen from "~screens/Search/Search";
 // import SignupAndLogin from "~SignupAndLogin/signupAndLogin";
-import { ConfigProvider } from "~provider/ConfigProvider";
 import ScreensSignInMain from "~screens/SignIn/Main";
 import ScreensSignUpMain from "~screens/SignUp/Main";
 
@@ -111,10 +111,7 @@ function TabBarIcon(props) {
 }
 
 const EmptyScreen = () => {
-  return <View>
-    <Text>
-    </Text>
-  </View>;
+  return <View></View>;
 };
 const Stack = createStackNavigator();
 
@@ -137,7 +134,7 @@ const SignupAndLogin = () => {
 
 const Navigation2 = () => {
   const { userData, auth } = useContext(UserContext);
-
+  const { configData } = useContext(ConfigContext);
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -147,7 +144,7 @@ const Navigation2 = () => {
       >
         {/* PLEASE DO NOT CHANGE HERE. IF ANY, RETURN BACK TO THE ORIGINAL ONE ONCE PUSH CODE */}
         {/* console.log(auth.toString()) */}
-        {auth && userData ? (
+        {auth && userData && configData ? (
           <>
             <Stack.Screen name="Home" component={BottomTabNavigator} />
             <Stack.Screen name="Editor" component={PostQuestionScreen} />

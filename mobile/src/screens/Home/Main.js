@@ -30,7 +30,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 const ScreensHomeMain = ({ navigation, route }) => {
-  const configData = useContext(ConfigContext);
+  const { configData } = useContext(ConfigContext);
   const { userData } = useContext(UserContext);
   const [maxLength, setMaxLength] = useState(0);
   const [page, setPage] = useState(0);
@@ -99,7 +99,7 @@ const ScreensHomeMain = ({ navigation, route }) => {
       }}
     >
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>{configData.configData[0].value}</Text>
+        <Text style={styles.header}>{configData[0].value}</Text>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={async () => {

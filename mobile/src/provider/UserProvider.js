@@ -36,13 +36,11 @@ const UserProvider = ({ children }) => {
       return !!mjson.id;
     } catch (error) {
       console.log("error", error);
-      return false
     }
     return false;
   };
 
   const check = async () => {
-    
     let data = await checkAuth();
     if (data) {
       fetchUserInformation();

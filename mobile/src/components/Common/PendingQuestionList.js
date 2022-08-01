@@ -3,7 +3,6 @@ import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors, Card } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Alert } from "react-native";
-import Post from "~components/Common/Post";
 
 const PendingQuestion = ({
   onPressApprove,
@@ -15,14 +14,47 @@ const PendingQuestion = ({
   image,
 }) => {
   return (
-    <View>
-      <Post
-        content={content}
-        title={title}
-        userData={userData}
-        dateText={dateText}
-        image={image}
-      />
+    <View style={styles.postContainer}>
+      <View style={styles.postContentContainer}>
+        <View style={styles.infoUserContainer}>
+          {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
+            <Image
+              source={{
+                uri: userData.avatarUrl,
+              }}
+              style={styles.avatar}
+            ></Image>
+          )}
+
+          <View style={styles.nameAndDate}>
+            <Text style={styles.name}>{userData.name}</Text>
+            <Text style={styles.createdAt}>{dateText}</Text>
+          </View>
+        </View>
+
+        <View
+          style={{
+            marginTop: 10,
+          }}
+        >
+          <Text style={styles.questionTitle}>{title}</Text>
+
+          <Text style={styles.questionContent}>{content}</Text>
+
+          {image && (
+            <Image
+              source={{
+                uri: image,
+              }}
+              style={{
+                alignSelf: "stretch",
+                height: 400,
+                marginVertical: 10,
+              }}
+            />
+          )}
+        </View>
+      </View>
       <View style={styles.questionFooterContainer}>
         <Card style={styles.verifyCard}>
           <TouchableOpacity flexDirection={"row"} onPress={onPressApprove}>
@@ -52,78 +84,6 @@ const PendingQuestion = ({
         </Card>
       </View>
     </View>
-    
-   
-    // <View style={styles.postContainer}>
-    //   <View style={styles.postContentContainer}>
-    //     <View style={styles.infoUserContainer}>
-    //       {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
-    //         <Image
-    //           source={{
-    //             uri: userData.avatarUrl,
-    //           }}
-    //           style={styles.avatar}
-    //         ></Image>
-    //       )}
-
-    //       <View style={styles.nameAndDate}>
-    //         <Text style={styles.name}>{userData.name}</Text>
-    //         <Text style={styles.createdAt}>{dateText}</Text>
-    //       </View>
-    //     </View>
-
-    //     <View
-    //       style={{
-    //         marginTop: 10,
-    //       }}
-    //     >
-    //       <Text style={styles.questionTitle}>{title}</Text>
-
-    //       <Text style={styles.questionContent}>{content}</Text>
-
-    //       {image && (
-    //         <Image
-    //           source={{
-    //             uri: image,
-    //           }}
-    //           style={{
-    //             alignSelf: "stretch",
-    //             height: 400,
-    //             marginVertical: 10,
-    //           }}
-    //         />
-    //       )}
-    //     </View>
-    //   </View>
-    //   <View style={styles.questionFooterContainer}>
-    //     <Card style={styles.verifyCard}>
-    //       <TouchableOpacity flexDirection={"row"} onPress={onPressApprove}>
-    //         <View flexDirection={"row"} alignItems={"center"}>
-    //           <Icon
-    //             name="checkmark-outline"
-    //             style={styles.verifyIcon}
-    //             color={Colors.green10}
-    //           />
-    //           <Text style={styles.approve}>Approve</Text>
-    //         </View>
-    //       </TouchableOpacity>
-    //     </Card>
-    //     <Card style={styles.verifyCard}>
-    //       <TouchableOpacity onPress={onPressDisapprove}>
-    //         <View flexDirection={"row"} alignItems={"center"}>
-    //           <Icon
-    //             name="close-outline"
-    //             style={styles.verifyIcon}
-    //             color={Colors.red10}
-    //           />
-    //           <Text style={styles.disapprove} red>
-    //             Disapprove
-    //           </Text>
-    //         </View>
-    //       </TouchableOpacity>
-    //     </Card>
-    //   </View>
-    // </View>
   );
 };
 const styles = StyleSheet.create({
@@ -177,7 +137,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginTop: 5,
     alignItems: "center",
-    marginBottom: 20,
   },
   verifyCard: {
     flexDirection: "row",
