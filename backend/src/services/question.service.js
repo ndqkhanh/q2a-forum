@@ -234,7 +234,12 @@ const GetAnswersAndVotings = async (answers) => {
     const user = await prisma.users.findUnique({
       where: { id: answers[i].uid },
     });
-
+    const voting = await prisma.voting.findFirst({
+      where: {
+        aid: answers[i].id,
+        uid: answers[i].uid,
+      },
+    });
     answersAndvotings.push({
       answer: answers[i],
       count_upvotes: upvotes.length,
@@ -242,6 +247,7 @@ const GetAnswersAndVotings = async (answers) => {
       minus_upvote_downvote: upvotes.length - downvotes.length,
       name: user.name,
       profilepictureurl: user.profilepictureurl,
+      voting_status: voting ? voting.status : null,
     });
   }
 
