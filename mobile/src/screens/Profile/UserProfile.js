@@ -14,6 +14,7 @@ import PersonalInfo from "~components/Profile/personalInfo";
 import { getMyProfile, getUserProfile } from "~services/getProfile";
 import { updateUserInformation } from "~services/user";
 import { UserContext } from "~provider/UserProvider";
+import { is_empty, is_URL } from "~utils/string";
 const ProfileScreen = ({ navigation }) => {
   // const {userId} = route.params;
   // const userId = JSON.stringify(userIdParam);
@@ -30,6 +31,18 @@ const ProfileScreen = ({ navigation }) => {
     if (data) setUserData(data);
   };
   const saveInformation = async () => {
+    if (is_empty(userData.name)) {
+      Alert.alert("Account name can't be empty");
+      return;
+    }
+    if (is_empty(userData.profilepictureurl)) {
+      Alert.alert("Profile picture url can't be empty");
+      return;
+    }
+    if (!is_URL(userData.profilepictureurl)) {
+      Alert.alert("Profile picture must be an url");
+      return;
+    }
     let token = await AsyncStorage.getItem("UserToken");
     let data = await updateUserInformation(token, {
       name: userData.name,

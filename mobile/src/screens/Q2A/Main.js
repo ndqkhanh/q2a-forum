@@ -50,6 +50,10 @@ const ScreensQ2AMain = ({ navigation, route }) => {
           setIndexCorrectAns(i);
         }
       }
+    } else {
+      Alert.alert(
+        "There is an error occurs. Please reload to proceed this action.",
+      );
     }
   };
 
@@ -111,7 +115,9 @@ const ScreensQ2AMain = ({ navigation, route }) => {
       //   });
       // });
     } else {
-      Alert.alert("Voting failure.");
+      Alert.alert(
+        "There is an error occurs. Please reload to proceed this action.",
+      );
     }
   };
 
