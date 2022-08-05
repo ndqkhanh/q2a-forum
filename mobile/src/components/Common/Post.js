@@ -6,6 +6,8 @@ import {
 } from "react-native-gesture-handler";
 import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
+import RenderHtml from "react-native-render-html";
+import { useWindowDimensions } from "react-native";
 const Post = ({
   voting,
   votingStatus,
@@ -25,6 +27,7 @@ const Post = ({
   onUnVote = null,
   onDownVote = null,
 }) => {
+  const { width } = useWindowDimensions();
   return (
     <TouchableHighlight
       onPress={onPressQ2A}
@@ -115,7 +118,16 @@ const Post = ({
           >
             {title && <Text style={styles.questionTitle}>{title}</Text>}
 
-            {content && <Text style={styles.questionContent}>{content}</Text>}
+            {content && (
+              <Text style={styles.questionContent}>
+                {
+                  <RenderHtml
+                    contentWidth={width}
+                    source={{ html: `content` }}
+                  />
+                }
+              </Text>
+            )}
 
             {image && (
               <Image
