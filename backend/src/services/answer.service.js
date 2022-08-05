@@ -88,13 +88,21 @@ const pickCorrectAnswerById = async (req) => {
 };
 
 const delAnswerById = async (answerId) => {
-  const deleteAnswer = await prisma.answers.delete({
+  const checkAnswerExists = await prisma.answers.findUnique({
     where: {
       id: answerId,
     },
   });
-  if (!deleteAnswer) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Answer not found');
+  if (!checkAnswerExists) {
+    return null;
+  }
+  let deleteAnswer = null;
+  if (checkAnswerExists) {
+    deleteAnswer = await prisma.answers.delete({
+      where: {
+        id: answerId,
+      },
+    });
   }
   return deleteAnswer;
 };
