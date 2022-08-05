@@ -28,6 +28,14 @@ const Post = ({
   onDownVote = null,
 }) => {
   const { width } = useWindowDimensions();
+
+  const initContent = content.split("&lt;").join("<");
+
+  const source = {
+    html: `${initContent}`,
+  };
+  // console.log(source);
+
   return (
     <TouchableHighlight
       onPress={onPressQ2A}
@@ -120,12 +128,7 @@ const Post = ({
 
             {content && (
               <Text style={styles.questionContent}>
-                {
-                  <RenderHtml
-                    contentWidth={width}
-                    source={{ html: `content` }}
-                  />
-                }
+                {<RenderHtml contentWidth={width} source={source} />}
               </Text>
             )}
 
