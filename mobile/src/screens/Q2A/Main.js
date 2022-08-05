@@ -132,12 +132,22 @@ const ScreensQ2AMain = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    fetchGetAllAnswersAndVotings(questionId, 0, 5);
-    for (let i = 0; i < answersAndVotes.length; i++) {
-      if (answersAndVotes[i].answer.correct == true) {
-        setIndexCorrectAns(i);
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchGetAllAnswersAndVotings(questionId, 0, 5);
+      for (let i = 0; i < answersAndVotes.length; i++) {
+        if (answersAndVotes[i].answer.correct == true) {
+          setIndexCorrectAns(i);
+        }
       }
-    }
+    });
+    return () => {
+      unsubscribe();
+      setQuestion(null);
+      setCountAnswer(0);
+      setAnswersAndVotes([]);
+      setPage(0);
+      setLimit(0);
+    };
   }, []);
 
   if (!question || !userData) return null;
