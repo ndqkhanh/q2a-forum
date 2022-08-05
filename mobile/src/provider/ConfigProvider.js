@@ -1,8 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useContext, useEffect, useState } from "react";
-import { getConfiguration } from "~services/getConfig";
-import { API_URL } from "@env";
 import { UserContext } from "~provider/UserProvider";
+import { getConfiguration } from "~services/getConfig";
 
 const ConfigContext = React.createContext();
 
@@ -15,7 +13,6 @@ const ConfigProvider = ({ children }) => {
     let data = await getConfiguration();
 
     if (data) {
-      console.log(data);
       setConfigData(data);
     }
   };
@@ -31,6 +28,7 @@ const ConfigProvider = ({ children }) => {
       value={{
         configData,
         setConfigData,
+        fetchConfigInformation,
       }}
     >
       {children}

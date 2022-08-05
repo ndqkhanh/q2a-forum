@@ -220,8 +220,8 @@ const GetAnswersByQuestionIDPagination = async (req) => {
   return answers;
 };
 
-const GetAnswersAndVotings = async (answers) => {
-  answersAndvotings = [];
+const GetAnswersAndVotings = async (answers, userId) => {
+  const answersAndvotings = [];
   for (let i = 0; i < answers.length; i++) {
     const upvotes = await prisma.voting.findMany({
       where: { aid: answers[i].id, status: true },
@@ -237,7 +237,7 @@ const GetAnswersAndVotings = async (answers) => {
     const voting = await prisma.voting.findFirst({
       where: {
         aid: answers[i].id,
-        uid: answers[i].uid,
+        uid: userId,
       },
     });
     answersAndvotings.push({

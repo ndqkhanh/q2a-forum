@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formatDistance } from "date-fns";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -14,12 +14,10 @@ import { Colors } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import Post from "~components/Common/Post";
 import HomeMainPosting from "~components/Home/Main/Posting";
-import { UserContext } from "~provider/UserProvider";
-import { getFeed } from "~services/feed";
-import { Alert } from "react-native";
-import { API_URL } from "@env";
 import { controllPostQuestion } from "~controller/controllQuestion";
 import { ConfigContext } from "~provider/ConfigProvider";
+import { UserContext } from "~provider/UserProvider";
+import { getFeed } from "~services/feed";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 100;
@@ -99,7 +97,9 @@ const ScreensHomeMain = ({ navigation, route }) => {
       }}
     >
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>{configData[0].value}</Text>
+        <Text style={styles.header}>
+          {configData.find((item) => item.slug === "FORUM_NAME")?.value || ""}
+        </Text>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={async () => {

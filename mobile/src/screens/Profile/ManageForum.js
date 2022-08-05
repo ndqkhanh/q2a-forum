@@ -26,6 +26,7 @@ import {
 } from "~services/admin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { is_empty } from "~utils/string";
+import { ConfigContext } from "~provider/ConfigProvider";
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 280;
@@ -48,6 +49,7 @@ const getUnique = (arr, index) => {
 
 const ManageForumScreen = ({ navigation }) => {
   const { userData } = useContext(UserContext);
+  const { fetchConfigInformation } = useContext(ConfigContext);
   const [isPressed, setIsPressed] = useState([true, false, false]);
   const questionsPressed = () => {
     setIsPressed([true, false, false]);
@@ -138,7 +140,7 @@ const ManageForumScreen = ({ navigation }) => {
       data = await updateConfiguration(token, "FORUM_NAME", configForumName);
     }
     if (data && !data.success) {
-      Alert.alert("Update number of questions in feed failure");
+      Alert.alert("Update forum name in feed failure");
     }
     if (configuration.NUM_OF_QUESTIONS_IN_FEED != configNumOfQuestionInFeed) {
       data = await updateConfiguration(
@@ -150,6 +152,7 @@ const ManageForumScreen = ({ navigation }) => {
     if (data && !data.success) {
       Alert.alert("Update number of questions in feed failure");
     } else {
+      fetchConfigInformation();
       Alert.alert("Update configuration successfully");
     }
   };
