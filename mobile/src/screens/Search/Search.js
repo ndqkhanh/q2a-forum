@@ -121,6 +121,10 @@ const SearchScreen = ({ navigation }) => {
                   name: record.userData.name,
                   avatarUrl: record.userData.profilepictureurl,
                 }}
+                onPressQ2A={() => {
+                  console.log("navigate to Q2A");
+                  navigation.navigate("Q2A", { questionId: record.questionData.id });
+                }}
                 correctAnswer={record.correctAnswerExists}
                 onPressAnswer={() => {
                   navigation.navigate("Post answer", {

@@ -219,7 +219,7 @@ const ScreensQ2AMain = ({ navigation, route }) => {
           <Post
             voting={item.minus_upvote_downvote}
             key={index}
-            correctAnswer={index == indexCorrectAns}
+            correctAnswer={item.answer.correct}
             dateText={formatDistance(
               new Date(item.answer.updated_at),
               Date.now(),
