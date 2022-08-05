@@ -59,8 +59,35 @@ const ScreensQ2AMain = ({ navigation, route }) => {
 
   // Fetch Delete Answer
   const fetchDeleteAnswer = async (answerId) => {
-    const response = await deleteAnswer(answerId);
-    console.log("response: ", response);
+    Alert.alert(
+      "Delete Answer",
+      "Are you sure to delete this answer?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => Alert.alert("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            const response = await deleteAnswer(answerId);
+            if (response.success == true) {
+              navigation.navigate("Home");
+            } else {
+              Alert.alert("Delete answer failure.");
+            }
+          },
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () =>
+          Alert.alert(
+            "This alert was dismissed by tapping outside of the alert dialog.",
+          ),
+      },
+    );
   };
 
   // Fetch Delete Question
@@ -256,7 +283,7 @@ const ScreensQ2AMain = ({ navigation, route }) => {
               userData.id == item.answer.uid
                 ? () => {
                     setAnswerId(item.answer.id);
-                    fetchDeleteAnswer(answerId);
+                    fetchDeleteAnswer(item.answer.id);
                   }
                 : null
             }
