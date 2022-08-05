@@ -21,7 +21,7 @@ const SearchScreen = ({ navigation }) => {
   const [titleSearch, setTitleSearch] = React.useState("");
   const [countRes, setCountRes] = React.useState(null);
   const [searchData, setSearchData] = React.useState([]);
-  const limit = 2;
+  const limit = 5;
   const [page, setPage] = React.useState(1);
   const pressNext = () => {
     if (page < Math.ceil(countRes / limit)) {
@@ -81,7 +81,7 @@ const SearchScreen = ({ navigation }) => {
           }}
         ></SearchBar>
         {countRes > 0 ? (
-          <Text style={styles.resultTxt}>Found {countRes} result</Text>
+          <Text style={styles.resultTxt}>Found {countRes} results</Text>
         ) : null}
         {searchData.length !== 0 ? (
           <Q2APagination

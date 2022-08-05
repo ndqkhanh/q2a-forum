@@ -50,11 +50,11 @@ const ScreensSignUpMain = ({ navigation }) => {
             "Ancouncement",
             "Your account has been successfully created.",
           );
-          await AsyncStorage.setItem(
-            "UserToken",
-            mjson["tokens"]["access"]["token"],
-          );
-          navigation.navigate("Home");
+          // await AsyncStorage.setItem(
+          //   "UserToken",
+          //   mjson["tokens"]["access"]["token"],
+          // );
+          navigation.navigate("login_screen");
         } else {
           Alert.alert("Invalid", mjson["message"]);
         }
