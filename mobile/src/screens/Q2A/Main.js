@@ -165,11 +165,6 @@ const ScreensQ2AMain = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchGetAllAnswersAndVotings(questionId, 0, 5);
-    for (let i = 0; i < answersAndVotes.length; i++) {
-      if (answersAndVotes[i].answer.correct == true) {
-        setIndexCorrectAns(i);
-      }
-    }
   }, []);
 
   if (!question || !userData) return null;
