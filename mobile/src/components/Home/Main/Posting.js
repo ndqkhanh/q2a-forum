@@ -7,7 +7,10 @@ import { useWindowDimensions } from "react-native";
 const HomeMainPosting = (props) => {
   const { width } = useWindowDimensions();
 
-  const initContent = props.content.split("&lt;").join("<");
+  let initContent = null;
+  if (props.content) {
+    initContent = props?.content.split("&lt;").join("<");
+  }
 
   const source = {
     html: `${initContent}`,
@@ -56,7 +59,9 @@ const HomeMainPosting = (props) => {
                 fontSize: 15,
               }}
             >
-              {<RenderHtml contentWidth={width} source={source} /> ||
+              {(props.content && (
+                <RenderHtml contentWidth={width} source={source} />
+              )) ||
                 "Write something..."}
             </Text>
           </View>
