@@ -2,7 +2,17 @@ import { prop } from "cheerio/lib/api/attributes";
 import React from "react";
 import { Image, Text, TouchableHighlight, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
+import RenderHtml from "react-native-render-html";
+import { useWindowDimensions } from "react-native";
 const HomeMainPosting = (props) => {
+  const { width } = useWindowDimensions();
+
+  const initContent = props.content.split("&lt;").join("<");
+
+  const source = {
+    html: `${initContent}`,
+  };
+
   return (
     <TouchableHighlight
       style={{
@@ -46,7 +56,8 @@ const HomeMainPosting = (props) => {
                 fontSize: 15,
               }}
             >
-              {props.content || "Write something..."}
+              {<RenderHtml contentWidth={width} source={source} /> ||
+                "Write something..."}
             </Text>
           </View>
         </View>

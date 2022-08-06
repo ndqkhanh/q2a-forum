@@ -34,7 +34,6 @@ const Post = ({
   const source = {
     html: `${initContent}`,
   };
-  // console.log(source);
 
   return (
     <TouchableHighlight
