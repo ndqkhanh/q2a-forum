@@ -15,7 +15,7 @@ import Post from "~components/Common/Post";
 import SearchBar from "~components/SearchBar/SearchBar";
 import { formatDistance } from "date-fns";
 import { ConfigContext } from "~provider/ConfigProvider";
-
+import { is_empty } from "~utils/string";
 const SearchScreen = ({ navigation }) => {
   const { configData } = React.useContext(ConfigContext);
   const [titleSearch, setTitleSearch] = React.useState("");

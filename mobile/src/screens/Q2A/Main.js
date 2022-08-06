@@ -59,8 +59,35 @@ const ScreensQ2AMain = ({ navigation, route }) => {
 
   // Fetch Delete Answer
   const fetchDeleteAnswer = async (answerId) => {
-    const response = await deleteAnswer(answerId);
-    console.log("response: ", response);
+    Alert.alert(
+      "Delete Answer",
+      "Are you sure to delete this answer?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => Alert.alert("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            const response = await deleteAnswer(answerId);
+            if (response.success == true) {
+              navigation.navigate("Home");
+            } else {
+              Alert.alert("Delete answer failure.");
+            }
+          },
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () =>
+          Alert.alert(
+            "This alert was dismissed by tapping outside of the alert dialog.",
+          ),
+      },
+    );
   };
 
   // Fetch Delete Question
@@ -132,13 +159,23 @@ const ScreensQ2AMain = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    fetchGetAllAnswersAndVotings(questionId, 0, 5);
-    for (let i = 0; i < answersAndVotes.length; i++) {
-      if (answersAndVotes[i].answer.correct == true) {
-        setIndexCorrectAns(i);
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchGetAllAnswersAndVotings(questionId, 0, 5);
+      for (let i = 0; i < answersAndVotes.length; i++) {
+        if (answersAndVotes[i].answer.correct == true) {
+          setIndexCorrectAns(i);
+        }
       }
-    }
-  }, []);
+    });
+    return () => {
+      unsubscribe();
+      setQuestion(null);
+      setCountAnswer(0);
+      setAnswersAndVotes([]);
+      setPage(0);
+      setLimit(0);
+    };
+  }, [navigation]);
 
   if (!question || !userData) return null;
 
@@ -246,7 +283,7 @@ const ScreensQ2AMain = ({ navigation, route }) => {
               userData.id == item.answer.uid
                 ? () => {
                     setAnswerId(item.answer.id);
-                    fetchDeleteAnswer(answerId);
+                    fetchDeleteAnswer(item.answer.id);
                   }
                 : null
             }
