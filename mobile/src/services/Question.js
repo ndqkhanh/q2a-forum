@@ -124,7 +124,7 @@ const updateQuestion = async (qid, passTitle, passContent) => {
       if (mjson.hasOwnProperty("id")) {
         message = {
           header: "Update Sucess",
-          content: null,
+          content: "Your question has been updated!",
         };
       } else if (mjson.hasOwnProperty("message"))
         message = { header: "Error", content: mjson.message };

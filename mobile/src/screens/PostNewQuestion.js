@@ -16,15 +16,16 @@ import {
 } from "react-native-pell-rich-editor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { controllUpdateQuestion } from "~controller/controllQuestion";
+import { is_empty } from "~utils/string";
 
 const PostQuestionScreen = ({ navigation, route }) => {
-  const initTitle = route.params?.Title;
-  const initContent = route.params?.Content.split("&lt;").join("<");
+  const initTitle = route.params?.Title || '';
+  const initContent = route.params?.Content?.split("&lt;")?.join("<") || '';
   const richText = React.useRef();
   const [title, setTitle] = React.useState(initTitle);
   const [content, setContent] = React.useState(initContent);
   const postQuestion = async (passTitle, passContent) => {
-    if (passTitle == null || passContent == null) {
+    if (is_empty(passTitle) || is_empty(passContent)) {
       Alert.alert("Require", "Title and content must contain something!");
     } else {
       if (route.params?.update) {
