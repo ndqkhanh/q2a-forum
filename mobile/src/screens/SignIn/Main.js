@@ -41,6 +41,7 @@ const ScreensSignInMain = ({ navigation }) => {
         }),
       });
       const mjson = await responseLogin.json();
+
       if (mjson.hasOwnProperty("tokens")) {
         await AsyncStorage.setItem(
           "UserToken",
