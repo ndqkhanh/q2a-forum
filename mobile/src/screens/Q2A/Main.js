@@ -175,7 +175,7 @@ const ScreensQ2AMain = ({ navigation, route }) => {
       setPage(0);
       setLimit(0);
     };
-  }, []);
+  }, [navigation]);
 
   if (!question || !userData) return null;
 

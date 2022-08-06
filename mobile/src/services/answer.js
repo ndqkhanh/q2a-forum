@@ -115,7 +115,7 @@ const updateAnswer = async (answerId, passContent) => {
     if (mjson.hasOwnProperty("id")) {
       message = {
         header: "Update sucess",
-        content: null,
+        content: "Your answer has been updated!",
       };
     } else if (mjson.hasOwnProperty("message"))
       message = { header: "Error", content: mjson.message };

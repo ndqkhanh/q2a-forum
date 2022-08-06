@@ -21,7 +21,7 @@ const SearchScreen = ({ navigation }) => {
   const [titleSearch, setTitleSearch] = React.useState("");
   const [countRes, setCountRes] = React.useState(null);
   const [searchData, setSearchData] = React.useState([]);
-  const limit = 2;
+  const limit = 5;
   const [page, setPage] = React.useState(1);
   const pressNext = () => {
     if (page < Math.ceil(countRes / limit)) {
