@@ -33,7 +33,7 @@ const postAnswer = async (passContent, passQid) => {
   }
   return message;
 };
-const pickACorrectAnswer = async (answerId) => {
+const pickACorrectAnswer = async (answerId, status) => {
   const token = await AsyncStorage.getItem("UserToken");
   try {
     let data = await fetch(`${API_URL}/answer/${answerId}/pick-correct`, {
@@ -43,6 +43,9 @@ const pickACorrectAnswer = async (answerId) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({
+        correct: status,
+      }),
     });
     data = await data.json();
     return data;

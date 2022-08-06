@@ -72,9 +72,34 @@ const pickCorrectAnswerById = async (req) => {
     },
   });
 
-  if (existCorrectAns != null) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'There is already a correct answer for this question');
+  // When pick another correct answer when already exist one
+  // Delete correct the old one
+  // Pick correct the new one
+  if (existCorrectAns && existCorrectAns.id != req.params.answerId) {
+    const deleteCorrectExistedAnswer = await prisma.answers.update({
+      where: {
+        id: existCorrectAns.id,
+      },
+      data: {
+        correct: null,
+        updated_at: new Date(),
+      },
+    });
+
+    const updateCorrectNewAnswer = await prisma.answers.update({
+      where: {
+        id: req.params.answerId,
+      },
+      data: {
+        correct: req.body.correct === true ? true : null,
+        updated_at: new Date(),
+      },
+    });
+
+    return updateCorrectNewAnswer;
   }
+
+  // Update a existed answer in database
   const answer = await prisma.answers.update({
     where: {
       id: req.params.answerId,
