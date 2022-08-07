@@ -164,7 +164,18 @@ const ScreensQ2AMain = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    fetchGetAllAnswersAndVotings(questionId, 0, 5);
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchGetAllAnswersAndVotings(questionId, 0, 5);
+    });
+
+    return () => {
+      unsubscribe();
+      setQuestion(null);
+      setCountAnswer(0);
+      setAnswersAndVotes([]);
+      setPage(0);
+      setLimit(0);
+    };
   }, []);
 
   if (!question || !userData) return null;
