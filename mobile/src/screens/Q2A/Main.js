@@ -29,7 +29,6 @@ const ScreensQ2AMain = ({ navigation, route }) => {
 
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(0);
-  const [indexCorrectAns, setIndexCorrectAns] = useState(0);
 
   const [question, setQuestion] = useState(null);
   const [countAnswer, setCountAnswer] = useState(0);
@@ -39,17 +38,23 @@ const ScreensQ2AMain = ({ navigation, route }) => {
   // Use context to get userdata
   const { userData } = useContext(UserContext);
 
-  // console.log("ConfigContext.Provider: ", ConfigContext);
-
+  // Previous pagination
+  const pressPrev = () => {
+    page - 1 >= 0
+      ? fetchGetAllAnswersAndVotings(questionId, page - 1, limit)
+      : null;
+  };
+  // Next pagination
+  const pressNext = () => {
+    page + 1 < Math.ceil(countAnswer / limit)
+      ? fetchGetAllAnswersAndVotings(questionId, page + 1, limit)
+      : null;
+  };
   // Fetch Pick correct answer
   const fetchPickACorrectAnswer = async (answerId, status) => {
     const res = await pickACorrectAnswer(answerId, status);
     if (res.success == true) {
-      for (let i = 0; i < answersAndVotes.length; i++) {
-        if (answersAndVotes[i].answer.id == answerId) {
-          setIndexCorrectAns(i);
-        }
-      }
+      fetchGetAllAnswersAndVotings(questionId, page, limit);
     } else {
       Alert.alert(
         "There is an error occurs. Please reload to proceed this action.",
@@ -161,12 +166,8 @@ const ScreensQ2AMain = ({ navigation, route }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       fetchGetAllAnswersAndVotings(questionId, 0, 5);
-      for (let i = 0; i < answersAndVotes.length; i++) {
-        if (answersAndVotes[i].answer.correct == true) {
-          setIndexCorrectAns(i);
-        }
-      }
     });
+
     return () => {
       unsubscribe();
       setQuestion(null);
@@ -175,7 +176,7 @@ const ScreensQ2AMain = ({ navigation, route }) => {
       setPage(0);
       setLimit(0);
     };
-  }, [navigation]);
+  }, []);
 
   if (!question || !userData) return null;
 
@@ -251,7 +252,12 @@ const ScreensQ2AMain = ({ navigation, route }) => {
           <Text style={styles.numOfAnswers}>{countAnswer} answers</Text>
         </View>
 
-        <Q2APagination page={page + 1} />
+        <Q2APagination
+          page={page + 1}
+          maxPage={Math.ceil(countAnswer / limit)}
+          pressPrev={() => pressPrev()}
+          pressNext={() => pressNext()}
+        />
         {answersAndVotes.map((item, index) => (
           <Post
             voting={item.minus_upvote_downvote}
@@ -271,8 +277,12 @@ const ScreensQ2AMain = ({ navigation, route }) => {
             onPickCorrectAnswer={
               userData.id == question.questionInfo.uid
                 ? () => {
-                    setAnswerId(item.answer.id);
-                    fetchPickACorrectAnswer(answerId, true);
+                    if (item.answer.correct != true) {
+                      fetchPickACorrectAnswer(item.answer.id, true);
+                    } else {
+                      fetchPickACorrectAnswer(item.answer.id, false);
+                    }
+                    Alert.alert("Success");
                   }
                 : null
             }

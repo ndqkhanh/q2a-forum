@@ -61,7 +61,9 @@ const SearchScreen = ({ navigation }) => {
             justifyContent: "space-between",
           }}
         >
-          <Text style={styles.header}>{configData[0].value}</Text>
+          <Text style={styles.header}>
+            {configData.find((item) => item.slug === "FORUM_NAME")?.value || ""}
+          </Text>
           <Icon
             name="log-out-outline"
             style={{
@@ -123,7 +125,9 @@ const SearchScreen = ({ navigation }) => {
                 }}
                 onPressQ2A={() => {
                   console.log("navigate to Q2A");
-                  navigation.navigate("Q2A", { questionId: record.questionData.id });
+                  navigation.navigate("Q2A", {
+                    questionId: record.questionData.id,
+                  });
                 }}
                 correctAnswer={record.correctAnswerExists}
                 onPressAnswer={() => {
