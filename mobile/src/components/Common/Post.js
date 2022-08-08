@@ -4,13 +4,15 @@ import {
   TouchableOpacity,
   TouchableHighlight,
 } from "react-native-gesture-handler";
-import { Colors } from "react-native-ui-lib";
+import { Colors, Card } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import RenderHtml from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 const Post = ({
   voting,
   votingStatus,
+  questionStatus,
   content,
   title,
   userData = { name: "", avatarUrl: "" },
@@ -27,6 +29,8 @@ const Post = ({
   onUnVote = null,
   onDownVote = null,
 }) => {
+  const navigation1 = useNavigation();
+
   const { width } = useWindowDimensions();
 
   const initContent = content.split("&lt;").join("<");
@@ -72,16 +76,26 @@ const Post = ({
             </Text>
           </View>
         )}
+        {/* pending card notification */}
+        {questionStatus == 0 ?
+        <Card style={styles.verifyCard}>
+          <Text style={styles.questionStatus}>Pending</Text>
+        </Card>
+        : null}
 
         <View style={styles.postContentContainer}>
           <View style={styles.infoUserContainer}>
             {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
-              <Image
-                source={{
-                  uri: userData.avatarUrl,
-                }}
-                style={styles.avatar}
-              ></Image>
+              <TouchableOpacity
+                onPress={() => navigation1.navigate("Profile", {"uid": userData.id})}  
+              >
+                <Image
+                  source={{
+                    uri: userData.avatarUrl,
+                  }}
+                  style={styles.avatar}
+                ></Image>
+              </TouchableOpacity>
             )}
             <View
               style={{
@@ -301,6 +315,18 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: Colors.cyan30,
     fontWeight: "bold",
+  },
+  verifyCard: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "center",
+    backgroundColor: Colors.yellow20,
+  },
+  questionStatus: {
+    marginLeft: 5,
+    fontWeight: "bold",
+    fontSize: 18,
+    color: Colors.black,
   },
 });
 export default Post;
