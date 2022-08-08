@@ -29,7 +29,7 @@ const PostQuestionScreen = ({ navigation, route }) => {
       Alert.alert("Require", "Title and content must contain something!");
     } else {
       if (route.params?.update) {
-        controllUpdateQuestion(route.params?.qid, passTitle, passContent);
+        await controllUpdateQuestion(route.params?.qid, passTitle, passContent);
         navigation.goBack();
       } else {
         var question = {

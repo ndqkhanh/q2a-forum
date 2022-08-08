@@ -17,6 +17,7 @@ const VoteAnswer = async (req) => {
   const checkVotingExist = await prisma.voting.findFirst({
     where: {
       aid: req.params.answerId,
+      uid: req.user.id,
     },
   });
 
@@ -34,29 +35,27 @@ const VoteAnswer = async (req) => {
   }
 
   let flag = true;
-  if (req.body.status == 0) flag = true;
+  if (req.body.status === 0) flag = true;
   else flag = false;
   if (!checkVotingExist) {
     const voting = await prisma.voting.create({
       data: {
-        uid: answer.uid,
+        uid: req.user.id,
         aid: answer.id,
         status: flag,
       },
     });
     return voting;
-  } else {
-    const voting = await prisma.voting.update({
-      data: {
-        status: flag,
-      },
-
-      where: {
-        id: checkVotingExist.id,
-      },
-    });
-    return voting;
   }
+  const voting = await prisma.voting.update({
+    data: {
+      status: flag,
+    },
+    where: {
+      id: checkVotingExist.id,
+    },
+  });
+  return voting;
 };
 
 module.exports = {

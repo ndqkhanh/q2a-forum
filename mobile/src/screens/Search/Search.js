@@ -83,7 +83,7 @@ const SearchScreen = ({ navigation }) => {
           }}
         ></SearchBar>
         {countRes > 0 ? (
-          <Text style={styles.resultTxt}>Found {countRes} result</Text>
+          <Text style={styles.resultTxt}>Found {countRes} results</Text>
         ) : null}
         {searchData.length !== 0 ? (
           <Q2APagination

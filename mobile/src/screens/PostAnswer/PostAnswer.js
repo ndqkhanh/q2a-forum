@@ -63,13 +63,13 @@ const PostAnswerScreen = ({ navigation, route }) => {
             leftMargin: 20,
           }}
           activeOpacity={0.7}
-          onPress={() => {
+          onPress={async() => {
             if (content != null && content != "") {
               if (route.params?.update) {
-                controllUpdateQuestion(route.params?.aid, content);
+                await controllUpdateQuestion(route.params?.aid, content);
                 navigation.goBack();
               } else {
-                controllPostAnswer(content, route.params?.qid);
+                await controllPostAnswer(content, route.params?.qid);
                 navigation.goBack();
               }
             }
