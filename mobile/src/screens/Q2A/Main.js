@@ -78,7 +78,10 @@ const ScreensQ2AMain = ({ navigation, route }) => {
           onPress: async () => {
             const response = await deleteAnswer(answerId);
             if (response.success == true) {
-              navigation.navigate("Home");
+              setAnswersAndVotes((item) =>
+                item.filter((answer) => answer.answer.id != answerId),
+              );
+              Alert.alert("Delete answer successfully.");
             } else {
               Alert.alert("Delete answer failure.");
             }
