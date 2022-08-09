@@ -242,6 +242,9 @@ const ScreensHomeMain = ({ navigation, route }) => {
             onPressAnswer={() => {
               navigation.navigate("Post answer", { qid: record.id });
             }}
+            goProfile={() => {
+              navigation.navigate("Profile", {uid: record.uid})
+            }}
           />
         ))}
       </ScrollView>

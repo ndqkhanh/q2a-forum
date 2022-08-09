@@ -1,12 +1,14 @@
 import { prop } from "cheerio/lib/api/attributes";
-import React from "react";
+import React, { useContext } from "react";
 import { Image, Text, TouchableHighlight, View } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import RenderHtml from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
+import { UserContext } from "~provider/UserProvider";
+
 const HomeMainPosting = (props) => {
   const { width } = useWindowDimensions();
-
+  const { userData, setUserData, fetchUserInformation } = useContext(UserContext);
   let initContent = null;
   if (props.content) {
     initContent = props?.content.split("&lt;").join("<");
@@ -37,7 +39,7 @@ const HomeMainPosting = (props) => {
         >
           <Image
             source={{
-              uri: "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+              uri: userData.profilepictureurl,
             }}
             style={{
               width: 50,

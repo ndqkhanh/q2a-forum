@@ -78,7 +78,10 @@ const ScreensQ2AMain = ({ navigation, route }) => {
           onPress: async () => {
             const response = await deleteAnswer(answerId);
             if (response.success == true) {
-              navigation.navigate("Home");
+              setAnswersAndVotes((item) =>
+                item.filter((answer) => answer.answer.id != answerId),
+              );
+              Alert.alert("Delete answer successfully.");
             } else {
               Alert.alert("Delete answer failure.");
             }
@@ -156,16 +159,21 @@ const ScreensQ2AMain = ({ navigation, route }) => {
   // Fetch get all answer and voting
   const fetchGetAllAnswersAndVotings = async (questionId, page, limit) => {
     const data = await getAllAnswersAndVotings(questionId, page, limit);
+    if(data.question){
     setQuestion(data.question);
     setCountAnswer(data.answers.count);
     setAnswersAndVotes(data.answers.data);
     setPage(page);
     setLimit(limit);
+    return true;
+    }else
+    return false;
   };
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchGetAllAnswersAndVotings(questionId, 0, 5);
+    const unsubscribe = navigation.addListener("focus", async() => {
+      let res = await fetchGetAllAnswersAndVotings(questionId, 0, 5);
+      if (res == false) navigation.pop()
     });
 
     return () => {
