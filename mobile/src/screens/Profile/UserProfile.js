@@ -3,33 +3,66 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Image,
 } from "react-native";
+import { formatDistance } from "date-fns";
 import { Avatar, Card, Colors, Text, View } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
-import MyQuestions from "~components/Profile/myQuestions";
 import PersonalInfo from "~components/Profile/personalInfo";
 import { getMyProfile, getUserProfile } from "~services/getProfile";
-import { updateUserInformation } from "~services/user";
+import { updateUserInformation, getMyQuestions } from "~services/user";
 import { UserContext } from "~provider/UserProvider";
 import { is_empty, is_URL } from "~utils/string";
-const ProfileScreen = ({ navigation }) => {
-  // const {userId} = route.params;
-  // const userId = JSON.stringify(userIdParam);
-  const { userData, setUserData, fetchUserInformation } =
-    useContext(UserContext);
+import Post from "~components/Common/Post";
+
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 100;
+  return (
+    layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom
+  );
+};
+
+const ProfileScreen = ({ navigation, route }) => {
+  const param = route.params;
+  let userId = null;
+  if (param != null){userId = param.uid;}
+  console.log("--uid: ", userId)
+  const { userData, setUserData, fetchUserInformation } = useContext(UserContext);
   // const [userData, setUserData] = useState({});
+  const [myQuestionsData, setMyQuestionsData] = useState([]);
+  const [maxLength, setMaxLength] = useState(0);
+  const [page, setPage] = useState(0);
+  const [refetch, setRefetch] = useState(false);
   const fetchUserProfile = async (userId) => {
     let data;
     if (userId != null) {
       data = await getUserProfile(userId);
-    } else {
-      data = await getMyProfile();
     }
+    // else {
+    //   data = await getMyProfile(token);
+    // }
     if (data) setUserData(data);
   };
+  const limit = 5;
+  const fetchMyQuestions = async (page, limit) => {
+    let token = await AsyncStorage.getItem("UserToken");
+    let data = await getMyQuestions(token, page, limit);
+    var maxLength = 5;
+    try {
+      maxLength = parseInt(data.count);
+    } catch (error) {
+      console.error("error---", error);
+    }
+    setMaxLength(maxLength);
+    setMyQuestionsData((myQuestionsData) => [...myQuestionsData, ...data.questions]);
+    setPage((page) => page + 1);
+    setRefetch(false);
+  }
   const saveInformation = async () => {
     if (is_empty(userData.name)) {
       Alert.alert("Account name can't be empty");
@@ -56,8 +89,19 @@ const ProfileScreen = ({ navigation }) => {
     fetchUserInformation();
   };
   useEffect(() => {
-    fetchUserProfile(userData.id);
+    fetchUserProfile(userId);
   }, []);
+  useEffect(() => {
+    fetchMyQuestions(0, 5);
+    // Reload
+    return () => {
+      setPage(0);
+      setRefetch(false);
+      setMyQuestionsData([]);
+      setMaxLength(0);
+    };
+  }, []);
+  console.log("--data: ",userData)
   const [tab, setTab] = useState("Personal info");
   const personalInfoTab = () => {
     setTab("Personal info");
@@ -86,7 +130,7 @@ const ProfileScreen = ({ navigation }) => {
         <View style={styles.infoSection}>
           <Avatar
             rounded
-            source={require("../../assets/img/penguin.png")}
+            source={{uri: userData.profilepictureurl}}
             size={70}
           />
           <View marginLeft={10}>
@@ -190,18 +234,37 @@ const ProfileScreen = ({ navigation }) => {
               margin: 10,
             }}
           >
-            <MyQuestions
-              dateText={"3 days ago"}
-              title={"Câu hỏi về game?"}
-              content={
-                "Mọi người em có 1 thắc mắc là làm sao mình là như thế làm thế nọ ạ."
-              }
-              userData={{
-                name: "Bảo Dragon",
-                avatarUrl:
-                  "https://haycafe.vn/wp-content/uploads/2022/03/Avatar-hai-1.jpg",
+            <ScrollView
+              onScroll={({ nativeEvent }) => {
+                if (
+                  !refetch &&
+                  isCloseToBottom(nativeEvent) &&
+                  myQuestionsData.length < maxLength
+                ) {
+                  console.log("scrolled to bottom of the list");
+                  setRefetch(true);
+                  fetchMyQuestions(page, limit);
+                }
               }}
-            />
+              contentContainerStyle={{
+                paddingBottom: 100,
+              }}
+              //scrollEventThrottle={400}
+              showsVerticalScrollIndicator={false}
+            >
+              {myQuestionsData.map((record, index) => (
+                <Post
+                  key = {index}
+                  dateText = {formatDistance(new Date(record.updated_at), Date.now(), {
+                    addSuffix: true,
+                  })}
+                  content = {record.content}
+                  title = {record.title}
+                  questionStatus = {record.status}
+                  userData = {userData}
+                />
+              ))}
+            </ScrollView>
           </View>
         ) : (
           tab == "Edit Profile" && (
@@ -303,29 +366,6 @@ const ProfileScreen = ({ navigation }) => {
             </View>
           )
         )}
-
-        {/* <TouchableOpacity activeOpacity={0.7}>
-          <Text
-            style={{
-              lineHeight: 50,
-              fontSize: 20,
-              textDecorationLine: "underline",
-              color: "#1e90ff",
-            }}
-          >
-            <Icon size={20} name="create-outline" /> Edit Profile
-          </Text>
-        </TouchableOpacity>
-        <View style={styles.logOutButton}>
-        </TouchableOpacity>             */}
-        {/* <View style={styles.logOutButton}>
-          <TouchableOpacity
-            style={{ backgroundColor: "red", borderRadius: 20 }}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.logOutText}>Log out</Text>
-          </TouchableOpacity>
-        </View> */}
       </View>
     </SafeAreaView>
   );
@@ -371,22 +411,6 @@ const styles = StyleSheet.create({
     width: "45%",
     padding: 5,
     marginLeft: 10,
-  },
-  infoCard: {
-    width: "100%",
-    padding: 10,
-    marginTop: 10,
-    justifyContent: "space-around",
-  },
-  logOutButton: {
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
-  },
-  logOutText: {
-    fontSize: 20,
-    margin: 7,
-    color: "white",
-    fontWeight: "bold",
   },
   menu: {
     borderRadius: 0,
