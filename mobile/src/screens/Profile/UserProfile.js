@@ -28,7 +28,10 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 const ProfileScreen = ({ navigation, route }) => {
-  const userId = route.params;
+  const param = route.params;
+  let userId = null;
+  if (param != null){userId = param.uid;}
+  console.log("--uid: ", userId)
   const { userData, setUserData, fetchUserInformation } = useContext(UserContext);
   // const [userData, setUserData] = useState({});
   const [myQuestionsData, setMyQuestionsData] = useState([]);
@@ -39,9 +42,10 @@ const ProfileScreen = ({ navigation, route }) => {
     let data;
     if (userId != null) {
       data = await getUserProfile(userId);
-    } else {
-      data = await getMyProfile();
     }
+    // else {
+    //   data = await getMyProfile(token);
+    // }
     if (data) setUserData(data);
   };
   const limit = 5;
@@ -85,7 +89,7 @@ const ProfileScreen = ({ navigation, route }) => {
     fetchUserInformation();
   };
   useEffect(() => {
-    fetchUserProfile(userData.id);
+    fetchUserProfile(userId);
   }, []);
   useEffect(() => {
     fetchMyQuestions(0, 5);
@@ -97,6 +101,7 @@ const ProfileScreen = ({ navigation, route }) => {
       setMaxLength(0);
     };
   }, []);
+  console.log("--data: ",userData)
   const [tab, setTab] = useState("Personal info");
   const personalInfoTab = () => {
     setTab("Personal info");

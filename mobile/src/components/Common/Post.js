@@ -8,14 +8,16 @@ import { Colors, Card } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import RenderHtml from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+//import { useNavigation } from '@react-navigation/native';
+
 const Post = ({
+  uid,
   voting,
   votingStatus,
   questionStatus,
   content,
   title,
-  userData = { name: "", avatarUrl: "" },
+  userData,// = { name: "", avatarUrl: "" },
   dateText,
   image,
   numOfAnswers,
@@ -28,8 +30,9 @@ const Post = ({
   onUpVote = null,
   onUnVote = null,
   onDownVote = null,
+  goProfile = null,
 }) => {
-  const navigation1 = useNavigation();
+  //const navigation = useNavigation();
 
   const { width } = useWindowDimensions();
 
@@ -38,7 +41,6 @@ const Post = ({
   const source = {
     html: `${initContent}`,
   };
-
   return (
     <TouchableHighlight
       onPress={onPressQ2A}
@@ -87,7 +89,7 @@ const Post = ({
           <View style={styles.infoUserContainer}>
             {userData.avatarUrl && userData.avatarUrl.indexOf("http") >= 0 && (
               <TouchableOpacity
-                onPress={() => navigation1.navigate("Profile", {"uid": userData.id})}  
+                onPress={goProfile}  
               >
                 <Image
                   source={{
