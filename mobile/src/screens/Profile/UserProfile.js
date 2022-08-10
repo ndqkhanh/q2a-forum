@@ -31,8 +31,10 @@ const ProfileScreen = ({ navigation, route }) => {
   const param = route.params;
   let userId = null;
   if (param != null){userId = param.uid;}
-  console.log("--uid: ", userId)
+  //console.log("--uid: ", userId)
   const { userData, setUserData, fetchUserInformation } = useContext(UserContext);
+  //console.log("--user: ", userData)
+  const [anotherUserData, setAnotherUserData] = useState({});
   // const [userData, setUserData] = useState({});
   const [myQuestionsData, setMyQuestionsData] = useState([]);
   const [maxLength, setMaxLength] = useState(0);
@@ -46,7 +48,8 @@ const ProfileScreen = ({ navigation, route }) => {
     // else {
     //   data = await getMyProfile(token);
     // }
-    if (data) setUserData(data);
+    //console.log("--AnotherUser: ", data)
+    if (data) setAnotherUserData(data);
   };
   const limit = 5;
   const fetchMyQuestions = async (page, limit) => {
@@ -101,7 +104,7 @@ const ProfileScreen = ({ navigation, route }) => {
       setMaxLength(0);
     };
   }, []);
-  console.log("--data: ",userData)
+  //console.log("--AnotherUser: ", anotherUserData)
   const [tab, setTab] = useState("Personal info");
   const personalInfoTab = () => {
     setTab("Personal info");
@@ -112,6 +115,9 @@ const ProfileScreen = ({ navigation, route }) => {
   const editProfile = () => {
     setTab("Edit Profile");
   };
+  let role;
+  if (anotherUserData) role = anotherUserData.role
+  else role = userData.role
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -130,16 +136,16 @@ const ProfileScreen = ({ navigation, route }) => {
         <View style={styles.infoSection}>
           <Avatar
             rounded
-            source={{uri: userData.profilepictureurl}}
+            source={{uri: (anotherUserData.profilepictureurl ? anotherUserData.profilepictureurl : userData.profilepictureurl) }}
             size={70}
           />
           <View marginLeft={10}>
-            <Text style={styles.title}>{userData.username}</Text>
+            <Text style={styles.title}>{(anotherUserData.username ? anotherUserData.name : userData.username)}</Text>
             <Text>
               <Icon size={10} name="ellipse" color="blue" />
-              {userData.role == 0
+              {role == 0
                 ? "Admin"
-                : userData.role == 1
+                : role == 1
                 ? "Moderator"
                 : "User"}
             </Text>
@@ -148,7 +154,7 @@ const ProfileScreen = ({ navigation, route }) => {
         <View style={styles.infoSection}>
           <Card style={styles.QA_card}>
             <Text text10 center black>
-              {userData.numOfQuestions}
+              {(anotherUserData.numOfQuestions ? anotherUserData.numOfQuestions : userData.numOfQuestions)}
             </Text>
             <Text text60 center black>
               Questions
@@ -156,7 +162,7 @@ const ProfileScreen = ({ navigation, route }) => {
           </Card>
           <Card style={styles.QA_card}>
             <Text text10 center black>
-              {userData.numOfAnswers}
+              {(anotherUserData.numOfAnswers ? anotherUserData.numOfAnswers : userData.numOfAnswers)}
             </Text>
             <Text text60 center black>
               Answers
@@ -183,6 +189,7 @@ const ProfileScreen = ({ navigation, route }) => {
               </Text>
             </Card>
           </TouchableOpacity>
+          {(anotherUserData == null ?
           <TouchableOpacity style={{ flex: 1 }} onPress={myQuestionsTab}>
             <Card
               style={styles.menu}
@@ -201,6 +208,8 @@ const ProfileScreen = ({ navigation, route }) => {
               </Text>
             </Card>
           </TouchableOpacity>
+          : null )}
+          {(anotherUserData == null ?
           <TouchableOpacity style={{ flex: 1 }} onPress={editProfile}>
             <Card
               style={styles.menu}
@@ -219,6 +228,7 @@ const ProfileScreen = ({ navigation, route }) => {
               </Text>
             </Card>
           </TouchableOpacity>
+          : null )}
         </View>
         {tab == "Personal info" ? (
           <View
@@ -226,7 +236,7 @@ const ProfileScreen = ({ navigation, route }) => {
               margin: 10,
             }}
           >
-            <PersonalInfo userData={userData} />
+            <PersonalInfo userData={( anotherUserData.name ? anotherUserData : userData)} />
           </View>
         ) : tab == "My questions" ? (
           <View
@@ -249,7 +259,7 @@ const ProfileScreen = ({ navigation, route }) => {
               contentContainerStyle={{
                 paddingBottom: 100,
               }}
-              //scrollEventThrottle={400}
+              scrollEventThrottle={400}
               showsVerticalScrollIndicator={false}
             >
               {myQuestionsData.map((record, index) => (
