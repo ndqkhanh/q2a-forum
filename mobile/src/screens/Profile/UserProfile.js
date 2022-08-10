@@ -189,7 +189,7 @@ const ProfileScreen = ({ navigation, route }) => {
               </Text>
             </Card>
           </TouchableOpacity>
-          {(anotherUserData == null ?
+          {(anotherUserData.name ? null :
           <TouchableOpacity style={{ flex: 1 }} onPress={myQuestionsTab}>
             <Card
               style={styles.menu}
@@ -207,9 +207,8 @@ const ProfileScreen = ({ navigation, route }) => {
                 My questions
               </Text>
             </Card>
-          </TouchableOpacity>
-          : null )}
-          {(anotherUserData == null ?
+          </TouchableOpacity>)}
+          {(anotherUserData.name ? null :
           <TouchableOpacity style={{ flex: 1 }} onPress={editProfile}>
             <Card
               style={styles.menu}
@@ -227,8 +226,7 @@ const ProfileScreen = ({ navigation, route }) => {
                 Edit Profile
               </Text>
             </Card>
-          </TouchableOpacity>
-          : null )}
+          </TouchableOpacity>)}
         </View>
         {tab == "Personal info" ? (
           <View
