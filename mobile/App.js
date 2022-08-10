@@ -81,6 +81,7 @@ const BottomTabNavigator = ({ navigation }) => {
         options={{
           tabBarButton: () => (
             <TouchableOpacity
+              activeOpacity={0.8}
               onPress={() => {
                 navigation.navigate("Editor");
               }}
@@ -89,7 +90,7 @@ const BottomTabNavigator = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Icon size={65} name="add-circle" color={Colors.blue30} />
+              <TabBarIcon name="add-circle" size={40} color = {Colors.blue10}/>
             </TouchableOpacity>
           ),
         }}
