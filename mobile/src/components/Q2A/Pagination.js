@@ -13,7 +13,7 @@ const Q2APagination = ({ page, maxPage, pressPrev, pressNext }) => {
       <View style={styles.pageContainer}>
         <Text style={styles.pageNumber}>
           {page}
-          {maxPage && `/${maxPage}`}
+          {maxPage > 0 && `/${maxPage}`}
         </Text>
       </View>
       <TouchableOpacity activeOpacity={0.8} onPress={pressNext}>
