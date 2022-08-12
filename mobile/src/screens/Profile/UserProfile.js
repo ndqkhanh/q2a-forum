@@ -54,7 +54,8 @@ const ProfileScreen = ({ navigation, route }) => {
   const limit = 5;
   const fetchMyQuestions = async (page, limit) => {
     let token = await AsyncStorage.getItem("UserToken");
-    let data = await getMyQuestions(token, page, limit);
+    const data = await getMyQuestions(token, page, limit);
+    //console.log("--questions: ", data.questions)
     var maxLength = 5;
     try {
       maxLength = parseInt(data.count);
@@ -116,7 +117,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setTab("Edit Profile");
   };
   let role;
-  if (anotherUserData) role = anotherUserData.role
+  if (anotherUserData.name) role = anotherUserData.role
   else role = userData.role
   return (
     <SafeAreaView style={styles.container}>
@@ -140,7 +141,7 @@ const ProfileScreen = ({ navigation, route }) => {
             size={70}
           />
           <View marginLeft={10}>
-            <Text style={styles.title}>{(anotherUserData.username ? anotherUserData.name : userData.username)}</Text>
+            <Text style={styles.title}>{(anotherUserData.username ? anotherUserData.username : userData.username)}</Text>
             <Text>
               <Icon size={10} name="ellipse" color="blue" />
               {role == 0
