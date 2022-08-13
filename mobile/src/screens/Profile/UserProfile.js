@@ -53,6 +53,7 @@ const ProfileScreen = ({ navigation }) => {
     } else {
       Alert.alert("Update account failure.");
     }
+
     fetchUserInformation();
   };
   useEffect(() => {
