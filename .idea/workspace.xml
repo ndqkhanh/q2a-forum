@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8aa7dc5-46c3-4bee-b592-98b0212ba291" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/mobile/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/src/provider/ConfigProvider.js" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/src/provider/ConfigProvider.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/src/services/Answer.js" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/src/services/Answer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/.env" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/.env" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

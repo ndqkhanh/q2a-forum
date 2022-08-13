@@ -104,7 +104,7 @@ const updateUserById = async (userId, updateBody) => {
 
 const countMyQuestions = async (req) => {
   const questions = await prisma.questions.findMany({
-    where: { uid: req.params.userId },
+    where: { uid: req.user.id },
   });
 
   return questions.length;
@@ -115,7 +115,7 @@ const getMyQuestionsPagination = async (req) => {
     skip: req.params.page * req.params.limit,
     take: req.params.limit,
     where: {
-      uid: req.params.userId,
+      uid: req.user.id,
     },
   });
 
