@@ -30,10 +30,15 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 const ProfileScreen = ({ navigation, route }) => {
   const param = route.params;
   let userId = null;
-  if (param != null){userId = param.uid;}
+  if (param != null) {
+    userId = param.uid;
+  }
   //console.log("--uid: ", userId)
-  const { userData, setUserData, fetchUserInformation } = useContext(UserContext);
+  const { userData, setUserData, fetchUserInformation } =
+    useContext(UserContext);
   //console.log("--user: ", userData)
+  const [pendingData, setPendingData] = useState(userData);
+  // console.log("pendingData", pendingData);
   const [anotherUserData, setAnotherUserData] = useState({});
   // const [userData, setUserData] = useState({});
   const [myQuestionsData, setMyQuestionsData] = useState([]);
@@ -63,33 +68,37 @@ const ProfileScreen = ({ navigation, route }) => {
       console.error("error---", error);
     }
     setMaxLength(maxLength);
-    setMyQuestionsData((myQuestionsData) => [...myQuestionsData, ...data.questions]);
+    setMyQuestionsData((myQuestionsData) => [
+      ...myQuestionsData,
+      ...data.questions,
+    ]);
     setPage((page) => page + 1);
     setRefetch(false);
-  }
+  };
   const saveInformation = async () => {
-    if (is_empty(userData.name)) {
+    if (is_empty(pendingData.name)) {
       Alert.alert("Account name can't be empty");
       return;
     }
-    if (is_empty(userData.profilepictureurl)) {
+    if (is_empty(pendingData.profilepictureurl)) {
       Alert.alert("Profile picture url can't be empty");
       return;
     }
-    if (!is_URL(userData.profilepictureurl)) {
+    if (!is_URL(pendingData.profilepictureurl)) {
       Alert.alert("Profile picture must be an url");
       return;
     }
     let token = await AsyncStorage.getItem("UserToken");
     let data = await updateUserInformation(token, {
-      name: userData.name,
-      profilepictureurl: userData.profilepictureurl,
+      name: pendingData.name,
+      profilepictureurl: pendingData.profilepictureurl,
     });
     if (data.username) {
       Alert.alert("Update account successfully.");
     } else {
       Alert.alert("Update account failure.");
     }
+
     fetchUserInformation();
   };
   useEffect(() => {
@@ -117,8 +126,8 @@ const ProfileScreen = ({ navigation, route }) => {
     setTab("Edit Profile");
   };
   let role;
-  if (anotherUserData.name) role = anotherUserData.role
-  else role = userData.role
+  if (anotherUserData.name) role = anotherUserData.role;
+  else role = userData.role;
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -137,25 +146,31 @@ const ProfileScreen = ({ navigation, route }) => {
         <View style={styles.infoSection}>
           <Avatar
             rounded
-            source={{uri: (anotherUserData.profilepictureurl ? anotherUserData.profilepictureurl : userData.profilepictureurl) }}
+            source={{
+              uri: anotherUserData.profilepictureurl
+                ? anotherUserData.profilepictureurl
+                : userData.profilepictureurl,
+            }}
             size={70}
           />
           <View marginLeft={10}>
-            <Text style={styles.title}>{(anotherUserData.username ? anotherUserData.username : userData.username)}</Text>
+            <Text style={styles.title}>
+              {anotherUserData.username
+                ? anotherUserData.username
+                : userData.username}
+            </Text>
             <Text>
               <Icon size={10} name="ellipse" color="blue" />
-              {role == 0
-                ? "Admin"
-                : role == 1
-                ? "Moderator"
-                : "User"}
+              {role == 0 ? "Admin" : role == 1 ? "Moderator" : "User"}
             </Text>
           </View>
         </View>
         <View style={styles.infoSection}>
           <Card style={styles.QA_card}>
             <Text text10 center black>
-              {(anotherUserData.numOfQuestions ? anotherUserData.numOfQuestions : userData.numOfQuestions)}
+              {anotherUserData.numOfQuestions
+                ? anotherUserData.numOfQuestions
+                : userData.numOfQuestions}
             </Text>
             <Text text60 center black>
               Questions
@@ -163,7 +178,9 @@ const ProfileScreen = ({ navigation, route }) => {
           </Card>
           <Card style={styles.QA_card}>
             <Text text10 center black>
-              {(anotherUserData.numOfAnswers ? anotherUserData.numOfAnswers : userData.numOfAnswers)}
+              {anotherUserData.numOfAnswers
+                ? anotherUserData.numOfAnswers
+                : userData.numOfAnswers}
             </Text>
             <Text text60 center black>
               Answers
@@ -190,44 +207,46 @@ const ProfileScreen = ({ navigation, route }) => {
               </Text>
             </Card>
           </TouchableOpacity>
-          {(anotherUserData.name ? null :
-          <TouchableOpacity style={{ flex: 1 }} onPress={myQuestionsTab}>
-            <Card
-              style={styles.menu}
-              {...(tab == "My questions"
-                ? { backgroundColor: Colors.blue60 }
-                : {})}
-            >
-              <Text
-                black
-                style={{
-                  textAlign: "center",
-                  fontSize: 15,
-                }}
+          {anotherUserData.name ? null : (
+            <TouchableOpacity style={{ flex: 1 }} onPress={myQuestionsTab}>
+              <Card
+                style={styles.menu}
+                {...(tab == "My questions"
+                  ? { backgroundColor: Colors.blue60 }
+                  : {})}
               >
-                My questions
-              </Text>
-            </Card>
-          </TouchableOpacity>)}
-          {(anotherUserData.name ? null :
-          <TouchableOpacity style={{ flex: 1 }} onPress={editProfile}>
-            <Card
-              style={styles.menu}
-              {...(tab == "Edit Profile"
-                ? { backgroundColor: Colors.blue60 }
-                : {})}
-            >
-              <Text
-                black
-                style={{
-                  textAlign: "center",
-                  fontSize: 15,
-                }}
+                <Text
+                  black
+                  style={{
+                    textAlign: "center",
+                    fontSize: 15,
+                  }}
+                >
+                  My questions
+                </Text>
+              </Card>
+            </TouchableOpacity>
+          )}
+          {anotherUserData.name ? null : (
+            <TouchableOpacity style={{ flex: 1 }} onPress={editProfile}>
+              <Card
+                style={styles.menu}
+                {...(tab == "Edit Profile"
+                  ? { backgroundColor: Colors.blue60 }
+                  : {})}
               >
-                Edit Profile
-              </Text>
-            </Card>
-          </TouchableOpacity>)}
+                <Text
+                  black
+                  style={{
+                    textAlign: "center",
+                    fontSize: 15,
+                  }}
+                >
+                  Edit Profile
+                </Text>
+              </Card>
+            </TouchableOpacity>
+          )}
         </View>
         {tab == "Personal info" ? (
           <View
@@ -235,7 +254,9 @@ const ProfileScreen = ({ navigation, route }) => {
               margin: 10,
             }}
           >
-            <PersonalInfo userData={( anotherUserData.name ? anotherUserData : userData)} />
+            <PersonalInfo
+              userData={anotherUserData.name ? anotherUserData : userData}
+            />
           </View>
         ) : tab == "My questions" ? (
           <View
@@ -263,14 +284,18 @@ const ProfileScreen = ({ navigation, route }) => {
             >
               {myQuestionsData.map((record, index) => (
                 <Post
-                  key = {index}
-                  dateText = {formatDistance(new Date(record.updated_at), Date.now(), {
-                    addSuffix: true,
-                  })}
-                  content = {record.content}
-                  title = {record.title}
-                  questionStatus = {record.status}
-                  userData = {userData}
+                  key={index}
+                  dateText={formatDistance(
+                    new Date(record.updated_at),
+                    Date.now(),
+                    {
+                      addSuffix: true,
+                    },
+                  )}
+                  content={record.content}
+                  title={record.title}
+                  questionStatus={record.status}
+                  userData={userData}
                 />
               ))}
             </ScrollView>
@@ -300,10 +325,10 @@ const ProfileScreen = ({ navigation, route }) => {
                   Full Name:
                 </Text>
                 <TextInput
-                  value={userData.name}
+                  value={pendingData.name}
                   onChangeText={(value) => {
-                    userData.name = value;
-                    setUserData({ ...userData });
+                    pendingData.name = value;
+                    setPendingData({ ...pendingData });
                   }}
                   style={{
                     flex: 1,
@@ -332,10 +357,10 @@ const ProfileScreen = ({ navigation, route }) => {
                   Profile Picturl URL:
                 </Text>
                 <TextInput
-                  value={userData.profilepictureurl}
+                  value={pendingData.profilepictureurl}
                   onChangeText={(value) => {
-                    userData.profilepictureurl = value;
-                    setUserData({ ...userData });
+                    pendingData.profilepictureurl = value;
+                    setPendingData({ ...pendingData });
                   }}
                   style={{
                     flex: 1,
